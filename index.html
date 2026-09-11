@@ -92,40 +92,7 @@
         （3D 預覽器已移除，卡片目前只是展示用）
       -->
       <div class="grid" id="modelGrid">
-
-        <article class="card tilt model" data-model="assets/models/model-1.glb" data-name="Model 01">
-          <div class="card__media">
-            <img src="assets/img/model-1.png" alt="Model 01" onerror="this.parentElement.classList.add('no-img')" />
-          </div>
-          <div class="card__body">
-            <h3>Model 01</h3>
-            <p>Replace me — put your first .glb in assets/models/ and change data-model.</p>
-            <div class="card__tags"><span>Blockbench</span><span>Character</span></div>
-          </div>
-        </article>
-
-        <article class="card tilt model" data-model="assets/models/model-2.glb" data-name="Model 02">
-          <div class="card__media">
-            <img src="assets/img/model-2.png" alt="Model 02" onerror="this.parentElement.classList.add('no-img')" />
-          </div>
-          <div class="card__body">
-            <h3>Model 02</h3>
-            <p>Replace me — a prop, a weapon, a building…</p>
-            <div class="card__tags"><span>Prop</span></div>
-          </div>
-        </article>
-
-        <article class="card tilt model" data-model="assets/models/model-3.glb" data-name="Model 03">
-          <div class="card__media">
-            <img src="assets/img/model-3.png" alt="Model 03" onerror="this.parentElement.classList.add('no-img')" />
-          </div>
-          <div class="card__body">
-            <h3>Model 03</h3>
-            <p>Replace me — animated models work too (glb animations auto-play).</p>
-            <div class="card__tags"><span>Creature</span><span>Animated</span></div>
-          </div>
-        </article>
-
+        <!-- 卡片由 js/card-gallery.js 依 card/cards.json 自動放進來 -->
       </div>
     </section>
 
@@ -152,6 +119,5 @@
   <script src="js/main.js"></script>
   <script src="js/card-gallery.js"></script>
   <script src="js/dev-tools-link.js"></script>
-  <script type="module" src="js/cards.js"></script>
 </body>
 </html>

@@ -15,7 +15,7 @@
     folder: 'card/',
     font: 'assets/fonts/unifont.otf',
     TEXT_COLOR: '#352133',          // 名牌上的字色（深紫棕）
-    TEXT_HEIGHT_RATIO: 0.55,        // 字高佔名牌高度的比例（用來決定放大倍率）
+    TEXT_SCALE: 2,                  // 文字放大倍率（整數）。Unifont 原生 16px × 2 = 32px 高；名牌塞不下時會自動降到 1
     // 金色判定範圍（RGB）：名牌是亮金 + 較深的橘邊
     isGold: (r, g, b) => r > 170 && g > 110 && g < 215 && b < 120 && r - b > 90,
   };
@@ -114,8 +114,8 @@
     // 名牌在裝置像素上的尺寸
     const plateWdev = plate.w * s * dpr, plateHdev = plate.h * s * dpr;
 
-    // 放大倍率：字高不超過名牌高度的比例，且寬度塞得下；至少 1
-    let scale = Math.max(1, Math.floor(plateHdev * CONFIG.TEXT_HEIGHT_RATIO / 16));
+    // 固定倍率 TEXT_SCALE；名牌寬度塞不下時才逐步降低，最少 1
+    let scale = Math.max(1, Math.floor(CONFIG.TEXT_SCALE));
     let tile = renderName(card._name, scale);
     while (scale > 1 && tile.width > plateWdev * 0.9) { scale--; tile = renderName(card._name, scale); }
 
