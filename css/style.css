@@ -24,6 +24,7 @@
   --purple:    #7b4c9e;
   --purple-2:  #4a2a66;
   --ink:       #150c16;   /* 最深的線色 */
+  --ghost:     #73d9ff;   /* 鬼火藍（箭頭、飛蟲同色） */
 
   --font-pixel: 'Press Start 2P', 'Courier New', monospace;
   --font-body: 'VT323', 'Courier New', monospace;
@@ -110,7 +111,7 @@ img { max-width: 100%; display: block; }
   color: var(--cream);
   text-shadow: 3px 3px 0 var(--ink);
 }
-.section__title::before { content: '\25B6  '; color: var(--orange); }   /* ▶ */
+.section__title::before { content: '\25B6  '; color: var(--ghost); }   /* ▶ */
 .section__hint { color: var(--muted); margin: 0 0 32px; }
 
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity .5s steps(5), transform .5s steps(5); }
@@ -153,10 +154,10 @@ img { max-width: 100%; display: block; }
 .hero__cta { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
 .hero__scroll {
   position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
-  font-family: var(--font-pixel); font-size: 14px; color: var(--orange);
-  animation: bob 1.2s steps(3) infinite;
+  font-family: var(--font-pixel); font-size: 42px; line-height: 1; color: var(--ghost);
+  animation: bob 1.6s ease-in-out infinite;   /* 平滑上下浮動 */
 }
-@keyframes bob { 50% { transform: translate(-50%, 8px); } }
+@keyframes bob { 50% { transform: translate(-50%, 12px); } }
 
 /* Glitch：改成用參考圖的橘 / 青 */
 .glitch { position: relative; display: inline-block; }
