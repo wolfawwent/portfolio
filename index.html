@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>wolfawwent — Portfolio</title>
+  <meta name="description" content="Game & tool developer portfolio: pixel art, 3D, shaders and interactive experiments." />
+
+  <!-- 像素字體（Google Fonts）：Press Start 2P 用在標題、VT323 用在內文 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Three.js 只用在 3D 模型預覽。importmap 讓 viewer.js 可以寫 import ... from 'three' -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <!-- ===== Shader 背景（整頁固定在最底層）===== -->
+  <canvas id="bg" aria-hidden="true"></canvas>
+
+  <!-- ===== 導覽列 ===== -->
+  <header class="nav">
+    <a class="nav__logo" href="#top">WOLF<span class="blink">_</span></a>
+    <nav class="nav__links">
+      <a href="#about">About</a>
+      <a href="#works">Works</a>
+      <a href="#model">3D</a>
+      <a href="#play">Play</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <!-- 之後做中文版時，這顆按鈕會切換 data-lang -->
+    <button class="nav__lang" id="langBtn" type="button" title="Language (coming soon)">EN</button>
+  </header>
+
+  <main id="top">
+
+    <!-- ===== Hero ===== -->
+    <section class="hero reveal">
+      <p class="hero__kicker">// game & tool developer</p>
+      <h1 class="hero__title">
+        <span class="glitch" data-text="wolfawwent">wolfawwent</span>
+      </h1>
+      <p class="hero__sub typewriter" id="typewriter"></p>
+      <div class="hero__cta">
+        <a class="btn" href="#works">View Works</a>
+        <a class="btn btn--ghost" href="#contact">Contact</a>
+      </div>
+      <a class="hero__scroll" href="#about" aria-label="Scroll down">▼</a>
+    </section>
+
+    <!-- ===== About ===== -->
+    <section id="about" class="section reveal">
+      <h2 class="section__title">About</h2>
+      <div class="about">
+        <div class="about__avatar pixel-frame">
+          <!-- 換成你的頭像：assets/img/avatar.png -->
+          <img src="assets/img/avatar.gif" alt="avatar" />
+        </div>
+        <div class="about__text">
+          <p>
+            Hi, I'm <strong>wolfawwent</strong>. I build small games, editor plugins and
+            interactive things. I like pixel art, idle mechanics, shaders and making
+            tools that make other people's work faster.
+          </p>
+          <p>
+            This site is a living playground — the background you see is a live GLSL shader,
+            and the 3D section runs on Three.js. Everything is plain HTML / CSS / JS.
+          </p>
+          <ul class="tags">
+            <li>Godot</li><li>Three.js</li><li>GLSL</li><li>Aseprite</li>
+            <li>Blockbench</li><li>Lua</li><li>JavaScript</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Works ===== -->
+    <section id="works" class="section reveal">
+      <h2 class="section__title">Works</h2>
+      <p class="section__hint">Hover a card — GIFs play on hover, cards tilt with your mouse.</p>
+
+      <div class="grid">
+        <!-- 每張卡片：把 data-gif 換成你的 GIF、img 換成靜態縮圖（可以同一張） -->
+        <article class="card tilt">
+          <div class="card__media">
+            <img src="assets/img/work-1.gif" alt="Idle Plastic Duck" />
+          </div>
+          <div class="card__body">
+            <h3>Idle Plastic Duck</h3>
+            <p>Pixel-art idle game about a very determined rubber duck.</p>
+            <div class="card__tags"><span>Godot</span><span>Pixel</span><span>Idle</span></div>
+          </div>
+        </article>
+
+        <article class="card tilt">
+          <div class="card__media">
+            <img src="assets/img/work-2.gif" alt="Idle Sweeper" />
+          </div>
+          <div class="card__body">
+            <h3>Idle Sweeper</h3>
+            <p>Roguelike incremental: bouncing iron balls that dig for ore.</p>
+            <div class="card__tags"><span>Godot</span><span>Roguelike</span></div>
+          </div>
+        </article>
+
+        <article class="card tilt">
+          <div class="card__media">
+            <img src="assets/img/work-3.gif" alt="Aseprite Rotational Symmetry" />
+          </div>
+          <div class="card__body">
+            <h3>Rotational Symmetry</h3>
+            <p>Aseprite extension for drawing with N-fold rotational symmetry.</p>
+            <div class="card__tags"><span>Aseprite</span><span>Lua</span></div>
+          </div>
+        </article>
+
+        <article class="card tilt">
+          <div class="card__media">
+            <img src="assets/img/work-4.gif" alt="Prismatic Bloom" />
+          </div>
+          <div class="card__body">
+            <h3>Prismatic Bloom</h3>
+            <p>Ultimate skill VFX for a Minecraft server, built with MythicMobs & ModelEngine.</p>
+            <div class="card__tags"><span>Minecraft</span><span>VFX</span></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===== 3D Model Viewer ===== -->
+    <section id="model" class="section reveal">
+      <h2 class="section__title">3D Preview</h2>
+      <p class="section__hint">Drag to rotate · scroll to zoom · right-drag to pan</p>
+
+      <!--
+        data-model 指向 .glb 檔（放在 assets/models/）。
+        沒有檔案或載入失敗時，會顯示內建的體素小鴨當佔位。
+      -->
+      <div class="viewer pixel-frame" id="viewer" data-model="assets/models/sample.glb">
+        <div class="viewer__overlay" id="viewerStatus">loading three.js…</div>
+        <div class="viewer__toolbar">
+          <button type="button" data-action="wire">Wireframe</button>
+          <button type="button" data-action="spin" class="is-on">Auto-rotate</button>
+          <button type="button" data-action="reset">Reset</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 互動小遊戲區 ===== -->
+    <section id="play" class="section reveal">
+      <h2 class="section__title">Playground</h2>
+      <p class="section__hint">Click / tap to drop balls. Hold to charge. Press <kbd>C</kbd> to clear.</p>
+      <div class="pixel-frame">
+        <canvas id="play-canvas" class="play"></canvas>
+      </div>
+    </section>
+
+    <!-- ===== Contact ===== -->
+    <section id="contact" class="section reveal">
+      <h2 class="section__title">Contact</h2>
+      <p class="contact__text">Want to work together or just say hi?</p>
+      <div class="contact__links">
+        <a class="btn" href="mailto:hello@wolfawwent-pf.me">Email</a>
+        <a class="btn btn--ghost" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn btn--ghost" href="https://x.com/" target="_blank" rel="noopener">X</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <span>© <span id="year"></span> wolfawwent</span>
+    <span class="footer__dot">·</span>
+    <span>built with html / css / js / three.js</span>
+  </footer>
+
+  <!-- 一般腳本 -->
+  <script src="js/bg.js"></script>
+  <script src="js/playground.js"></script>
+  <script src="js/main.js"></script>
+  <!-- 3D 預覽是 ES module（因為要 import three） -->
+  <script type="module" src="js/viewer.js"></script>
+</body>
+</html>
