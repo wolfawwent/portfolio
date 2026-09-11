@@ -37,25 +37,6 @@
     }
   },
   {
-    "id": "25395a96-de75-42f7-8c01-e76270ccf5f1",
-    "name": "Emberclaw",
-    "model": "assets/models/25395a96-de75-42f7-8c01-e76270ccf5f1-961bc93771e94b6e9aa3c140ad2ddb9d.glb",
-    "image": "assets/cards/25395a96-de75-42f7-8c01-e76270ccf5f1-961bc93771e94b6e9aa3c140ad2ddb9d.png",
-    "config": {
-      "category": "entity",
-      "x": -5.407008086253371,
-      "y": 6.460916442048519,
-      "z": -4.5,
-      "scale": 2.02,
-      "yaw": -108,
-      "pitch": 0,
-      "roll": 0,
-      "time": 0,
-      "animationIndex": 0,
-      "playing": true
-    }
-  },
-  {
     "id": "97fb1394-9e57-47f2-94b7-bfb053f4e818",
     "name": "Emberclaw",
     "model": "assets/models/97fb1394-9e57-47f2-94b7-bfb053f4e818-c3868eedd5794d268cc2203926fe062a.glb",

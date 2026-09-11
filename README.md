@@ -13,6 +13,8 @@
 5. 按「儲存到作品集」。程式將原始 GLB、當下姿勢的卡片 PNG 與動畫／構圖設定寫入 `assets/models/`、`assets/cards/` 和 `assets/cards/manifest.json`。選取已儲存的卡片後可再次編輯。每次更新使用新資產檔名，舊資產保留供回復。
 6. 重新整理本機作品集即可看見新卡片；點卡片仍會開啟 3D 預覽，套用選中的動畫和播放狀態。尚未建立卡片時保留原有示範卡片。最後按原本流程 git add、commit、push 才會更新正式網站；編輯器不會自動推送或部署。
 
+在「刪除作品」選擇已儲存作品或独立匯出圖片，按「刪除選定作品」並確認。刪除會更新作品清單及對應的 `card/cards.json`；同名圖片仍被其他作品使用時保留。備份放在 `tools/card-editor/.local/deleted/`，包含刪除前清單與匯出圖片；原始 GLB 與歷史縮圖保留供還原。正式網站需按原本流程推送後才會更新。
+
 工作台僅監聽 `127.0.0.1`，每次啟動使用隨機登入憑證與 HttpOnly / SameSite cookie。讀取管理頁與寫入 API 皆需驗證；寫入亦檢查 Origin。正式静態網站沒有上傳／修改 API，且不顯示工具入口。編輯器源碼本身不含密碼。登入資料與清單備份位於被 Git 忽略的 `tools/card-editor/.local/`；不要將此資料夾另行公開。關閉啟動器視窗或按 Ctrl+C 可停止服務。
 
 卡面來自提供的 Aseprite 檔 `entity` 與 `weapon` 圖層，分別匯出為 `assets/cards/frame-entity.png` 與 `assets/cards/frame-weapon.png`（800×1200）。編輯器預設為 `entity`，類別會隨卡片設定儲存；舊卡片沒有類別時視為 `entity`。原始 `.aseprite` 不會被修改。Unifont 字體與授權文件在 `assets/fonts/`。Three.js 沿用網站既有的 0.170.0 CDN；第一次使用需要網路載入，支援內嵌 GLB 的 Draco、Meshopt 與 KTX2 解碼。
