@@ -27,7 +27,8 @@
   const shelves = [...document.querySelectorAll('.shelf[data-category]')];
   if (!shelves.length) return;
   const trackOf = (cat) => (shelves.find((sh) => sh.dataset.category === cat) || shelves[0]).querySelector('.shelf__track');
-  const TILT_MAX = 10;   // 傾斜最大角度（度），跟原本模板的卡片一樣
+  const TILT_MAX = 10;      // 傾斜最大角度（度），跟原本模板的卡片一樣
+  const HOVER_SCALE = 1.1;  // 滑鼠移上去時放大倍率
 
   // ---------- 字體 ----------
   const fontReady = document.fonts.load(`${CONFIG.FONT_BASE}px ${CONFIG.FONT}`).catch(() => null);
@@ -157,9 +158,14 @@
       const r = card.getBoundingClientRect();
       const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
       const rx = (0.5 - py) * TILT_MAX * 2, ry = (px - 0.5) * TILT_MAX * 2;
-      card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-6px)`;
+      card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) scale(${HOVER_SCALE})`;
       card.style.setProperty('--mx', `${px * 100}%`);
       card.style.setProperty('--my', `${py * 100}%`);
+    });
+    card.addEventListener('pointerenter', (e) => {
+      if (dragging || e.pointerType === 'touch') return;
+      card.style.transition = 'transform .18s ease';          // 進入時放大是滑順的，之後跟隨滑鼠不加延遲
+      setTimeout(() => (card.style.transition = ''), 180);
     });
     card.addEventListener('pointerleave', () => {
       card.style.transition = 'transform .4s ease';

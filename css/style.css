@@ -355,7 +355,19 @@ img { max-width: 100%; display: block; }
   display: block; width: 100%; height: auto;
   image-rendering: pixelated; -webkit-user-drag: none; pointer-events: none;
   filter: drop-shadow(6px 8px 0 rgba(0,0,0,.45));
+  transition: filter .15s ease;
 }
+/* 滑鼠移上去：沿著卡片輪廓（含透明部分的邊）畫一圈淡金色 outline
+   用四個方向的 drop-shadow 疊出來，會跟著卡片的實際形狀走，透明區域不會被框到 */
+.shelf .card--auto:hover > img {
+  filter:
+    drop-shadow( var(--ol) 0 0 var(--outline))
+    drop-shadow(calc(var(--ol) * -1) 0 0 var(--outline))
+    drop-shadow(0  var(--ol) 0 var(--outline))
+    drop-shadow(0 calc(var(--ol) * -1) 0 var(--outline))
+    drop-shadow(6px 8px 0 rgba(0,0,0,.45));
+}
+.shelf .card--auto { --outline: #f0d27c; --ol: 3px; }   /* outline 顏色（淡金）與粗細 */
 .shelf .card--auto > .card__name {
   position: absolute; pointer-events: none;
   image-rendering: pixelated; image-rendering: crisp-edges;
