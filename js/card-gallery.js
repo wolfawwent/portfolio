@@ -19,7 +19,7 @@
     FONT: 'VT323',                  // 跟網站內文同一個字體（index.html 已從 Google Fonts 載入）
     FONT_BASE: 20,                  // VT323 在 20px 時最接近原始點陣格（每字 8px 寬）
     TEXT_COLOR: '#352133',          // 名牌上的字色（深紫棕）
-    TEXT_SCALE: 2,                  // 文字放大倍率（整數）；名牌塞不下時會自動降到 1
+    TEXT_SCALE: 3,                  // 文字的 1 個像素 = 卡片圖的幾個像素（卡片圖是 1000px 寬；3 = 跟卡片工具烙上去的字一樣大）
     // 金色判定範圍（RGB）：名牌是亮金 + 較深的橘邊
     isGold: (r, g, b) => r > 170 && g > 110 && g < 215 && b < 120 && r - b > 90,
   };
@@ -118,22 +118,20 @@
     return out;
   }
 
-  // 依卡片目前顯示的大小，把名字放到名牌正中央
+  // 把名字放到名牌正中央。
+  // 文字先以 1:1 點陣畫在 canvas 上，再用 CSS 放大成「TEXT_SCALE 個卡片像素」大小，
+  // 所以文字像素和卡片像素永遠是固定比例，卡片縮放到多大都一致（跟卡片圖用同樣的 pixelated 縮放）。
   function layoutName(card) {
     const plate = card._plate, label = card._label, img = card._img;
     if (!plate || !label || !img) return;
     const rect = img.getBoundingClientRect();
     if (rect.width === 0) return;
-    const dpr = window.devicePixelRatio || 1;
-    const s = rect.width / plate.imgW;                // 1 圖片像素 = s CSS 像素
+    const s = rect.width / plate.imgW;                // 1 卡片像素 = s CSS 像素
 
-    // 名牌在裝置像素上的尺寸
-    const plateWdev = plate.w * s * dpr, plateHdev = plate.h * s * dpr;
-
-    // 固定倍率 TEXT_SCALE；名牌寬度塞不下時才逐步降低，最少 1
+    // 文字像素 = TEXT_SCALE 個卡片像素；名牌塞不下時逐步縮小，最少 1
     let scale = Math.max(1, Math.floor(CONFIG.TEXT_SCALE));
-    let tile = renderName(card._name, scale);
-    while (scale > 1 && tile.width > plateWdev * 0.9) { scale--; tile = renderName(card._name, scale); }
+    let tile = renderName(card._name, 1);
+    while (scale > 1 && tile.width * scale > plate.w * 0.9) scale--;
 
     label.width = tile.width; label.height = tile.height;
     const lctx = label.getContext('2d');
@@ -141,13 +139,13 @@
     lctx.clearRect(0, 0, label.width, label.height);
     lctx.drawImage(tile, 0, 0);
 
-    // 置中，並把位置對齊到裝置像素，避免半像素造成模糊
+    const wCss = tile.width * scale * s, hCss = tile.height * scale * s;
     const cx = (plate.x + plate.w / 2) * s, cy = (plate.y + plate.h / 2) * s;   // CSS px（相對 img 左上）
-    const left = Math.round((cx - tile.width / dpr / 2) * dpr) / dpr;
-    const top  = Math.round((cy - tile.height / dpr / 2) * dpr) / dpr;
+    // 位置對齊到卡片像素格，讓文字像素跟卡片像素落在同一個格子上
+    const snap = (v) => Math.round(v / s) * s;
     Object.assign(label.style, {
-      left: left + 'px', top: top + 'px',
-      width: (tile.width / dpr) + 'px', height: (tile.height / dpr) + 'px',
+      left: snap(cx - wCss / 2) + 'px', top: snap(cy - hCss / 2) + 'px',
+      width: wCss + 'px', height: hCss + 'px',
     });
   }
 

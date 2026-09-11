@@ -328,7 +328,7 @@ img { max-width: 100%; display: block; }
   box-shadow: 3px 3px 0 var(--ink);
 }
 .shelf__track {
-  display: flex; gap: 22px; align-items: flex-start;
+  display: flex; gap: 12px; align-items: flex-start;
   overflow-x: auto; overflow-y: hidden;
   padding: 14px 8px 22px;               /* 留空間給傾斜時凸出的角 */
   margin: 0 -8px;
@@ -344,7 +344,7 @@ img { max-width: 100%; display: block; }
   padding: 24px 8px;
 }
 .shelf .card--auto {
-  flex: 0 0 var(--card-w, 230px); width: var(--card-w, 230px);
+  flex: 0 0 var(--card-w, 340px); width: var(--card-w, 340px);
   scroll-snap-align: start;
   position: relative;
   background: transparent; border: 0; box-shadow: none; overflow: visible;
@@ -369,4 +369,4 @@ img { max-width: 100%; display: block; }
   opacity: 0; transition: opacity .2s;
 }
 .shelf .card--auto:hover::after { opacity: 1; }
-@media (max-width: 720px) { .shelf .card--auto { --card-w: 180px; } }
+@media (max-width: 720px) { .shelf .card--auto { --card-w: 240px; } }
