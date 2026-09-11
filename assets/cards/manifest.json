@@ -16,5 +16,62 @@
       "animationIndex": 0,
       "playing": false
     }
+  },
+  {
+    "id": "af7ebecb-8f10-4aa5-bd9b-42dc113e9af6",
+    "name": "Shotgun",
+    "model": "assets/models/af7ebecb-8f10-4aa5-bd9b-42dc113e9af6-4e391133e1a54e8b90988a6ac646794e.glb",
+    "image": "assets/cards/af7ebecb-8f10-4aa5-bd9b-42dc113e9af6-4e391133e1a54e8b90988a6ac646794e.png",
+    "config": {
+      "category": "weapon",
+      "x": -0.345822102425876,
+      "y": -1.6954177897574123,
+      "z": 30,
+      "scale": 0.46,
+      "yaw": -116,
+      "pitch": 31,
+      "roll": -5,
+      "time": 0,
+      "animationIndex": -1,
+      "playing": true
+    }
+  },
+  {
+    "id": "25395a96-de75-42f7-8c01-e76270ccf5f1",
+    "name": "Emberclaw",
+    "model": "assets/models/25395a96-de75-42f7-8c01-e76270ccf5f1-961bc93771e94b6e9aa3c140ad2ddb9d.glb",
+    "image": "assets/cards/25395a96-de75-42f7-8c01-e76270ccf5f1-961bc93771e94b6e9aa3c140ad2ddb9d.png",
+    "config": {
+      "category": "entity",
+      "x": -5.407008086253371,
+      "y": 6.460916442048519,
+      "z": -4.5,
+      "scale": 2.02,
+      "yaw": -108,
+      "pitch": 0,
+      "roll": 0,
+      "time": 0,
+      "animationIndex": 0,
+      "playing": true
+    }
+  },
+  {
+    "id": "97fb1394-9e57-47f2-94b7-bfb053f4e818",
+    "name": "Emberclaw",
+    "model": "assets/models/97fb1394-9e57-47f2-94b7-bfb053f4e818-c3868eedd5794d268cc2203926fe062a.glb",
+    "image": "assets/cards/97fb1394-9e57-47f2-94b7-bfb053f4e818-c3868eedd5794d268cc2203926fe062a.png",
+    "config": {
+      "category": "entity",
+      "x": -5.4,
+      "y": 6.5,
+      "z": -4.5,
+      "scale": 2.02,
+      "yaw": -108,
+      "pitch": 0,
+      "roll": 0,
+      "time": 0,
+      "animationIndex": 0,
+      "playing": true
+    }
   }
 ]

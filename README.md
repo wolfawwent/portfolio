@@ -9,13 +9,13 @@
 1. 選擇包含內嵌貼圖的 GLB（上限 64 MB）。模型會自動置中、縮放並套用暖主光、冷輪廓光與補光。Blockbench 匯出時請包含需要的動畫。
 2. 選擇一段動畫或原始姿勢。可播放、暫停，或拖動時間軸選擇卡片縮圖使用的姿勢。同一時間只播放選中的動畫。
 3. 直接拖曳模型，或使用左右／上下、前後深度、大小與三個旋轉滑桿。深度負值往後、正值往前。上方與右側依模型實際深度決定遮擋；左側邊框固定遮住模型，且模型不可超出左邊界。下方金色名牌與底框固定置頂。
-4. 填入最多 40 個字的名稱，供編輯器辨識與匯出檔名使用；卡片圖片不顯示名稱，金色名牌保留空白。PNG 儲存至 `card/card_名稱.png`。
+4. 填入最多 40 個字的名稱，供編輯器辨識與匯出檔名使用；卡片圖片不顯示名稱，金色名牌保留空白。PNG 儲存至 `card/card_類別_名稱.png`。
 5. 按「儲存到作品集」。程式將原始 GLB、當下姿勢的卡片 PNG 與動畫／構圖設定寫入 `assets/models/`、`assets/cards/` 和 `assets/cards/manifest.json`。選取已儲存的卡片後可再次編輯。每次更新使用新資產檔名，舊資產保留供回復。
 6. 重新整理本機作品集即可看見新卡片；點卡片仍會開啟 3D 預覽，套用選中的動畫和播放狀態。尚未建立卡片時保留原有示範卡片。最後按原本流程 git add、commit、push 才會更新正式網站；編輯器不會自動推送或部署。
 
 工作台僅監聽 `127.0.0.1`，每次啟動使用隨機登入憑證與 HttpOnly / SameSite cookie。讀取管理頁與寫入 API 皆需驗證；寫入亦檢查 Origin。正式静態網站沒有上傳／修改 API，且不顯示工具入口。編輯器源碼本身不含密碼。登入資料與清單備份位於被 Git 忽略的 `tools/card-editor/.local/`；不要將此資料夾另行公開。關閉啟動器視窗或按 Ctrl+C 可停止服務。
 
-卡框來自提供的 Aseprite 檔 `Layer 1`，匯出為 `assets/cards/frame.png`（800×1200）。原始 `.aseprite` 不會被修改。Unifont 字體與授權文件在 `assets/fonts/`。Three.js 沿用網站既有的 0.170.0 CDN；第一次使用需要網路載入，支援內嵌 GLB 的 Draco、Meshopt 與 KTX2 解碼。
+卡面來自提供的 Aseprite 檔 `entity` 與 `weapon` 圖層，分別匯出為 `assets/cards/frame-entity.png` 與 `assets/cards/frame-weapon.png`（800×1200）。編輯器預設為 `entity`，類別會隨卡片設定儲存；舊卡片沒有類別時視為 `entity`。原始 `.aseprite` 不會被修改。Unifont 字體與授權文件在 `assets/fonts/`。Three.js 沿用網站既有的 0.170.0 CDN；第一次使用需要網路載入，支援內嵌 GLB 的 Draco、Meshopt 與 KTX2 解碼。
 
 ---
 
