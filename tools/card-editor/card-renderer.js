@@ -42,6 +42,7 @@ export class CardRenderer{
     this.frame=new Image();this.frame.src='/assets/cards/frame.png';
     const font=new FontFace('CardUnifont','url(/assets/fonts/unifont.otf)');
     await Promise.all([this.frame.decode(),font.load().then(f=>document.fonts.add(f))]);
+    this.createCardDepthLayers();
     this.fontReady=true;this.draw();
   }
   async load(buffer,settings){
@@ -80,27 +81,113 @@ export class CardRenderer{
   applyTransform(){const c=this.config;this.holder.position.set(c.x,c.y+1,0);this.holder.scale.setScalar(c.scale);this.holder.rotation.set(rad(c.pitch),rad(c.yaw),rad(c.roll),'YXZ');}
   step(delta){if(this.config.playing&&this.action){this.mixer.update(Math.min(delta,.05));this.config.time=this.action.time;}this.draw();}
   drawName(){
-    const name=this.name.trim()||'作品名稱',ctx=this.ctx;
-    if(this.labelName===name&&this.labelCanvas){ctx.drawImage(this.labelCanvas,FX+180*FS,FY+986*FS,440*FS,88*FS);return;}
-    const tile=document.createElement('canvas');tile.width=440;tile.height=88;const t=tile.getContext('2d');t.font='16px CardUnifont';
-    let lines=[],factor=1;
-    for(const f of [3,2,1]){
-      const result=[''];for(const ch of Array.from(name)){const i=result.length-1;if(t.measureText(result[i]+ch).width*f>416&&result[i])result.push(ch);else result[i]+=ch;}
-      if(result.length<=2&&result.length*16*f+(result.length-1)*6<=84){lines=result;factor=f;break;}
+    const name=this.name.trim()||'作品名稱';
+    // Draw at final export resolution: never resize the finished label by FS.
+    const left=Math.round(FX+180*FS),top=Math.round(FY+986*FS);
+    if(this.labelName===name&&this.labelCanvas){
+      this.ctx.drawImage(this.labelCanvas,left,top);
+      return;
     }
+    const tile=document.createElement('canvas');
+    tile.width=Math.round(440*FS);tile.height=Math.round(88*FS);
+    const context=tile.getContext('2d');
+    context.imageSmoothingEnabled=false;
+    const glyph=document.createElement('canvas');
+    glyph.width=tile.width;glyph.height=16;
+    const pen=glyph.getContext('2d',{willReadFrequently:true});
+    pen.font='16px CardUnifont';
+    pen.textBaseline='alphabetic';
+    pen.fillStyle='#352133';
+    const measure=text=>Math.ceil(pen.measureText(text).width);
+    const margin=12,gap=6;
+    let lines=[],factor=1;
+    for(const scale of [3,2,1]){
+      const wrapped=[''];
+      for(const character of Array.from(name)){
+        const last=wrapped.length-1;
+        if(wrapped[last]&&measure(wrapped[last]+character)*scale>tile.width-margin*2){
+          wrapped.push(character);
+        }else{
+          wrapped[last]+=character;
+        }
+      }
+      if(wrapped.length<=2&&wrapped.length*16*scale+(wrapped.length-1)*gap<=tile.height-4){
+        lines=wrapped;factor=scale;break;
+      }
+    }
+    // Overlong, unsaved input remains clipped to the nameplate.
     if(!lines.length)lines=[name];
-    const glyph=document.createElement('canvas');glyph.width=440;glyph.height=18;const g=glyph.getContext('2d');g.font='16px CardUnifont';g.textBaseline='top';g.fillStyle='#352133';
-    const total=lines.length*16*factor+(lines.length-1)*6;
-    lines.forEach((line,i)=>{g.clearRect(0,0,440,18);g.fillText(line,0,0);const width=g.measureText(line).width;t.imageSmoothingEnabled=false;t.drawImage(glyph,0,0,width,18,Math.floor((440-width*factor)/2),Math.floor((88-total)/2)+i*(16*factor+6),width*factor,18*factor);});
-    this.labelName=name;this.labelCanvas=tile;ctx.drawImage(tile,FX+180*FS,FY+986*FS,440*FS,88*FS);
+    const totalHeight=lines.length*16*factor+(lines.length-1)*gap;
+    lines.forEach((line,index)=>{
+      pen.clearRect(0,0,glyph.width,glyph.height);
+      // Unifont's 16px cell has a 14px ascent. Integer baseline avoids fractional placement.
+      pen.fillText(line,0,14);
+      const bitmap=pen.getImageData(0,0,glyph.width,glyph.height);
+      for(let i=0;i<bitmap.data.length;i+=4){
+        bitmap.data[i]=0x35;bitmap.data[i+1]=0x21;bitmap.data[i+2]=0x33;
+        bitmap.data[i+3]=bitmap.data[i+3]>=128?255:0;
+      }
+      pen.putImageData(bitmap,0,0);
+      const width=Math.min(measure(line),glyph.width);
+      if(!width)return;
+      const x=Math.floor((tile.width-width*factor)/2);
+      const y=Math.floor((tile.height-totalHeight)/2)+index*(16*factor+gap);
+      context.drawImage(glyph,0,0,width,16,x,y,width*factor,16*factor);
+    });
+    this.labelName=name;this.labelCanvas=tile;
+    this.ctx.drawImage(tile,left,top);
   }
+
+  createCardDepthLayers(){
+    const unitsPerPixel=VIEW/H;
+    const frameTexture=new THREE.Texture(this.frame);
+    frameTexture.colorSpace=THREE.SRGBColorSpace;
+    frameTexture.magFilter=THREE.NearestFilter;
+    frameTexture.minFilter=THREE.NearestFilter;
+    frameTexture.generateMipmaps=false;
+    frameTexture.needsUpdate=true;
+    const material=new THREE.MeshBasicMaterial({
+      map:frameTexture,alphaTest:.5,depthTest:true,depthWrite:true,toneMapped:false
+    });
+    this.cardFrame=new THREE.Mesh(new THREE.PlaneGeometry(FW*unitsPerPixel,FH*unitsPerPixel),material);
+    this.cardFrame.name='card-frame-depth-plane';
+    this.cardFrame.position.set((FX+FW/2-W/2)*unitsPerPixel,(H/2-FY-FH/2)*unitsPerPixel,0);
+    this.scene.add(this.cardFrame);
+
+    // Outside the card, rear geometry is hidden; front geometry can protrude.
+    // This only writes depth, so it cannot introduce black rectangles into the image.
+    const mask=document.createElement('canvas');mask.width=W;mask.height=H;
+    const pen=mask.getContext('2d');pen.fillStyle='#fff';pen.fillRect(0,0,W,H);
+    pen.clearRect(FX,FY,FW,FH);
+    const outsideTexture=new THREE.CanvasTexture(mask);
+    outsideTexture.magFilter=THREE.NearestFilter;
+    outsideTexture.minFilter=THREE.NearestFilter;
+    outsideTexture.generateMipmaps=false;
+    this.cardOutside=new THREE.Mesh(
+      new THREE.PlaneGeometry(W*unitsPerPixel,H*unitsPerPixel),
+      new THREE.MeshBasicMaterial({map:outsideTexture,alphaTest:.5,colorWrite:false,depthTest:true,depthWrite:true})
+    );
+    this.cardOutside.name='card-exterior-depth-only';
+    this.cardOutside.renderOrder=-100;
+    this.scene.add(this.cardOutside);
+    this.cardTextures=[frameTexture,outsideTexture];
+  }
+
   draw(){
     if(!this.frame?.complete||!this.fontReady)return;
-    const ctx=this.ctx;ctx.clearRect(0,0,W,H);ctx.imageSmoothingEnabled=false;ctx.fillStyle='#19151e';ctx.fillRect(FX+30,FY+30,FW-60,FH-60);ctx.drawImage(this.frame,FX,FY,FW,FH);
-    if(this.root){this.renderer.render(this.scene,this.camera);ctx.save();ctx.beginPath();ctx.rect(FX,0,W-FX,FY+970*FS);ctx.clip();ctx.shadowColor='rgba(15,10,20,.6)';ctx.shadowBlur=14;ctx.shadowOffsetY=7;ctx.drawImage(this.renderer.domElement,0,0);ctx.restore();}
-    ctx.drawImage(this.frame,0,0,100,1200,FX,FY,100*FS,FH);ctx.drawImage(this.frame,0,960,800,240,FX,FY+960*FS,FW,240*FS);this.drawName();
+    const ctx=this.ctx;
+    ctx.clearRect(0,0,W,H);ctx.imageSmoothingEnabled=false;
+    ctx.fillStyle='#19151e';ctx.fillRect(FX+30,FY+30,FW-60,FH-60);
+    // Frame and model share the same depth buffer. No fixed left or lower crop.
+    this.renderer.render(this.scene,this.camera);
+    ctx.drawImage(this.renderer.domElement,0,0);
+    // The opaque footer/nameplate always wins, while its transparent notches
+    // preserve the already rendered model underneath instead of exposing a cut line.
+    ctx.drawImage(this.frame,0,960,800,240,FX,FY+960*FS,FW,240*FS);
+    this.drawName();
   }
+
   getSettings(){return {...this.config,time:this.action?.time||0};}
   moveBy(dx,dy){this.config.x=THREE.MathUtils.clamp(this.config.x+dx*VIEW*W/H,-12,12);this.config.y=THREE.MathUtils.clamp(this.config.y-dy*VIEW,-12,12);this.applyTransform();this.draw();}
-  destroy(){++this.generation;this.clear();this.renderer.dispose();this.draco.dispose();this.ktx.dispose();}
+  destroy(){++this.generation;this.clear();for(const mesh of [this.cardFrame,this.cardOutside]){mesh?.geometry.dispose();mesh?.material.dispose();}this.cardTextures?.forEach(t=>t.dispose());this.renderer.dispose();this.draco.dispose();this.ktx.dispose();}
 }

@@ -14,3 +14,5 @@ export async function mountSavedCards(grid){
     });grid.replaceChildren(...nodes);return safe;
   }catch{return [];}
 }
+
+export const cardsReady = mountSavedCards(document.getElementById('modelGrid'));

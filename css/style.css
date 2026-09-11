@@ -305,3 +305,10 @@ img { max-width: 100%; display: block; }
   .reveal { opacity: 1; transform: none; transition: none; }
   .glitch::before, .glitch::after, .hero__scroll { animation: none; }
 }
+
+/* Saved artwork already contains its frame and Unifont nameplate. */
+#modelGrid .card--artwork { background: transparent; border: 0; box-shadow: none; overflow: visible; cursor: pointer; }
+#modelGrid .card--artwork::after, #modelGrid .card--artwork::before { display: none; }
+#modelGrid .card--artwork > img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+#modelGrid .card--artwork:focus-visible { outline: 3px solid var(--cream, #fff0c8); outline-offset: 4px; }
+#modelGrid .card--artwork.is-active > img { filter: drop-shadow(0 0 8px rgba(255, 215, 94, .35)); }

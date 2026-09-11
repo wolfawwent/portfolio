@@ -1,19 +1,25 @@
 /* =====================================================================
-   bg.js — 全頁 shader 背景（純 WebGL，不需要任何函式庫）
+   bg.js — 全頁背景：像素磚塊圖片重複鋪滿，持續往左上緩慢移動（純 WebGL）
 
-   原理：畫一個蓋滿整個畫面的三角形，所有視覺效果都在 fragment shader 裡算。
-   想改背景 → 直接改下面 FRAG 字串裡的 GLSL 程式碼。
+   ・圖片：assets/img/bg-tile.png（64×64，會放大 TILE_SCALE 倍後無限重複）
+   ・移動是連續的（不是一格一格跳），所以很流暢
+   ・貼圖用 NEAREST 取樣，放大後像素邊緣保持銳利
+   ・圖片透明的部分會露出底色 BG_COLOR
 
-   可用的 uniform：
-     u_time   秒數
-     u_res    畫布解析度（像素）
-     u_mouse  滑鼠位置 0~1（左下為原點）
-     u_scroll 頁面捲動比例 0~1
+   想調整 → 改下面 CONFIG 就好。
    ===================================================================== */
 (function () {
+  const CONFIG = {
+    image: 'assets/img/bg-tile.png',
+    TILE_SCALE: 5,             // 圖片放大倍數（CSS 像素）
+    SPEED_X: 12,               // 每秒往左移動幾個 CSS 像素
+    SPEED_Y: 12,               // 每秒往上移動幾個 CSS 像素
+    BG_COLOR: [0x1f / 255, 0x12 / 255, 0x20 / 255],   // 透明處的底色（= CSS --bg #1f1220）
+    TINT: [1.0, 1.0, 1.0],     // 想把磚塊染色可以改，例如 [1.1, 0.9, 1.0]
+  };
+
   const canvas = document.getElementById('bg');
   if (!canvas) return;
-
   const gl = canvas.getContext('webgl', { antialias: false, alpha: false, powerPreference: 'low-power' });
   if (!gl) { canvas.style.background = '#1f1220'; return; }
 
@@ -22,92 +28,34 @@
     attribute vec2 a_pos;
     void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }
   `;
-
   const FRAG = `
-    precision highp float;
-    uniform float u_time;
-    uniform vec2  u_res;
-    uniform vec2  u_mouse;
-    uniform float u_scroll;
-
-    // --- 2D simplex-ish noise（hash 版，夠用又快）---
-    vec2 hash(vec2 p) {
-      p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
-      return -1.0 + 2.0 * fract(sin(p) * 43758.5453123);
-    }
-    float noise(vec2 p) {
-      const float K1 = 0.366025404; const float K2 = 0.211324865;
-      vec2 i = floor(p + (p.x + p.y) * K1);
-      vec2 a = p - i + (i.x + i.y) * K2;
-      vec2 o = (a.x > a.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
-      vec2 b = a - o + K2;
-      vec2 c = a - 1.0 + 2.0 * K2;
-      vec3 h = max(0.5 - vec3(dot(a,a), dot(b,b), dot(c,c)), 0.0);
-      vec3 n = h*h*h*h * vec3(dot(a, hash(i)), dot(b, hash(i + o)), dot(c, hash(i + 1.0)));
-      return dot(n, vec3(70.0));
-    }
-    // fractal brownian motion：疊幾層噪點做出雲霧感
-    float fbm(vec2 p) {
-      float v = 0.0, a = 0.5;
-      mat2 rot = mat2(0.8, 0.6, -0.6, 0.8);
-      for (int i = 0; i < 5; i++) { v += a * noise(p); p = rot * p * 2.0 + 10.0; a *= 0.5; }
-      return v;
-    }
-
+    precision mediump float;
+    uniform sampler2D u_tex;
+    uniform vec2  u_tileSize;   // 一塊磚圖放大後的裝置像素尺寸
+    uniform vec2  u_offset;     // 位移（裝置像素）
+    uniform vec3  u_bg;
+    uniform vec3  u_tint;
     void main() {
-      vec2 uv = gl_FragCoord.xy / u_res;
-      vec2 p  = (gl_FragCoord.xy - 0.5 * u_res) / u_res.y;   // 置中、等比例
-      float t = u_time * 0.08;
-
-      // 滑鼠：畫面會輕微往滑鼠方向「拉」
-      vec2 m = (u_mouse - 0.5) * vec2(u_res.x / u_res.y, 1.0);
-      float md = length(p - m);
-      p += (m - p) * 0.06 * smoothstep(0.9, 0.0, md);
-
-      // 兩層流動 fbm 互相扭曲（domain warping）
-      vec2 q = vec2(fbm(p + t), fbm(p - t * 0.7 + 3.1));
-      float f = fbm(p * 1.6 + q * 1.4 + u_scroll * 0.8);
-
-      // 配色（參考像素 RPG UI）：深紫黑 → 暗紫 → 暗紅，偶爾一點青
-      vec3 c1 = vec3(0.10, 0.06, 0.11);   // #1a0f1c 深紫黑
-      vec3 c2 = vec3(0.30, 0.16, 0.36);   // 暗紫
-      vec3 c3 = vec3(0.45, 0.17, 0.22);   // 暗紅
-      vec3 c4 = vec3(0.15, 0.40, 0.45);   // 青（很淡）
-      vec3 col = mix(c1, c2, smoothstep(0.15, 0.80, f));
-      col = mix(col, c3, smoothstep(0.55, 0.95, q.y * 0.5 + 0.5) * 0.6);
-      col = mix(col, c4, smoothstep(0.70, 1.0, q.x * 0.5 + 0.5) * 0.25);
-
-      // 滑鼠附近的一圈橘色微光
-      col += vec3(0.90, 0.50, 0.20) * 0.07 * smoothstep(0.35, 0.0, md);
-
-      // 淡淡的掃描線（呼應像素感，但很輕）
-      col *= 0.94 + 0.06 * step(0.5, fract(gl_FragCoord.y * 0.5));   // 每 2px 一條掃描線
-
-      // 邊緣暗角，讓文字更好讀
-      float vig = smoothstep(1.3, 0.35, length(uv - 0.5) * 1.4);
-      col *= mix(0.55, 1.0, vig);
-
+      // 螢幕像素 → 貼圖 uv（fract 讓它無限重複；y 方向翻轉讓圖片不上下顛倒）
+      vec2 uv = fract((gl_FragCoord.xy + u_offset) / u_tileSize);
+      uv.y = 1.0 - uv.y;
+      vec4 c = texture2D(u_tex, uv);
+      vec3 col = mix(u_bg, c.rgb * u_tint, c.a);
       gl_FragColor = vec4(col, 1.0);
     }
   `;
-
   function compile(type, src) {
     const s = gl.createShader(type);
     gl.shaderSource(s, src); gl.compileShader(s);
-    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
-      console.error('[bg] shader error:', gl.getShaderInfoLog(s));
-      return null;
-    }
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { console.error('[bg]', gl.getShaderInfoLog(s)); return null; }
     return s;
   }
   const prog = gl.createProgram();
   gl.attachShader(prog, compile(gl.VERTEX_SHADER, VERT));
   gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FRAG));
   gl.linkProgram(prog);
-  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { console.error(gl.getProgramInfoLog(prog)); return; }
   gl.useProgram(prog);
 
-  // 一個大三角形蓋住整個 clip space
   const buf = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, buf);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
@@ -116,53 +64,71 @@
   gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
 
   const U = {
-    time:   gl.getUniformLocation(prog, 'u_time'),
-    res:    gl.getUniformLocation(prog, 'u_res'),
-    mouse:  gl.getUniformLocation(prog, 'u_mouse'),
-    scroll: gl.getUniformLocation(prog, 'u_scroll'),
+    tex: gl.getUniformLocation(prog, 'u_tex'),
+    tileSize: gl.getUniformLocation(prog, 'u_tileSize'),
+    offset: gl.getUniformLocation(prog, 'u_offset'),
+    bg: gl.getUniformLocation(prog, 'u_bg'),
+    tint: gl.getUniformLocation(prog, 'u_tint'),
   };
+  gl.uniform3fv(U.bg, CONFIG.BG_COLOR);
+  gl.uniform3fv(U.tint, CONFIG.TINT);
 
-  // ---------- 狀態 ----------
-  const mouse = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5 };   // 平滑跟隨
-  let scroll = 0;
+  // ---------- 貼圖 ----------
+  const tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 0])); // 先放 1px 佔位
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+  gl.uniform1i(U.tex, 0);
 
-  window.addEventListener('pointermove', (e) => {
-    mouse.tx = e.clientX / window.innerWidth;
-    mouse.ty = 1 - e.clientY / window.innerHeight;
-  }, { passive: true });
-  window.addEventListener('scroll', () => {
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    scroll = max > 0 ? window.scrollY / max : 0;
-  }, { passive: true });
+  let imgW = 64, imgH = 64;
+  const img = new Image();
+  img.onload = () => {
+    imgW = img.naturalWidth; imgH = img.naturalHeight;
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+  };
+  img.src = CONFIG.image;
 
-  // 解析度：背景是雲霧狀，用 0.5x 畫再拉大就夠了，省效能
-  const SCALE = 0.5;
+  // ---------- 尺寸 ----------
+  let dpr = 1;
   function resize() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width  = Math.floor(window.innerWidth  * dpr * SCALE);
-    canvas.height = Math.floor(window.innerHeight * dpr * SCALE);
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.floor(window.innerWidth * dpr);
+    canvas.height = Math.floor(window.innerHeight * dpr);
     gl.viewport(0, 0, canvas.width, canvas.height);
   }
   window.addEventListener('resize', resize);
   resize();
 
+  // ---------- 動畫 ----------
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const start = performance.now();
   let running = true;
-  document.addEventListener('visibilitychange', () => { running = !document.hidden; if (running) frame(); });
+  document.addEventListener('visibilitychange', () => { running = !document.hidden; if (running) { last = performance.now(); frame(); } });
 
+  let last = performance.now();
+  let ox = 0, oy = 0;   // 累積位移（CSS 像素），用 dt 累加所以掉幀也不會跳
   function frame() {
     if (!running) return;
-    mouse.x += (mouse.tx - mouse.x) * 0.05;
-    mouse.y += (mouse.ty - mouse.y) * 0.05;
+    const now = performance.now();
+    const dt = Math.min((now - last) / 1000, 0.1);
+    last = now;
+    if (!reduceMotion) {
+      // 內容往左上：取樣點要往右下走 → offset 往 +x；GL 的 y 向上，所以內容往上 = 取樣往 -y
+      ox += CONFIG.SPEED_X * dt;
+      oy -= CONFIG.SPEED_Y * dt;
+    }
+    const tileW = imgW * CONFIG.TILE_SCALE * dpr, tileH = imgH * CONFIG.TILE_SCALE * dpr;
+    // 讓位移在一塊磚的範圍內循環，避免數字越來越大導致浮點精度變差
+    ox %= tileW / dpr; oy %= tileH / dpr;
 
-    gl.uniform1f(U.time, reduceMotion ? 0 : (performance.now() - start) / 1000);
-    gl.uniform2f(U.res, canvas.width, canvas.height);
-    gl.uniform2f(U.mouse, mouse.x, mouse.y);
-    gl.uniform1f(U.scroll, scroll);
+    gl.uniform2f(U.tileSize, tileW, tileH);
+    gl.uniform2f(U.offset, ox * dpr, oy * dpr);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
-
-    if (!reduceMotion) requestAnimationFrame(frame);
+    requestAnimationFrame(frame);
   }
   frame();
 })();

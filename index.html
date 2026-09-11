@@ -69,8 +69,7 @@
             voxel-style characters, props and creatures with hand-painted pixel textures.
           </p>
           <p>
-            Every model on this page is rendered live in your browser. Drag to rotate,
-            scroll to zoom, and try the wireframe button to see the geometry underneath.
+            Modeled in Blockbench, textured pixel by pixel in Aseprite.
           </p>
           <ul class="tags">
             <li>Blockbench</li><li>Aseprite</li><li>Pixel Texture</li><li>Low-poly</li><li>Voxel</li>
@@ -82,18 +81,7 @@
     <!-- ===== Models ===== -->
     <section id="models" class="section reveal">
       <h2 class="section__title">Models</h2>
-      <p class="section__hint">Click a card to load it in the viewer · drag to rotate · scroll to zoom</p>
-
-      <!-- 3D 預覽器 -->
-      <div class="viewer pixel-frame" id="viewer">
-        <div class="viewer__overlay" id="viewerStatus">loading three.js…</div>
-        <div class="viewer__title" id="viewerTitle"></div>
-        <div class="viewer__toolbar">
-          <button type="button" data-action="wire">Wireframe</button>
-          <button type="button" data-action="spin" class="is-on">Auto-rotate</button>
-          <button type="button" data-action="reset">Reset</button>
-        </div>
-      </div>
+      <p class="section__hint">Pixel / voxel models — more coming soon.</p>
 
       <!--
         ===== 模型清單 =====
@@ -101,7 +89,7 @@
           data-model  → .glb 檔路徑（放在 assets/models/）
           img src     → 縮圖（放在 assets/img/，建議 400x250，沒有的話會顯示 NO PREVIEW）
           文字        → 名稱 / 說明 / 標籤
-        第一張卡片會在網頁載入時自動顯示在預覽器裡。
+        （3D 預覽器已移除，卡片目前只是展示用）
       -->
       <div class="grid" id="modelGrid">
 
@@ -157,12 +145,12 @@
   <footer class="footer">
     <span>© <span id="year"></span> wolfawwent</span>
     <span class="footer__dot">·</span>
-    <span>rendered live with three.js</span>
+    <span>built with html / css / js</span>
   </footer>
 
   <script src="js/bg.js"></script>
   <script src="js/main.js"></script>
   <script src="js/dev-tools-link.js"></script>
-  <script type="module" src="js/viewer.js"></script>
+  <script type="module" src="js/cards.js"></script>
 </body>
 </html>
