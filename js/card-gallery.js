@@ -9,17 +9,19 @@
      沒寫類型的舊檔名（card_Kazek.png）會歸到第一個 shelf
    ・每一列可以左右拖曳 / 滑動；卡片有滑鼠傾斜 + 亮光效果
    ・金色名牌位置：程式直接掃描圖片裡的金色像素自動找，不用手動填座標
-   ・字體：VT323（網站內文用的像素字，Google Fonts），先在 20px 畫成點陣、
-     二值化後以整數倍率放大，不管卡片縮放到多大都保持像素銳利
+   ・字體：俐方體11號 Cubic 11（assets/fonts/cubic11.ttf），在 12px 畫成點陣後
+     以整數倍率放大，不管卡片縮放到多大都保持像素銳利
    ===================================================================== */
 (function () {
   const CONFIG = {
     list: 'card/cards.json',
     folder: 'card/',
-    FONT: 'VT323',                  // 跟網站內文同一個字體（index.html 已從 Google Fonts 載入）
-    FONT_BASE: 20,                  // VT323 在 20px 時最接近原始點陣格（每字 8px 寬）
+    FONT: 'Cubic11',                // 俐方體11號（assets/fonts/cubic11.ttf），中英文都有
+    FONT_FILE: 'assets/fonts/cubic11.ttf',
+    FONT_BASE: 12,                  // 俐方體 11 號在 12px 時每個像素剛好落在整數格上（實測零抗鋸齒）
     TEXT_COLOR: '#352133',          // 名牌上的字色（深紫棕）
-    TEXT_SCALE: 3,                  // 文字的 1 個像素 = 卡片圖的幾個像素（卡片圖是 1000px 寬；3 = 跟卡片工具烙上去的字一樣大）
+    TEXT_SCALE: 3,                  // 文字 1 像素 ≈ 卡片圖的幾個像素（卡片圖 1000px 寬；3 ≈ 卡片工具烙字的比例）
+    MIN_TEXT_PX: 3,                 // 文字 1 像素最少佔幾個螢幕像素（太小會不明顯；名牌塞不下會自動降）
     // 金色判定範圍（RGB）：名牌是亮金 + 較深的橘邊
     isGold: (r, g, b) => r > 170 && g > 110 && g < 215 && b < 120 && r - b > 90,
   };
@@ -31,7 +33,12 @@
   const HOVER_SCALE = 1.1;  // 滑鼠移上去時放大倍率
 
   // ---------- 字體 ----------
-  const fontReady = document.fonts.load(`${CONFIG.FONT_BASE}px ${CONFIG.FONT}`).catch(() => null);
+  const fontReady = (async () => {
+    try {
+      const face = new FontFace(CONFIG.FONT, `url(${CONFIG.FONT_FILE})`);
+      await face.load(); document.fonts.add(face);
+    } catch (e) { console.warn('[cards] 字體載入失敗，改用備用字體', e); }
+  })();
 
   // ---------- 名稱 ----------
   const KNOWN = shelves.map((sh) => sh.dataset.category.toLowerCase());
@@ -120,30 +127,35 @@
   }
 
   // 把名字放到名牌正中央。
-  // 文字先以 1:1 點陣畫在 canvas 上，再用 CSS 放大成「TEXT_SCALE 個卡片像素」大小，
-  // 所以文字像素和卡片像素永遠是固定比例，卡片縮放到多大都一致（跟卡片圖用同樣的 pixelated 縮放）。
+  // 目標：文字的每個像素都是「整數個螢幕像素」的正方形（這樣才不會糊、比例才不會跑掉）。
+  // 先算出「TEXT_SCALE 個卡片像素」在螢幕上等於幾個裝置像素，四捨五入成整數 k，
+  // 再以 k 倍把點陣畫進 canvas，canvas 的 CSS 尺寸 = 裝置像素 / dpr，位置也對齊到裝置像素。
   function layoutName(card) {
     const plate = card._plate, label = card._label, img = card._img;
     if (!plate || !label || !img) return;
     const rect = img.getBoundingClientRect();
     if (rect.width === 0) return;
+    const dpr = window.devicePixelRatio || 1;
     const s = rect.width / plate.imgW;                // 1 卡片像素 = s CSS 像素
+    const plateWdev = plate.w * s * dpr, plateHdev = plate.h * s * dpr;
 
-    // 文字像素 = TEXT_SCALE 個卡片像素；名牌塞不下時逐步縮小，最少 1
-    let scale = Math.max(1, Math.floor(CONFIG.TEXT_SCALE));
-    let tile = renderName(card._name, 1);
-    while (scale > 1 && tile.width * scale > plate.w * 0.9) scale--;
+    const base = renderName(card._name, 1);           // 1:1 點陣
+    // 理想倍率（裝置像素）→ 整數；至少 MIN_TEXT_PX，塞不下名牌再往下降
+    let k = Math.round(CONFIG.TEXT_SCALE * s * dpr);
+    k = Math.max(k, CONFIG.MIN_TEXT_PX);
+    while (k > 1 && (base.width * k > plateWdev * 0.9 || base.height * k > plateHdev * 0.85)) k--;
 
+    const tile = renderName(card._name, k);
     label.width = tile.width; label.height = tile.height;
     const lctx = label.getContext('2d');
     lctx.imageSmoothingEnabled = false;
     lctx.clearRect(0, 0, label.width, label.height);
     lctx.drawImage(tile, 0, 0);
 
-    const wCss = tile.width * scale * s, hCss = tile.height * scale * s;
+    // CSS 尺寸 = 裝置像素 / dpr，位置對齊到裝置像素
+    const wCss = tile.width / dpr, hCss = tile.height / dpr;
     const cx = (plate.x + plate.w / 2) * s, cy = (plate.y + plate.h / 2) * s;   // CSS px（相對 img 左上）
-    // 位置對齊到卡片像素格，讓文字像素跟卡片像素落在同一個格子上
-    const snap = (v) => Math.round(v / s) * s;
+    const snap = (v) => Math.round(v * dpr) / dpr;
     Object.assign(label.style, {
       left: snap(cx - wCss / 2) + 'px', top: snap(cy - hCss / 2) + 'px',
       width: wCss + 'px', height: hCss + 'px',
