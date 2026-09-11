@@ -312,3 +312,9 @@ img { max-width: 100%; display: block; }
 #modelGrid .card--artwork > img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
 #modelGrid .card--artwork:focus-visible { outline: 3px solid var(--cream, #fff0c8); outline-offset: 4px; }
 #modelGrid .card--artwork.is-active > img { filter: drop-shadow(0 0 8px rgba(255, 215, 94, .35)); }
+/* ---------- card/ 資料夾自動卡片：名稱疊在金色名牌上（js/card-gallery.js） ---------- */
+#modelGrid .card--auto { position: relative; }
+#modelGrid .card--auto > .card__name {
+  position: absolute; pointer-events: none;
+  image-rendering: pixelated; image-rendering: crisp-edges;
+}
