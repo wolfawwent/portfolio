@@ -37,7 +37,7 @@ class SecurityAndPersistence(unittest.TestCase):
         self.server.token='test-login'
         self.server.session='test-session'
         threading.Thread(target=self.server.serve_forever,daemon=True).start()
-        self.payload={'name':'風之使者 Kazek','model':base64.b64encode(glb()).decode(),'png':base64.b64encode(png()).decode(),'config':{'x':2,'y':-1,'scale':1.2,'yaw':180,'pitch':5,'roll':12,'animationIndex':0,'time':1.2,'playing':False}}
+        self.payload={'name':'風之使者 Kazek','model':base64.b64encode(glb()).decode(),'png':base64.b64encode(png()).decode(),'config':{'x':2,'y':-1,'z':3.5,'scale':1.2,'yaw':180,'pitch':5,'roll':12,'animationIndex':0,'time':1.2,'playing':False}}
 
     def tearDown(self):
         self.server.shutdown()
@@ -86,6 +86,16 @@ class SecurityAndPersistence(unittest.TestCase):
         self.assertEqual(len(app.records()),1)
         self.assertEqual(app.records()[0]['name'],'更新後的名稱')
         self.assertTrue(list(app.LOCAL.glob('manifest-*.json')))
+
+    def test_depth_compatibility_and_limits(self):
+        config = dict(self.payload['config'])
+        del config['z']
+        self.assertEqual(app.validate_config(config, 1)['z'], 0)
+        for value in [-30, 30, -4.2]:
+            self.assertEqual(app.validate_config({**config, 'z': value}, 1)['z'], value)
+        for value in [-30.1, 30.1, float('nan'), True, None]:
+            with self.assertRaises(ValueError):
+                app.validate_config({**config, 'z': value}, 1)
 
     def test_invalid_inputs_never_change_manifest(self):
         for field,value in [('id','../../escape'),('name','字'*41),('model','broken'),('png','broken'),('config',{'x':float('nan')})]:

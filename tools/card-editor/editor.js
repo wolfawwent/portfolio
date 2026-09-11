@@ -33,7 +33,7 @@ async function start(){
   $('animation').addEventListener('change',()=>{engine.selectAnimation(Number($('animation').value));dirty=true;updateAnimation();engine.draw();});
   $('playPause').addEventListener('click',()=>{engine.config.playing=!engine.config.playing;dirty=true;updateAnimation();});
   $('timeline').addEventListener('input',()=>{engine.config.playing=false;engine.seek(Number($('timeline').value));dirty=true;updateAnimation();});
-  $('resetPose').addEventListener('click',()=>{for(const key of ['x','y','scale','yaw','pitch','roll'])engine.config[key]=DEFAULTS[key];engine.applyTransform();updateSettings();engine.draw();dirty=true;});
+  $('resetPose').addEventListener('click',()=>{for(const key of ['x','y','z','scale','yaw','pitch','roll'])engine.config[key]=DEFAULTS[key];engine.applyTransform();updateSettings();engine.draw();dirty=true;});
   let drag=null;const canvas=$('cardCanvas');
   canvas.addEventListener('pointerdown',e=>{if(!currentBuffer||busy||loading||e.button!==0)return;drag={x:e.clientX,y:e.clientY,id:e.pointerId};canvas.setPointerCapture(e.pointerId);});
   canvas.addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;const r=canvas.getBoundingClientRect();engine.moveBy((e.clientX-drag.x)/r.width,(e.clientY-drag.y)/r.height);drag.x=e.clientX;drag.y=e.clientY;dirty=true;updateSettings();});
@@ -41,7 +41,7 @@ async function start(){
   $('controls').addEventListener('submit',async e=>{
     e.preventDefault();if(!currentBuffer||busy||loading)return;
     try{
-      const name=validName();busy=true;enable();$('controls').inert=true;report('正在儲存模型、縮圖與卡片設定…');
+      const name=validName();if(!(await api('session')).modelDepth)throw Error('請關閉並重新啟動卡片工具，再儲存前後深度設定。');busy=true;enable();$('controls').inert=true;report('正在儲存模型、縮圖與卡片設定…');
       engine.name=name;engine.draw();const config=engine.getSettings(),png=canvas.toDataURL('image/png').split(',')[1];
       const record=await api('save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:currentId,name,config,model:await bytes64(currentBuffer),png})});
       currentId=record.id;dirty=false;await refreshCards();report('已儲存到本機作品集。重新整理網站即可看到；尚未推送到 GitHub。','success');

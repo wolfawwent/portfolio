@@ -4,7 +4,7 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
-export const DEFAULTS=Object.freeze({x:0,y:0,scale:1,yaw:0,pitch:0,roll:0,animationIndex:-1,time:0,playing:true});
+export const DEFAULTS=Object.freeze({x:0,y:0,z:0,scale:1,yaw:0,pitch:0,roll:0,animationIndex:-1,time:0,playing:true});
 const W=1000,H=1400,FX=100,FY=260,FS=.9,FW=720,FH=1080,VIEW=34;
 const rad=THREE.MathUtils.degToRad;
 function dispose(root){
@@ -78,7 +78,7 @@ export class CardRenderer{
   get duration(){return this.action?.getClip().duration||0;}
   seek(time){if(this.action){this.mixer.setTime(Math.max(0,Math.min(Number(time)||0,Math.max(0,this.duration-.00001))));this.config.time=this.action.time;}this.draw();}
   setSetting(key,value){this.config[key]=value;this.applyTransform();this.draw();}
-  applyTransform(){const c=this.config;this.holder.position.set(c.x,c.y+1,0);this.holder.scale.setScalar(c.scale);this.holder.rotation.set(rad(c.pitch),rad(c.yaw),rad(c.roll),'YXZ');}
+  applyTransform(){const c=this.config;this.holder.position.set(c.x,c.y+1,c.z);this.holder.scale.setScalar(c.scale);this.holder.rotation.set(rad(c.pitch),rad(c.yaw),rad(c.roll),'YXZ');}
   step(delta){if(this.config.playing&&this.action){this.mixer.update(Math.min(delta,.05));this.config.time=this.action.time;}this.draw();}
   drawName(){
     const name=this.name.trim()||'作品名稱';

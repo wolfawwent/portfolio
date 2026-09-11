@@ -46,10 +46,10 @@ def check_glb(data):
 def validate_config(raw, animation_count):
     if not isinstance(raw, dict):
         raise ValueError('缺少卡片設定。')
-    limits = {'x':(-12,12), 'y':(-12,12), 'scale':(.25,2.5), 'yaw':(-180,180), 'pitch':(-60,60), 'roll':(-45,45), 'time':(0,86400)}
+    limits = {'x':(-12,12), 'y':(-12,12), 'z':(-30,30), 'scale':(.25,2.5), 'yaw':(-180,180), 'pitch':(-60,60), 'roll':(-45,45), 'time':(0,86400)}
     result = {}
     for key, (low, high) in limits.items():
-        value = raw.get(key)
+        value = raw.get(key, 0) if key == 'z' else raw.get(key)
         if isinstance(value, bool) or not isinstance(value, (int,float)) or not math.isfinite(value) or not low <= value <= high:
             raise ValueError('卡片設定超出範圍：' + key)
         result[key] = value
@@ -166,7 +166,7 @@ class Handler(BaseHTTPRequestHandler):
             if not self.authenticated():
                 return self.send(403,{'error':'請執行「啟動卡片工具.ps1」，由專用連結開啟。'})
             if url.path=='/__editor/api/session':
-                return self.send(200,{'owner':True})
+                return self.send(200,{'owner':True,'modelDepth':True})
             if url.path=='/__editor/api/cards':
                 try:
                     return self.send(200,records())

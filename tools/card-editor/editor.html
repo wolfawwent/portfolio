@@ -34,6 +34,8 @@
         <section><h2><span>03</span> 構圖</h2>
           <label for="positionX">左右位置 <output data-output="x">0</output></label><input id="positionX" data-setting="x" type="range" min="-12" max="12" step="0.1" value="0">
           <label for="positionY">上下位置 <output data-output="y">0</output></label><input id="positionY" data-setting="y" type="range" min="-12" max="12" step="0.1" value="0">
+          <label for="positionZ">前後深度 <output data-output="z">0.0</output></label><input id="positionZ" data-setting="z" type="range" min="-30" max="30" step="0.1" value="0" aria-describedby="depthHint">
+          <small id="depthHint">負值往後、正值往前；調整與卡框的遮擋關係。</small>
           <label for="scale">模型大小 <output data-output="scale">100%</output></label><input id="scale" data-setting="scale" type="range" min="0.25" max="2.5" step="0.01" value="1">
           <label for="yaw">左右旋轉 <output data-output="yaw">0°</output></label><input id="yaw" data-setting="yaw" type="range" min="-180" max="180" step="1" value="0">
           <label for="pitch">俯仰角度 <output data-output="pitch">0°</output></label><input id="pitch" data-setting="pitch" type="range" min="-60" max="60" step="1" value="0">
