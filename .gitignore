@@ -10,3 +10,7 @@ Claude outputs/
 tools/card-editor/.local/
 __pycache__/
 *.pyc
+
+# 3D 模型原始檔，體積大不上傳（README.txt 保留）
+assets/models/*
+!assets/models/README.txt
