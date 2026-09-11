@@ -8,9 +8,8 @@ portfolio/
 ├─ css/style.css       # 樣式（顏色在最上面的 :root 變數）
 ├─ js/bg.js            # 背景 shader（GLSL 寫在 FRAG 字串裡）
 ├─ js/main.js          # 出現動畫、卡片 tilt、打字機
-├─ js/playground.js    # 互動小遊戲（Canvas 2D）
 ├─ js/viewer.js        # 3D 模型預覽（Three.js）
-├─ assets/img/         # GIF / 圖片（目前是佔位用的範例）
+├─ assets/img/         # 頭像、模型縮圖
 ├─ assets/models/      # .glb 模型放這裡
 ├─ CNAME               # 自訂網域（GitHub Pages 用）
 └─ .nojekyll           # 告訴 GitHub 不要用 Jekyll 處理
@@ -81,11 +80,17 @@ repo 裡的 `CNAME` 檔已經寫好網域，GitHub 會自動讀取，不要刪�
 
 ---
 
-## 4. 換成自己的作品
+## 4. 放上自己的模型
 
+1. Blockbench：File → Export → **Export glTF/glb**（勾 .glb），存到 `assets/models/`。
+2. 幫模型截一張縮圖（建議 400×250）存到 `assets/img/`。沒有也可以，卡片會顯示 NO PREVIEW。
+3. 在 `index.html` 的 `#modelGrid` 複製一個 `<article class="card tilt model">`，改
+   `data-model`、`data-name`、`img src` 和文字。
+4. 第一張卡片會在網頁打開時自動載入。
+5. 想先看模型效果、還不想改檔案？直接把 .glb **拖進預覽器**就會顯示（只在你的瀏覽器裡，不會上傳）。
+
+其他：
 - **文字**：改 `index.html`，每個區塊都有註解。
-- **作品卡片**：`<article class="card tilt">` 一張卡一份，複製貼上即可；GIF 放 `assets/img/`。
-- **3D 模型**：`.glb` 放 `assets/models/`，改 `<div id="viewer" data-model="...">` 的路徑。
 - **背景**：`js/bg.js` 裡的 `FRAG`。想換顏色改 `c1 / c2 / c3`；想換流動速度改 `u_time * 0.08`。
 - **顏色 / 字體**：`css/style.css` 最上方的 `:root`。
 - **互動區**：`js/playground.js` 整支都可以換成別的 demo。

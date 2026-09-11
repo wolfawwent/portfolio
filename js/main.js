@@ -32,9 +32,9 @@
 
   // ---------- 3. Hero 打字機 ----------
   const lines = [
-    'pixel art · idle games · shaders',
-    'tools that make artists faster',
-    'currently building: Idle Sweeper',
+    'pixel-art 3D models',
+    'voxel characters · props · creatures',
+    'hand-painted pixel textures',
   ];
   const tw = document.getElementById('typewriter');
   if (tw) {
