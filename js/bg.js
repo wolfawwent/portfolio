@@ -22,10 +22,10 @@
 
     // --- 火把 ---
     LIGHT_RADIUS: 240,         // 亮起的半徑（CSS 像素）
-    LIGHT_STRENGTH: 0.10,      // 亮度上限（0.10 = 最亮處加 10%，很含蓄）
+    LIGHT_STRENGTH: 0.20,      // 亮度上限（0.10 = 最亮處加 10%，很含蓄）
     LIGHT_COLOR: [1.0, 0.72, 0.42],   // 火光暖色
-    LIGHT_FLICKER: 0.25,       // 閃爍幅度 0~1（0 = 不閃）
-    LIGHT_FOLLOW: 0.12,        // 游標跟隨的平滑程度（越小越慢越柔）
+    LIGHT_FLICKER: 0.15,       // 閃爍幅度 0~1（0 = 不閃）
+    LIGHT_FOLLOW: 0.05,        // 游標跟隨的平滑程度（越小越慢越柔）
   };
 
   const canvas = document.getElementById('bg');

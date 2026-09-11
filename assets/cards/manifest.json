@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "id": "9308706d-9622-4e53-989e-1424914d04f4",
+    "name": "Kazek",
+    "model": "assets/models/9308706d-9622-4e53-989e-1424914d04f4-40e686b0f8c047e2a13ac29360d3db9a.glb",
+    "image": "assets/cards/9308706d-9622-4e53-989e-1424914d04f4-40e686b0f8c047e2a13ac29360d3db9a.png",
+    "config": {
+      "x": 1.4,
+      "y": 0,
+      "z": 7,
+      "scale": 1.21,
+      "yaw": -156,
+      "pitch": 0,
+      "roll": 0,
+      "time": 1.6662999999999992,
+      "animationIndex": 0,
+      "playing": false
+    }
+  }
+]
