@@ -367,7 +367,7 @@ img { max-width: 100%; display: block; }
     drop-shadow(0 calc(var(--ol) * -1) 0 var(--outline))
     drop-shadow(6px 8px 0 rgba(0,0,0,.45));
 }
-.shelf .card--auto { --outline: #f0d27c; --ol: 3px; }   /* outline 顏色（淡金）與粗細 */
+.shelf .card--auto { --outline: #ffffff; --ol: 3px; }   /* outline 顏色與粗細 */
 .shelf .card--auto > .card__name {
   position: absolute; pointer-events: none;
   image-rendering: pixelated; image-rendering: crisp-edges;

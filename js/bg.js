@@ -22,11 +22,20 @@
 
     // --- 火把 ---
     LIGHT_RADIUS: 240,         // 亮起的半徑（CSS 像素）
-    LIGHT_STRENGTH: 0.20,      // 亮度上限（0.10 = 最亮處加 10%，很含蓄）
+    LIGHT_STRENGTH: 0.10,      // 亮度上限（0.10 = 最亮處加 10%，很含蓄）
     LIGHT_COLOR: [1.0, 0.72, 0.42],   // 火光暖色
-    LIGHT_FLICKER: 0.15,       // 閃爍幅度 0~1（0 = 不閃）
-    LIGHT_FOLLOW: 1.00,        // 游標跟隨的平滑程度（越小越慢越柔）
+    LIGHT_FLICKER: 0.25,       // 閃爍幅度 0~1（0 = 不閃）
+    LIGHT_FOLLOW: 0.12,        // 游標跟隨的平滑程度（越小越慢越柔）
+
+    // --- 螢火蟲（橘色小方塊，緩慢隨機飛行，會照亮附近磚塊）---
+    FLY_COUNT: 10,             // 數量（最多 16）
+    FLY_SIZE: [2, 5],          // 方塊邊長範圍（CSS 像素）
+    FLY_SPEED: [12, 30],       // 飛行速度範圍（CSS 像素 / 秒）
+    FLY_COLOR: [1.0, 0.62, 0.25],     // 方塊顏色
+    FLY_GLOW_RADIUS: 70,       // 照亮磚塊的半徑（CSS 像素）
+    FLY_GLOW_STRENGTH: 0.16,   // 照亮強度
   };
+  const FLY_MAX = 16;
 
   const canvas = document.getElementById('bg');
   if (!canvas) return;
@@ -52,6 +61,11 @@
     uniform float u_lightRadius;
     uniform float u_lightStrength;
     uniform vec3  u_lightColor;
+    uniform vec4  u_fly[16];    // x, y（裝置像素）, 邊長（裝置像素）, 亮度 0~1
+    uniform int   u_flyCount;
+    uniform vec3  u_flyColor;
+    uniform float u_flyRadius;
+    uniform float u_flyStrength;
 
     // 銳利雙線性：只在原圖像素邊界一個螢幕像素寬的範圍內做漸變
     vec2 sharpUV(vec2 texel) {
@@ -80,6 +94,22 @@
       glow = glow * glow;                          // 中心集中一點
       col += u_lightColor * (glow * u_lightStrength * t.a);
 
+      // 螢火蟲：先把每隻對磚塊的照明加上去，再畫方塊本體（方塊在最上層）
+      float body = 0.0;
+      for (int i = 0; i < 16; i++) {
+        if (i >= u_flyCount) break;
+        vec4 f = u_fly[i];
+        vec2 dv = gl_FragCoord.xy - f.xy;
+        float fd = length(dv) / u_flyRadius;
+        float fg = 1.0 - smoothstep(0.0, 1.0, fd);
+        col += u_flyColor * (fg * fg * u_flyStrength * f.w * t.a);
+        // 方塊：硬邊正方形
+        vec2 a = abs(dv);
+        float inside = step(a.x, f.z * 0.5) * step(a.y, f.z * 0.5);
+        body = max(body, inside * (0.55 + 0.45 * f.w));
+      }
+      col = mix(col, u_flyColor * 1.15, body);
+
       gl_FragColor = vec4(col, 1.0);
     }
   `;
@@ -107,7 +137,9 @@
     tile: u('u_tile'), bg: u('u_bg'), tileSize: u('u_tileSize'), offset: u('u_offset'),
     texSize: u('u_texSize'), texelPerPx: u('u_texelPerPx'), tint: u('u_tint'), bgTint: u('u_bgTint'),
     light: u('u_light'), lightRadius: u('u_lightRadius'), lightStrength: u('u_lightStrength'), lightColor: u('u_lightColor'),
+    fly: u('u_fly'), flyCount: u('u_flyCount'), flyColor: u('u_flyColor'), flyRadius: u('u_flyRadius'), flyStrength: u('u_flyStrength'),
   };
+  gl.uniform3fv(U.flyColor, CONFIG.FLY_COLOR);
   gl.uniform3fv(U.tint, CONFIG.TINT);
   gl.uniform3fv(U.bgTint, CONFIG.BG_TINT);
   gl.uniform3fv(U.lightColor, CONFIG.LIGHT_COLOR);
@@ -160,6 +192,40 @@
   document.addEventListener('pointerleave', () => { light.ton = 0; });
   document.addEventListener('mouseleave', () => { light.ton = 0; });
 
+  // ---------- 螢火蟲 ----------
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const flies = [];
+  function spawnFly() {
+    return {
+      x: rand(0, window.innerWidth), y: rand(0, window.innerHeight),
+      size: Math.round(rand(CONFIG.FLY_SIZE[0], CONFIG.FLY_SIZE[1])),
+      angle: rand(0, Math.PI * 2), speed: rand(CONFIG.FLY_SPEED[0], CONFIG.FLY_SPEED[1]),
+      turn: 0, phase: rand(0, Math.PI * 2), pulse: rand(0.6, 1.4),
+    };
+  }
+  for (let i = 0; i < Math.min(CONFIG.FLY_COUNT, FLY_MAX); i++) flies.push(spawnFly());
+  const flyBuf = new Float32Array(FLY_MAX * 4);
+  function updateFlies(dt, t) {
+    const W = window.innerWidth, H = window.innerHeight, m = 40;   // m：超出畫面多少後從另一邊回來
+    for (let i = 0; i < flies.length; i++) {
+      const f = flies[i];
+      // 轉向速度緩慢隨機變化 → 像蟲子飄來飄去的曲線，而不是直線或抖動
+      f.turn += (Math.random() - 0.5) * dt * 3;
+      f.turn = Math.max(-1.2, Math.min(1.2, f.turn)) * 0.98;
+      f.angle += f.turn * dt;
+      f.x += Math.cos(f.angle) * f.speed * dt;
+      f.y += Math.sin(f.angle) * f.speed * dt * 0.7;   // 垂直方向慢一點
+      if (f.x < -m) f.x = W + m; if (f.x > W + m) f.x = -m;
+      if (f.y < -m) f.y = H + m; if (f.y > H + m) f.y = -m;
+      // 亮度慢慢呼吸（每隻節奏不同）
+      const b = 0.55 + 0.45 * Math.sin(t * f.pulse + f.phase);
+      flyBuf[i * 4] = f.x * dpr;
+      flyBuf[i * 4 + 1] = canvas.height - f.y * dpr;   // GL 的 y 向上
+      flyBuf[i * 4 + 2] = Math.max(1, Math.round(f.size * dpr));
+      flyBuf[i * 4 + 3] = b;
+    }
+  }
+
   // ---------- 動畫 ----------
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let running = true;
@@ -192,6 +258,11 @@
     gl.uniform2f(U.light, light.x * dpr, canvas.height - light.y * dpr);   // GL 的 y 向上
     gl.uniform1f(U.lightRadius, CONFIG.LIGHT_RADIUS * dpr);
     gl.uniform1f(U.lightStrength, strength);
+    if (!reduceMotion) updateFlies(dt, t);
+    gl.uniform4fv(U.fly, flyBuf);
+    gl.uniform1i(U.flyCount, flies.length);
+    gl.uniform1f(U.flyRadius, CONFIG.FLY_GLOW_RADIUS * dpr);
+    gl.uniform1f(U.flyStrength, CONFIG.FLY_GLOW_STRENGTH);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     requestAnimationFrame(frame);
   }

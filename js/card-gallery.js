@@ -30,7 +30,7 @@
   if (!shelves.length) return;
   const trackOf = (cat) => (shelves.find((sh) => sh.dataset.category === cat) || shelves[0]).querySelector('.shelf__track');
   const TILT_MAX = 10;      // 傾斜最大角度（度），跟原本模板的卡片一樣
-  const HOVER_SCALE = 1.1;  // 滑鼠移上去時放大倍率
+  const HOVER_SCALE = 1;    // 滑鼠移上去時放大倍率（1 = 不放大）
 
   // ---------- 字體 ----------
   const fontReady = (async () => {
