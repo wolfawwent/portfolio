@@ -6,11 +6,14 @@ desktop.ini
 # Claude 桌面 App 的輸出資料夾，不要上傳
 Claude outputs/
 
-# 本機編輯器的登入憑證、備份與 Python 快取，不可公開
-tools/card-editor/.local/
+# 卡片編輯器是本機工具，不上傳（只上傳它產出的 PNG 卡片）
+tools/
+start-card-editor.cmd
+啟動卡片工具.ps1
 __pycache__/
 *.pyc
 
-# 3D 模型原始檔，體積大不上傳（README.txt 保留）
+# 3D 模型原始檔不上傳，網站只需要編輯器產出的 PNG
 assets/models/*
 !assets/models/README.txt
+model/
