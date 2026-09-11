@@ -5,3 +5,8 @@ desktop.ini
 
 # Claude 桌面 App 的輸出資料夾，不要上傳
 Claude outputs/
+
+# 本機編輯器的登入憑證、備份與 Python 快取，不可公開
+tools/card-editor/.local/
+__pycache__/
+*.pyc

@@ -11,6 +11,9 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
 const wrap   = document.getElementById('viewer');
 const status = document.getElementById('viewerStatus');
@@ -39,13 +42,13 @@ controls.autoRotateSpeed = 1.2;
 controls.target.set(0, 0.8, 0);
 
 // 燈光
-scene.add(new THREE.HemisphereLight(0xbfe9ff, 0x1a1030, 1.2));
+scene.add(new THREE.HemisphereLight(0xf1e3c2, 0x3a2233, 1.1));
 const key = new THREE.DirectionalLight(0xffffff, 2.2);
 key.position.set(4, 8, 5);
 key.castShadow = true;
 key.shadow.mapSize.set(1024, 1024);
 scene.add(key);
-const rim = new THREE.DirectionalLight(0x5ef2ff, 1.0);
+const rim = new THREE.DirectionalLight(0xe6873c, 0.9);
 rim.position.set(-5, 3, -4);
 scene.add(rim);
 
@@ -54,9 +57,9 @@ const floor = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.ShadowMa
 floor.rotation.x = -Math.PI / 2;
 floor.receiveShadow = true;
 scene.add(floor);
-const grid3d = new THREE.GridHelper(20, 40, 0x5ef2ff, 0x1c2238);
+const grid3d = new THREE.GridHelper(20, 40, 0xe6873c, 0x4a2a35);
 grid3d.material.transparent = true;
-grid3d.material.opacity = 0.35;
+grid3d.material.opacity = 0.45;
 scene.add(grid3d);
 
 // ---------- 模型容器 ----------
@@ -67,6 +70,9 @@ let mixer = null;
 let wire = false;
 const clock = new THREE.Clock();
 const loader = new GLTFLoader();
+loader.setDRACOLoader(new DRACOLoader().setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/libs/draco/'));
+loader.setKTX2Loader(new KTX2Loader().setTranscoderPath('https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/libs/basis/').detectSupport(renderer));
+loader.setMeshoptDecoder(MeshoptDecoder);
 
 function clearModel() {
   if (currentRoot) {

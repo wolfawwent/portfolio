@@ -1,5 +1,22 @@
 # wolfawwent portfolio
 
+## 本機卡片工作台
+
+在 `D:\portfolio` 開啟 PowerShell，執行 `& '.\啟動卡片工具.ps1'`。啟動器會使用本機 Python 3.10 以上版本，自動打開具有專用登入憑證的卡片編輯器。若 Windows 阻擋腳本，可直接執行 `python tools/card-editor/server.py`。目前電腦也可使用 Codex 隨附的 Python；啟動腳本會優先尋找它。
+
+1. 選擇包含內嵌貼圖的 GLB（上限 64 MB）。模型會自動置中、縮放並套用暖主光、冷輪廓光與補光。Blockbench 匯出時請包含需要的動畫。
+2. 選擇一段動畫或原始姿勢。可播放、暫停，或拖動時間軸選擇卡片縮圖使用的姿勢。同一時間只播放選中的動畫。
+3. 直接拖曳模型，或使用左右／上下、大小與三個旋轉滑桿。卡框左側與底部擋住模型，上方與右側允許出框。
+4. 填入最多 40 個字的名稱；使用本地 GNU Unifont，文字自動換行／縮放到名牌中。可另存透明背景 PNG。
+5. 按「儲存到作品集」。程式將原始 GLB、當下姿勢的卡片 PNG 與動畫／構圖設定寫入 `assets/models/`、`assets/cards/` 和 `assets/cards/manifest.json`。選取已儲存的卡片後可再次編輯。每次更新使用新資產檔名，舊資產保留供回復。
+6. 重新整理本機作品集即可看見新卡片；點卡片仍會開啟 3D 預覽，套用選中的動畫和播放狀態。尚未建立卡片時保留原有示範卡片。最後按原本流程 git add、commit、push 才會更新正式網站；編輯器不會自動推送或部署。
+
+工作台僅監聽 `127.0.0.1`，每次啟動使用隨機登入憑證與 HttpOnly / SameSite cookie。讀取管理頁與寫入 API 皆需驗證；寫入亦檢查 Origin。正式静態網站沒有上傳／修改 API，且不顯示工具入口。編輯器源碼本身不含密碼。登入資料與清單備份位於被 Git 忽略的 `tools/card-editor/.local/`；不要將此資料夾另行公開。關閉啟動器視窗或按 Ctrl+C 可停止服務。
+
+卡框來自提供的 Aseprite 檔 `Layer 1`，匯出為 `assets/cards/frame.png`（800×1200）。原始 `.aseprite` 不會被修改。Unifont 字體與授權文件在 `assets/fonts/`。Three.js 沿用網站既有的 0.170.0 CDN；第一次使用需要網路載入，支援內嵌 GLB 的 Draco、Meshopt 與 KTX2 解碼。
+
+---
+
 純 HTML / CSS / JS 作品集網站，Three.js 只用在 3D 預覽，不需要 Node、不需要 build。
 
 ```

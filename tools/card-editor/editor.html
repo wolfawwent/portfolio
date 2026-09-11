@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>卡片工作台 · wolfawwent</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%235ef2ff' d='M5 2h22v28H5z'/%3E%3Cpath fill='%2307080f' d='M8 5h16v16H8zM8 24h16v3H8z'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/__editor/editor.css">
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+</head>
+<body>
+  <header class="topbar"><a href="/" class="brand">WOLF<span>_</span></a><h1>卡片工作台</h1><span class="private-label">本機專用</span><a href="/" target="_blank" rel="noopener">查看作品集 ↗</a></header>
+  <main id="editor" hidden>
+    <section class="preview-panel" aria-label="卡片預覽">
+      <div class="preview-heading"><h2>即時預覽</h2><span>左側與底部遮擋 · 上方與右側出框</span></div>
+      <div class="preview-stage" id="stage"><canvas id="cardCanvas" width="1000" height="1400" aria-label="可拖曳移動模型的作品卡片"></canvas><p id="emptyHint">選擇 GLB，開始製作你的卡片</p></div>
+      <p class="preview-help">拖曳模型調整位置；用右側滑桿設定角度與大小。</p>
+    </section>
+    <form id="controls" class="controls" autocomplete="off">
+      <section><h2><span>01</span> 模型與名稱</h2>
+        <label class="upload" for="modelFile"><strong>選擇 GLB 模型</strong><small>內嵌貼圖 · 最大 64 MB</small><input id="modelFile" type="file" accept=".glb,model/gltf-binary"></label>
+        <p id="fileName" class="muted">尚未選擇模型</p>
+        <label for="cardName">卡片名稱 <span class="muted">Unifont</span></label>
+        <input id="cardName" type="text" maxlength="80" placeholder="例如：風之使者 Kazek" required>
+        <small id="nameHint">最多 40 個字；自動縮排於下方名牌內。</small>
+      </section>
+      <fieldset id="modelControls" disabled>
+        <section><h2><span>02</span> 動畫</h2>
+          <label for="animation">選擇動畫</label><select id="animation"><option value="-1">原始姿勢（無動畫）</option></select>
+          <div class="play-row"><button id="playPause" type="button" disabled>播放</button><label for="timeline">時間 <output id="timeLabel">0.00 / 0.00 s</output></label></div>
+          <input id="timeline" type="range" min="0" max="1" step="0.01" value="0" disabled aria-label="動畫時間">
+        </section>
+        <section><h2><span>03</span> 構圖</h2>
+          <label for="positionX">左右位置 <output data-output="x">0</output></label><input id="positionX" data-setting="x" type="range" min="-12" max="12" step="0.1" value="0">
+          <label for="positionY">上下位置 <output data-output="y">0</output></label><input id="positionY" data-setting="y" type="range" min="-12" max="12" step="0.1" value="0">
+          <label for="scale">模型大小 <output data-output="scale">100%</output></label><input id="scale" data-setting="scale" type="range" min="0.25" max="2.5" step="0.01" value="1">
+          <label for="yaw">左右旋轉 <output data-output="yaw">0°</output></label><input id="yaw" data-setting="yaw" type="range" min="-180" max="180" step="1" value="0">
+          <label for="pitch">俯仰角度 <output data-output="pitch">0°</output></label><input id="pitch" data-setting="pitch" type="range" min="-60" max="60" step="1" value="0">
+          <label for="roll">傾斜角度 <output data-output="roll">0°</output></label><input id="roll" data-setting="roll" type="range" min="-45" max="45" step="1" value="0">
+          <button id="resetPose" type="button" class="subtle">重設構圖</button>
+        </section>
+      </fieldset>
+      <section class="light-note"><strong>自動燈光</strong><span>暖主光 / 冷輪廓光 / 柔和補光</span></section>
+      <section class="save-section"><button id="saveCard" class="primary" type="submit" disabled>儲存到作品集</button><button id="exportPNG" type="button" disabled>下載卡片 PNG</button><small>儲存至本機網站資料夾；沿用原本的 GitHub 更新流程上線。</small></section>
+      <section><h2>已儲存的卡片</h2><label for="savedCards" class="sr-only">選擇已儲存的卡片</label><select id="savedCards"><option value="">新增卡片</option></select><button id="loadCard" type="button">開啟卡片</button></section>
+    </form>
+  </main>
+  <p id="status" role="status" aria-live="polite">正在開啟工作台…</p>
+  <script type="module" src="/__editor/editor.js"></script>
+</body>
+</html>

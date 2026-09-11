@@ -15,7 +15,7 @@
   if (!canvas) return;
 
   const gl = canvas.getContext('webgl', { antialias: false, alpha: false, powerPreference: 'low-power' });
-  if (!gl) { canvas.style.background = '#07080f'; return; }
+  if (!gl) { canvas.style.background = '#1f1220'; return; }
 
   // ---------- shaders ----------
   const VERT = `
@@ -68,18 +68,20 @@
       vec2 q = vec2(fbm(p + t), fbm(p - t * 0.7 + 3.1));
       float f = fbm(p * 1.6 + q * 1.4 + u_scroll * 0.8);
 
-      // 配色：深藍 → 青 → 粉；隨 scroll 微調色相
-      vec3 c1 = vec3(0.03, 0.04, 0.09);
-      vec3 c2 = vec3(0.10, 0.45, 0.60);
-      vec3 c3 = vec3(0.75, 0.25, 0.55);
-      vec3 col = mix(c1, c2, smoothstep(0.1, 0.75, f));
-      col = mix(col, c3, smoothstep(0.55, 0.95, q.y * 0.5 + 0.5) * 0.55);
+      // 配色（參考像素 RPG UI）：深紫黑 → 暗紫 → 暗紅，偶爾一點青
+      vec3 c1 = vec3(0.10, 0.06, 0.11);   // #1a0f1c 深紫黑
+      vec3 c2 = vec3(0.30, 0.16, 0.36);   // 暗紫
+      vec3 c3 = vec3(0.45, 0.17, 0.22);   // 暗紅
+      vec3 c4 = vec3(0.15, 0.40, 0.45);   // 青（很淡）
+      vec3 col = mix(c1, c2, smoothstep(0.15, 0.80, f));
+      col = mix(col, c3, smoothstep(0.55, 0.95, q.y * 0.5 + 0.5) * 0.6);
+      col = mix(col, c4, smoothstep(0.70, 1.0, q.x * 0.5 + 0.5) * 0.25);
 
-      // 滑鼠附近的一圈微光
-      col += vec3(0.35, 0.9, 1.0) * 0.08 * smoothstep(0.35, 0.0, md);
+      // 滑鼠附近的一圈橘色微光
+      col += vec3(0.90, 0.50, 0.20) * 0.07 * smoothstep(0.35, 0.0, md);
 
       // 淡淡的掃描線（呼應像素感，但很輕）
-      col *= 0.96 + 0.04 * sin(gl_FragCoord.y * 1.5);
+      col *= 0.94 + 0.06 * step(0.5, fract(gl_FragCoord.y * 0.5));   // 每 2px 一條掃描線
 
       // 邊緣暗角，讓文字更好讀
       float vig = smoothstep(1.3, 0.35, length(uv - 0.5) * 1.4);
