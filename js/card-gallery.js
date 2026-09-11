@@ -4,38 +4,43 @@
    ・清單：card/cards.json（例如 ["card_Kazek.png", "card_Duck.png"]）
      GitHub Pages 是靜態網站，沒辦法自己列出資料夾，所以要有這個清單。
      雙擊「更新卡片清單.cmd」會自動掃描 card/ 幫你產生。
-   ・名稱：從檔名自動取，card_Kazek.png → "Kazek"（底線會變成空格）
+   ・檔名格式：card_類型_名稱.png（類型 = entity / weapon …）
+     card_entity_Kazek.png → 放進 data-category="entity" 的 .shelf，名牌顯示 Kazek
+     沒寫類型的舊檔名（card_Kazek.png）會歸到第一個 shelf
+   ・每一列可以左右拖曳 / 滑動；卡片有滑鼠傾斜 + 亮光效果
    ・金色名牌位置：程式直接掃描圖片裡的金色像素自動找，不用手動填座標
-   ・字體：Unifont（assets/fonts/unifont.otf），以整數倍率渲染，
-     不管卡片縮放到多大，字都保持像素風的銳利
+   ・字體：VT323（網站內文用的像素字，Google Fonts），先在 20px 畫成點陣、
+     二值化後以整數倍率放大，不管卡片縮放到多大都保持像素銳利
    ===================================================================== */
 (function () {
   const CONFIG = {
     list: 'card/cards.json',
     folder: 'card/',
-    font: 'assets/fonts/unifont.otf',
+    FONT: 'VT323',                  // 跟網站內文同一個字體（index.html 已從 Google Fonts 載入）
+    FONT_BASE: 20,                  // VT323 在 20px 時最接近原始點陣格（每字 8px 寬）
     TEXT_COLOR: '#352133',          // 名牌上的字色（深紫棕）
-    TEXT_SCALE: 2,                  // 文字放大倍率（整數）。Unifont 原生 16px × 2 = 32px 高；名牌塞不下時會自動降到 1
+    TEXT_SCALE: 2,                  // 文字放大倍率（整數）；名牌塞不下時會自動降到 1
     // 金色判定範圍（RGB）：名牌是亮金 + 較深的橘邊
     isGold: (r, g, b) => r > 170 && g > 110 && g < 215 && b < 120 && r - b > 90,
   };
 
-  const grid = document.getElementById('modelGrid');
-  if (!grid) return;
+  const shelves = [...document.querySelectorAll('.shelf[data-category]')];
+  if (!shelves.length) return;
+  const trackOf = (cat) => (shelves.find((sh) => sh.dataset.category === cat) || shelves[0]).querySelector('.shelf__track');
+  const TILT_MAX = 10;   // 傾斜最大角度（度），跟原本模板的卡片一樣
 
   // ---------- 字體 ----------
-  const fontReady = (async () => {
-    try {
-      const face = new FontFace('CardUnifont', `url(${CONFIG.font})`);
-      await face.load();
-      document.fonts.add(face);
-      return true;
-    } catch (e) { console.warn('[cards] unifont 載入失敗，改用備用字體', e); return false; }
-  })();
+  const fontReady = document.fonts.load(`${CONFIG.FONT_BASE}px ${CONFIG.FONT}`).catch(() => null);
 
   // ---------- 名稱 ----------
-  function nameFromFile(file) {
-    return file.replace(/\.[a-z0-9]+$/i, '').replace(/^card[_-]?/i, '').replace(/_/g, ' ').trim() || file;
+  const KNOWN = shelves.map((sh) => sh.dataset.category.toLowerCase());
+  function parseFile(file) {
+    const stem = file.replace(/\.[a-z0-9]+$/i, '').replace(/^card[_-]?/i, '');
+    const parts = stem.split('_');
+    let category = KNOWN[0];
+    if (parts.length > 1 && KNOWN.includes(parts[0].toLowerCase())) category = parts.shift().toLowerCase();
+    const name = parts.join(' ').trim() || file;
+    return { category, name };
   }
 
   // ---------- 找金色名牌 ----------
@@ -75,29 +80,40 @@
   }
 
   // ---------- 畫名稱（整數倍率的像素字）----------
-  // 先在 16px（Unifont 原生尺寸）畫一次、把 alpha 二值化，再以整數倍放大 → 每個像素都是完整方塊
+  // 1) 用 FONT_BASE 大小畫一次  2) alpha 二值化成純點陣  3) 裁掉四周空白  4) 整數倍放大
   const glyphCache = new Map();
   function renderName(text, scale) {
     const key = text + '|' + scale;
     if (glyphCache.has(key)) return glyphCache.get(key);
 
+    const base = CONFIG.FONT_BASE;
+    const font = `${base}px ${CONFIG.FONT}, monospace`;
     const pen = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
-    pen.font = '16px CardUnifont, monospace';
-    const width = Math.max(1, Math.ceil(pen.measureText(text).width));
-    pen.canvas.width = width; pen.canvas.height = 16;
-    pen.font = '16px CardUnifont, monospace';         // 設定尺寸後要再設一次
-    pen.textBaseline = 'alphabetic';
+    pen.font = font;
+    const width = Math.max(1, Math.ceil(pen.measureText(text).width) + 2);
+    const height = Math.ceil(base * 1.4);
+    pen.canvas.width = width; pen.canvas.height = height;
+    pen.font = font;                                  // 設定尺寸後要再設一次
+    pen.textBaseline = 'top';
     pen.fillStyle = CONFIG.TEXT_COLOR;
-    pen.fillText(text, 0, 14);                        // Unifont 16px 格子的基線在 14px
-    const bmp = pen.getImageData(0, 0, width, 16);
-    for (let i = 3; i < bmp.data.length; i += 4) bmp.data[i] = bmp.data[i] >= 128 ? 255 : 0;
+    pen.fillText(text, 1, Math.floor(base * 0.1));
+    const bmp = pen.getImageData(0, 0, width, height);
+    const d = bmp.data;
+    let minX = width, minY = height, maxX = -1, maxY = -1;
+    for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
+      const i = (y * width + x) * 4 + 3;
+      if (d[i] >= 128) { d[i] = 255; if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y; }
+      else d[i] = 0;
+    }
     pen.putImageData(bmp, 0, 0);
+    if (maxX < 0) { minX = 0; minY = 0; maxX = width - 1; maxY = height - 1; }
+    const cw = maxX - minX + 1, ch = maxY - minY + 1;
 
     const out = document.createElement('canvas');
-    out.width = width * scale; out.height = 16 * scale;
+    out.width = cw * scale; out.height = ch * scale;
     const ctx = out.getContext('2d');
     ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(pen.canvas, 0, 0, width, 16, 0, 0, out.width, out.height);
+    ctx.drawImage(pen.canvas, minX, minY, cw, ch, 0, 0, out.width, out.height);
     glyphCache.set(key, out);
     return out;
   }
@@ -135,19 +151,83 @@
     });
   }
 
+  // ---------- 滑鼠傾斜（原本模板 main.js 的 tilt 效果）----------
+  let dragging = false;
+  function attachTilt(card) {
+    card.addEventListener('pointermove', (e) => {
+      if (dragging || e.pointerType === 'touch') return;
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+      const rx = (0.5 - py) * TILT_MAX * 2, ry = (px - 0.5) * TILT_MAX * 2;
+      card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-6px)`;
+      card.style.setProperty('--mx', `${px * 100}%`);
+      card.style.setProperty('--my', `${py * 100}%`);
+    });
+    card.addEventListener('pointerleave', () => {
+      card.style.transition = 'transform .4s ease';
+      card.style.transform = '';
+      setTimeout(() => (card.style.transition = ''), 400);
+    });
+  }
+
+  // ---------- 拖曳捲動（桌機用滑鼠拖；手機用原生觸控滑動）----------
+  function attachDragScroll(track) {
+    let startX = 0, startLeft = 0, active = false, moved = false, vx = 0, lastX = 0, lastT = 0, raf = 0;
+    track.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'touch' || e.button !== 0) return;
+      cancelAnimationFrame(raf);
+      active = true; moved = false; startX = lastX = e.clientX; startLeft = track.scrollLeft; lastT = performance.now(); vx = 0;
+      track.setPointerCapture(e.pointerId);
+    });
+    track.addEventListener('pointermove', (e) => {
+      if (!active) return;
+      const dx = e.clientX - startX;
+      if (!moved && Math.abs(dx) > 4) { moved = true; dragging = true; track.classList.add('is-dragging'); track.querySelectorAll('.card--auto').forEach((c) => (c.style.transform = '')); }
+      if (!moved) return;
+      track.scrollLeft = startLeft - dx;
+      const now = performance.now();
+      vx = (e.clientX - lastX) / Math.max(now - lastT, 1);   // px/ms
+      lastX = e.clientX; lastT = now;
+    });
+    const end = () => {
+      if (!active) return;
+      active = false; dragging = false; track.classList.remove('is-dragging');
+      // 放開後帶一點慣性
+      let v = vx * 16;
+      const glide = () => { if (Math.abs(v) < 0.5) return; track.scrollLeft -= v; v *= 0.92; raf = requestAnimationFrame(glide); };
+      if (moved) glide();
+    };
+    track.addEventListener('pointerup', end);
+    track.addEventListener('pointercancel', end);
+    track.addEventListener('lostpointercapture', end);
+    // 滑鼠滾輪：在列上垂直滾動 → 改成左右捲動（列已到底時就讓頁面正常捲）
+    track.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      const max = track.scrollWidth - track.clientWidth;
+      if (max <= 0) return;
+      const next = track.scrollLeft + e.deltaY;
+      if ((e.deltaY > 0 && track.scrollLeft >= max - 1) || (e.deltaY < 0 && track.scrollLeft <= 0)) return;
+      e.preventDefault();
+      track.scrollLeft = Math.max(0, Math.min(max, next));
+    }, { passive: false });
+  }
+  shelves.forEach((sh) => attachDragScroll(sh.querySelector('.shelf__track')));
+
   // ---------- 建卡片 ----------
   function makeCard(file) {
-    const name = nameFromFile(file);
+    const { category, name } = parseFile(file);
     const card = document.createElement('article');
-    card.className = 'card model card--artwork card--auto';
-    card.dataset.name = name;
+    card.className = 'card card--auto';
+    card.dataset.name = name; card.dataset.category = category;
     card.setAttribute('aria-label', name);
+    card.style.setProperty('--img', `url("${CONFIG.folder + file}")`);   // 給亮光層當遮罩
 
     const img = new Image();
     img.src = CONFIG.folder + file;
     img.alt = name;
     img.decoding = 'async';
     card.append(img);
+    attachTilt(card);
 
     const label = document.createElement('canvas');
     label.className = 'card__name';
@@ -174,17 +254,18 @@
       if (r.ok) files = await r.json();
     } catch (e) { console.warn('[cards] 讀不到 cards.json', e); }
     files = (Array.isArray(files) ? files : []).filter((f) => typeof f === 'string' && /^[\w\-. ]+\.(png|webp|gif)$/i.test(f));
-    if (!files.length) return;                        // 沒清單就保留 index.html 裡原本的佔位卡
+    if (!files.length) return;
 
-    const mount = () => grid.replaceChildren(...files.map(makeCard));
-    mount();
-    // js/cards.js（卡片工具的舊清單）也會往 #modelGrid 塞卡片；若它晚一步蓋掉這裡的卡片，就再放回來
-    new MutationObserver(() => { if (!grid.querySelector('.card--auto')) mount(); }).observe(grid, { childList: true });
+    shelves.forEach((sh) => sh.querySelector('.shelf__track').replaceChildren());
+    for (const file of files) {
+      const card = makeCard(file);
+      trackOf(card.dataset.category).append(card);
+    }
 
     // 視窗縮放 / 版面變動時重新排版名字
     let raf = 0;
-    const relayout = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => grid.querySelectorAll('.card--auto').forEach(layoutName)); };
-    new ResizeObserver(relayout).observe(grid);
+    const relayout = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => document.querySelectorAll('.shelf .card--auto').forEach(layoutName)); };
+    shelves.forEach((sh) => new ResizeObserver(relayout).observe(sh));
     window.addEventListener('resize', relayout);
   })();
 })();

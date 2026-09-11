@@ -81,18 +81,21 @@
     <!-- ===== Models ===== -->
     <section id="models" class="section reveal">
       <h2 class="section__title">Models</h2>
-      <p class="section__hint">Pixel / voxel models — more coming soon.</p>
+      <p class="section__hint">Drag or swipe a row to see more.</p>
 
       <!--
-        ===== 模型清單 =====
-        一張卡片 = 一個模型。要新增作品：複製一個 <article> 貼上，改三個地方：
-          data-model  → .glb 檔路徑（放在 assets/models/）
-          img src     → 縮圖（放在 assets/img/，建議 400x250，沒有的話會顯示 NO PREVIEW）
-          文字        → 名稱 / 說明 / 標籤
-        （3D 預覽器已移除，卡片目前只是展示用）
+        卡片由 js/card-gallery.js 依 card/cards.json 自動放進來。
+        檔名格式：card_類型_名稱.png，類型是 entity 或 weapon，
+        例如 card_entity_Kazek.png → 放進 Entity 列、名牌顯示 Kazek。
+        要新增分類：複製一個 .shelf，改 data-category 和標題即可。
       -->
-      <div class="grid" id="modelGrid">
-        <!-- 卡片由 js/card-gallery.js 依 card/cards.json 自動放進來 -->
+      <div class="shelf" data-category="entity">
+        <h3 class="shelf__title">Entity</h3>
+        <div class="shelf__track" aria-label="Entity cards"></div>
+      </div>
+      <div class="shelf" data-category="weapon">
+        <h3 class="shelf__title">Weapon</h3>
+        <div class="shelf__track" aria-label="Weapon cards"></div>
       </div>
     </section>
 

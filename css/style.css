@@ -318,3 +318,55 @@ img { max-width: 100%; display: block; }
   position: absolute; pointer-events: none;
   image-rendering: pixelated; image-rendering: crisp-edges;
 }
+
+/* ---------- Models：橫向卡片列（js/card-gallery.js） ---------- */
+.shelf { margin: 0 0 40px; }
+.shelf__title {
+  font-family: var(--font-pixel); font-size: 10px; letter-spacing: 1px;
+  display: inline-block; margin: 0 0 14px;
+  color: var(--ink); background: var(--cream); padding: 7px 10px 6px;
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.shelf__track {
+  display: flex; gap: 22px; align-items: flex-start;
+  overflow-x: auto; overflow-y: hidden;
+  padding: 14px 8px 22px;               /* 留空間給傾斜時凸出的角 */
+  margin: 0 -8px;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;                /* Firefox 隱藏捲軸 */
+  cursor: grab; user-select: none; -webkit-user-select: none;
+  touch-action: pan-x pan-y;            /* 手機保留原生左右滑動 */
+}
+.shelf__track::-webkit-scrollbar { display: none; }
+.shelf__track.is-dragging { cursor: grabbing; scroll-snap-type: none; }
+.shelf__track:empty::after {
+  content: 'no cards yet'; font-family: var(--font-pixel); font-size: 9px; color: var(--muted);
+  padding: 24px 8px;
+}
+.shelf .card--auto {
+  flex: 0 0 var(--card-w, 230px); width: var(--card-w, 230px);
+  scroll-snap-align: start;
+  position: relative;
+  background: transparent; border: 0; box-shadow: none; overflow: visible;
+  transform-style: preserve-3d; will-change: transform;
+  transition: filter .2s;
+}
+.shelf .card--auto > img {
+  display: block; width: 100%; height: auto;
+  image-rendering: pixelated; -webkit-user-drag: none; pointer-events: none;
+  filter: drop-shadow(6px 8px 0 rgba(0,0,0,.45));
+}
+.shelf .card--auto > .card__name {
+  position: absolute; pointer-events: none;
+  image-rendering: pixelated; image-rendering: crisp-edges;
+}
+/* 傾斜時的亮光：用卡片圖本身當遮罩，透明的地方不會發亮 */
+.shelf .card--auto::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(241,227,194,.28), transparent 45%);
+  -webkit-mask-image: var(--img); mask-image: var(--img);
+  -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+  opacity: 0; transition: opacity .2s;
+}
+.shelf .card--auto:hover::after { opacity: 1; }
+@media (max-width: 720px) { .shelf .card--auto { --card-w: 180px; } }
