@@ -33,8 +33,8 @@
   // ---------- 3. Hero 打字機 ----------
   const lines = [
     'pixel-art 3D models',
-    'voxel characters · props · creatures',
-    'hand-painted pixel textures',
+    'items · entities · vfx · furniture',
+    'Discord wolfawwent',
   ];
   const tw = document.getElementById('typewriter');
   if (tw) {
