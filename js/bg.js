@@ -29,9 +29,9 @@
 
     // --- 螢火蟲（橘色小方塊，緩慢隨機飛行，會照亮附近磚塊）---
     FLY_COUNT: 10,             // 數量（最多 16）
-    FLY_SIZE: [2, 5],          // 方塊邊長範圍（CSS 像素）
+    FLY_SIZE: [3, 8],          // 方塊（內核）邊長範圍（CSS 像素）；外圈會再大一倍
     FLY_SPEED: [12, 30],       // 飛行速度範圍（CSS 像素 / 秒）
-    FLY_COLOR: [1.0, 0.62, 0.25],     // 方塊顏色
+    FLY_COLOR: [0.45, 0.85, 1.0],     // 方塊顏色（鬼火藍）
     FLY_GLOW_RADIUS: 70,       // 照亮磚塊的半徑（CSS 像素）
     FLY_GLOW_STRENGTH: 0.16,   // 照亮強度
   };
@@ -95,7 +95,7 @@
       col += u_lightColor * (glow * u_lightStrength * t.a);
 
       // 螢火蟲：先把每隻對磚塊的照明加上去，再畫方塊本體（方塊在最上層）
-      float body = 0.0;
+      float body = 0.0, ring = 0.0;
       for (int i = 0; i < 16; i++) {
         if (i >= u_flyCount) break;
         vec4 f = u_fly[i];
@@ -103,12 +103,15 @@
         float fd = length(dv) / u_flyRadius;
         float fg = 1.0 - smoothstep(0.0, 1.0, fd);
         col += u_flyColor * (fg * fg * u_flyStrength * f.w * t.a);
-        // 方塊：硬邊正方形
+        // 蟲體：兩圈硬邊正方形 —— 內核亮橘、外圈暗橘，永遠可見（不受磚塊 / 縫隙影響）
         vec2 a = abs(dv);
-        float inside = step(a.x, f.z * 0.5) * step(a.y, f.z * 0.5);
-        body = max(body, inside * (0.55 + 0.45 * f.w));
+        float inner = step(a.x, f.z * 0.5) * step(a.y, f.z * 0.5);
+        float outer = step(a.x, f.z * 1.0) * step(a.y, f.z * 1.0);
+        ring = max(ring, outer);
+        body = max(body, inner);
       }
-      col = mix(col, u_flyColor * 1.15, body);
+      col = mix(col, u_flyColor * 0.62, ring);          // 外圈：暗橘
+      col = mix(col, u_flyColor * 1.10, body);          // 內核：亮橘
 
       gl_FragColor = vec4(col, 1.0);
     }
