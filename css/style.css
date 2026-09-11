@@ -111,7 +111,15 @@ img { max-width: 100%; display: block; }
   color: var(--cream);
   text-shadow: 3px 3px 0 var(--ink);
 }
-.section__title::before { content: '\25B6  '; color: var(--ghost); }   /* ▶ */
+/* 標題前的箭頭：不用字體符號（每個字體的 ▶ 位置都不一樣），改用 CSS 畫一個階梯狀像素三角形，
+   高度跟大寫字母一致（0.85em），垂直置中對齊文字 */
+.section__title::before {
+  content: ''; display: inline-block; vertical-align: 0.02em;
+  width: 0.75em; height: 0.85em; margin-right: 0.6em;
+  background: var(--ghost);
+  clip-path: polygon(0 0, 25% 0, 25% 12.5%, 50% 12.5%, 50% 25%, 75% 25%, 75% 37.5%, 100% 37.5%,
+                     100% 62.5%, 75% 62.5%, 75% 75%, 50% 75%, 50% 87.5%, 25% 87.5%, 25% 100%, 0 100%);
+}
 .section__hint { color: var(--muted); margin: 0 0 32px; }
 
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity .5s steps(5), transform .5s steps(5); }
