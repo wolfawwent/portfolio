@@ -176,7 +176,10 @@
     files = (Array.isArray(files) ? files : []).filter((f) => typeof f === 'string' && /^[\w\-. ]+\.(png|webp|gif)$/i.test(f));
     if (!files.length) return;                        // 沒清單就保留 index.html 裡原本的佔位卡
 
-    grid.replaceChildren(...files.map(makeCard));
+    const mount = () => grid.replaceChildren(...files.map(makeCard));
+    mount();
+    // js/cards.js（卡片工具的舊清單）也會往 #modelGrid 塞卡片；若它晚一步蓋掉這裡的卡片，就再放回來
+    new MutationObserver(() => { if (!grid.querySelector('.card--auto')) mount(); }).observe(grid, { childList: true });
 
     // 視窗縮放 / 版面變動時重新排版名字
     let raf = 0;
