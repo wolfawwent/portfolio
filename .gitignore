@@ -2,3 +2,6 @@
 Thumbs.db
 desktop.ini
 *.log
+
+# Claude 桌面 App 的輸出資料夾，不要上傳
+Claude outputs/
