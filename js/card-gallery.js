@@ -274,9 +274,9 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
       const max = track.scrollWidth - track.clientWidth;
       if (max <= 0) return;
       const next = track.scrollLeft + e.deltaY;
-      if ((e.deltaY > 0 && track.scrollLeft >= max - 1) || (e.deltaY < 0 && track.scrollLeft <= 0)) return;
+      if (!track._loop && ((e.deltaY > 0 && track.scrollLeft >= max - 1) || (e.deltaY < 0 && track.scrollLeft <= 0))) return;
       e.preventDefault();
-      track.scrollLeft = Math.max(0, Math.min(max, next));
+      track.scrollLeft = track._loop ? next : Math.max(0, Math.min(max, next));
     }, { passive: false });
   }
   shelves.forEach((sh) => attachDragScroll(sh.querySelector('.shelf__track')));
@@ -324,6 +324,43 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     return card;
   }
 
+  // ---------- 無限迴圈軌道 ----------
+  // 把同一組卡片重複放好幾份，捲到接近頭 / 尾時悄悄跳回中間那份 → 看起來像無限循環：
+  // 最後一張（例如 Fulgora）會出現在第一張（Kazek）前面。
+  function setupLoop(track, list) {
+    track.replaceChildren();
+    if (list.length < 2) { list.forEach((f) => track.append(makeCard(f))); return; }
+
+    // 需要幾份：至少 3 份，而且每份加起來要比視窗寬 2 倍以上，這樣任何時候左右都有卡片
+    const cardW = parseFloat(getComputedStyle(track.querySelector('.card--auto') || document.body).getPropertyValue('--card-w')) || 340;
+    const setW = list.length * (cardW + 12);
+    const reps = Math.max(3, Math.ceil((window.innerWidth * 2) / setW) + 2);
+    for (let r = 0; r < reps; r++) {
+      for (const f of list) {
+        const card = makeCard(f);
+        card.dataset.rep = r;
+        track.append(card);
+      }
+    }
+    track._loop = true;
+
+    // 一份的實際寬度 = 第 2 份第一張 與 第 1 份第一張 的距離
+    const period = () => {
+      const a = track.querySelector('[data-rep="0"]'), b = track.querySelector('[data-rep="1"]');
+      return a && b ? b.offsetLeft - a.offsetLeft : 0;
+    };
+    const mid = Math.floor(reps / 2);
+    const goMiddle = () => { const p = period(); if (p) track.scrollLeft = p * mid; };
+    // 捲到第一份或最後一份時，位移一份的寬度（畫面完全不變，因為每份長得一樣）
+    track.addEventListener('scroll', () => {
+      const p = period(); if (!p) return;
+      if (track.scrollLeft < p * 1) track.scrollLeft += p * (mid - 1);
+      else if (track.scrollLeft > p * (reps - 2)) track.scrollLeft -= p * (mid - 1);
+    }, { passive: true });
+    requestAnimationFrame(goMiddle);
+    window.addEventListener('resize', goMiddle);
+  }
+
   // ---------- 啟動 ----------
   (async () => {
     let files = [];
@@ -334,11 +371,16 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     files = (Array.isArray(files) ? files : []).filter((f) => typeof f === 'string' && /^[\w\-. ]+\.(png|webp|gif)$/i.test(f));
     if (!files.length) return;
 
-    shelves.forEach((sh) => sh.querySelector('.shelf__track').replaceChildren());
+    // 依 cards.json 的順序（= 卡片工具最初儲存的順序）分到各列
+    const byTrack = new Map();
     for (const file of files) {
-      const card = makeCard(file);
-      trackOf(card.dataset.category).append(card);
+      const { category } = parseFile(file);
+      const track = trackOf(category);
+      if (!byTrack.has(track)) byTrack.set(track, []);
+      byTrack.get(track).push(file);
     }
+    shelves.forEach((sh) => sh.querySelector('.shelf__track').replaceChildren());
+    for (const [track, list] of byTrack) setupLoop(track, list);
 
     // 視窗縮放 / 版面變動時重新排版名字
     let raf = 0;
