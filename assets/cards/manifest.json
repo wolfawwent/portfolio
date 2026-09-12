@@ -368,5 +368,32 @@
       "animationIndex": 0,
       "playing": false
     }
+  },
+  {
+    "id": "e7608c9c-93ec-4441-8f46-afc1b5e601c2",
+    "name": "Loyal Thunder",
+    "model": "assets/models/e7608c9c-93ec-4441-8f46-afc1b5e601c2-703973b300b945619c23e1b34a484aed.glb",
+    "image": "assets/cards/e7608c9c-93ec-4441-8f46-afc1b5e601c2-703973b300b945619c23e1b34a484aed.png",
+    "config": {
+      "category": "weapon",
+      "x": -1.3,
+      "y": -3.1,
+      "z": 22.3,
+      "scale": 0.84,
+      "yaw": -50,
+      "pitch": 6,
+      "roll": 5,
+      "time": 0,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "previewYaw": -65,
+      "previewElevation": 26,
+      "previewDistance": 108,
+      "previewPanX": -11,
+      "previewPanY": 21,
+      "previewAnimationIndex": -2,
+      "animationIndex": 0,
+      "playing": false
+    }
   }
 ]
