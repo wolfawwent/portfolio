@@ -156,8 +156,8 @@
   {
     "id": "b2b03b2b-81b1-4182-985c-da4cd7a06fa2",
     "name": "Fulgora",
-    "model": "assets/models/b2b03b2b-81b1-4182-985c-da4cd7a06fa2-b19d793fd9c0479984bff203f1e5937a.glb",
-    "image": "assets/cards/b2b03b2b-81b1-4182-985c-da4cd7a06fa2-b19d793fd9c0479984bff203f1e5937a.png",
+    "model": "assets/models/b2b03b2b-81b1-4182-985c-da4cd7a06fa2-7ad42923c1d0462085305bdea124094b.glb",
+    "image": "assets/cards/b2b03b2b-81b1-4182-985c-da4cd7a06fa2-7ad42923c1d0462085305bdea124094b.png",
     "config": {
       "category": "entity",
       "x": 0.4,
