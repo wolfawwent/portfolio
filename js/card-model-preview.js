@@ -1,0 +1,86 @@
+/* Fixed-camera, idle-only model preview. The 3D runtime loads on first open. */
+(() => {
+  const dialog = document.createElement('dialog');
+  dialog.className = 'model-dialog';
+  dialog.setAttribute('aria-labelledby', 'modelDialogTitle');
+  dialog.innerHTML = '<header class="model-dialog__header"><h2 id="modelDialogTitle"></h2><button type="button" class="model-dialog__close" aria-label="Close model preview">×</button></header><div class="model-dialog__stage"></div><p class="model-dialog__status" role="status" aria-live="polite"></p>';
+  document.body.append(dialog);
+  const title = dialog.querySelector('h2');
+  const stage = dialog.querySelector('.model-dialog__stage');
+  const status = dialog.querySelector('[role="status"]');
+  let runtime, manifest, active, generation = 0, opener;
+  const safeName = name => name.trim().replace(/[<>:"/\\|?*]/g, '_').replace(/[ .]+$/g, '');
+  async function records() {
+    if (!manifest) manifest = fetch('assets/cards/manifest.json', {cache:'no-cache'}).then(r => {
+      if (!r.ok) throw Error('Model catalogue unavailable.');
+      return r.json();
+    }).catch(e => { manifest = null; throw e; });
+    return manifest;
+  }
+  function stop() { if (active) { active.pause(); active.removeAttribute('src'); active.remove(); active = null; } }
+  function closePreview() {
+    ++generation;stop();document.documentElement.classList.remove('model-dialog-open');
+    dialog.close();opener?.focus({preventScroll:true});
+  }
+  dialog.querySelector('button').addEventListener('click', closePreview);
+  dialog.addEventListener('cancel', event => { event.preventDefault();closePreview(); });
+  dialog.addEventListener('click', event => {
+    const r = dialog.getBoundingClientRect();
+    if (event.target === dialog && (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom)) closePreview();
+  });
+  dialog.addEventListener('close', () => { if (!dialog.open) { stop();document.documentElement.classList.remove('model-dialog-open'); } });
+  document.addEventListener('visibilitychange', () => {
+    if (!active) return;
+    if (document.hidden) active.pause();
+    else if (dialog.open && active.dataset.idle) active.play();
+  });
+  window.openCardPreview = async card => {
+    const token = ++generation;stop();opener = card;
+    title.textContent = card.dataset.name;status.textContent = 'Loading model…';
+    if (!dialog.open) dialog.showModal();
+    document.documentElement.classList.add('model-dialog-open');
+    try {
+      const items = await records();
+      if (token !== generation || !dialog.open) return;
+      const matches = Array.isArray(items) ? items.filter(item => {
+        if (typeof item?.name !== 'string' || !/^assets\/models\/[a-z0-9-]+\.glb$/i.test(item.model || '')) return false;
+        const category = item.config?.category || 'entity';
+        const file = `card_${category}_${safeName(item.name)}.png`;
+        return file === card.dataset.file || (category === card.dataset.category && item.name.trim() === card.dataset.name);
+      }) : [];
+      if (matches.length !== 1) { status.textContent = 'Model preview is not available for this card yet.';return; }
+      const record = matches[0];
+      if (!runtime) runtime = import('../assets/vendor/model-viewer-4.3.1.min.js').catch(e => { runtime = null;throw e; });
+      await runtime;await customElements.whenDefined('model-viewer');
+      if (token !== generation || !dialog.open) return;
+      const viewer = document.createElement('model-viewer');active = viewer;
+      viewer.setAttribute('alt', `${record.name} — fixed-angle model preview`);
+      // No camera-controls, auto-rotate, AR, or autoplay: never start a default clip.
+      const yaw = Number.isFinite(record.config?.yaw) ? -record.config.yaw : 25;
+      viewer.setAttribute('camera-orbit', `${yaw}deg 75deg 115%`);
+      viewer.setAttribute('field-of-view', '30deg');
+      viewer.setAttribute('interaction-prompt', 'none');
+      viewer.setAttribute('disable-zoom', '');viewer.setAttribute('disable-pan', '');viewer.setAttribute('disable-tap', '');
+      viewer.setAttribute('shadow-intensity', '0.5');viewer.setAttribute('exposure', '1');
+      viewer.setAttribute('animation-crossfade-duration', '0');
+      viewer.addEventListener('load', () => {
+        if (token !== generation || viewer !== active || !dialog.open) return;
+        const names = viewer.availableAnimations || [];
+        const idle = names.find(name => name.trim().toLowerCase() === 'idle')
+          || names.find(name => /(^|[._\s-])idle$/i.test(name.trim()));
+        viewer.pause();
+        if (idle) {
+          viewer.animationName = idle;viewer.currentTime = 0;viewer.dataset.idle = idle;
+          if (!document.hidden) viewer.play();
+          status.textContent = 'Idle animation · Fixed camera';
+        } else status.textContent = 'Static preview · No idle animation';
+        viewer.jumpCameraToGoal();
+      });
+      viewer.addEventListener('error', () => { if (token === generation) status.textContent = 'Unable to load this model. Please close and try again.'; });
+      stage.replaceChildren(viewer);viewer.src = record.model;
+    } catch (e) {
+      if (token === generation && dialog.open) status.textContent = 'Unable to load the preview. Please close and try again.';
+      console.warn('[model preview]', e);
+    }
+  };
+})();

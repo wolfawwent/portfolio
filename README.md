@@ -123,3 +123,11 @@ repo 裡的 `CNAME` 檔已經寫好網域，GitHub 會自動讀取，不要刪�
 - 中文版：`main.js` 已留 `langBtn`，可以做成 i18n 物件切換文字。
 - 多個模型：在 viewer 加一排縮圖按鈕呼叫 `loadModel(url)`。
 - 作品詳細頁：每個作品一支 `works/xxx.html`。
+
+### 卡片模型預覽
+
+點卡片或以 Enter／空白鍵開啟 `<model-viewer>` 視窗。依 `assets/cards/manifest.json` 的類別與名稱對應 GLB；新增卡片時，需在本機工作台「儲存到作品集」，並保持匯出圖片名稱一致。缺少或重複對應時顯示預覽不可用。
+
+只播放名稱為 `idle` 的動畫（不分大小寫，也辨識以分隔符命名的 idle）；沒有 idle 時顯示靜止模型。攝影機保持固定角度，水平方向參照卡片儲存的 yaw，俯角與距離在 `js/card-model-preview.js` 設定。訪客不能旋轉、平移或縮放。關閉視窗會停止播放並移除預覽元件。
+
+Model Viewer 4.3.1 採本地資產 `assets/vendor/model-viewer-4.3.1.min.js`，首次開啟視窗才載入；Apache 2.0 授權見同目錄 `MODEL-VIEWER-LICENSE.txt`。

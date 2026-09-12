@@ -214,12 +214,11 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
       if (e.pointerType === 'touch' || e.button !== 0) return;
       cancelAnimationFrame(raf);
       active = true; moved = false; startX = lastX = e.clientX; startLeft = track.scrollLeft; lastT = performance.now(); vx = 0;
-      track.setPointerCapture(e.pointerId);
     });
     track.addEventListener('pointermove', (e) => {
       if (!active) return;
       const dx = e.clientX - startX;
-      if (!moved && Math.abs(dx) > 4) { moved = true; dragging = true; track.classList.add('is-dragging'); track.querySelectorAll('.card--auto').forEach((c) => (c.style.transform = '')); }
+      if (!moved && Math.abs(dx) > 4) { moved = true; dragging = true; track.setPointerCapture(e.pointerId); track.classList.add('is-dragging'); track.querySelectorAll('.card--auto').forEach((c) => (c.style.transform = '')); }
       if (!moved) return;
       track.scrollLeft = startLeft - dx;
       const now = performance.now();
@@ -232,7 +231,7 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
       // 放開後帶一點慣性
       let v = vx * 16;
       const glide = () => { if (Math.abs(v) < 0.5) return; track.scrollLeft -= v; v *= 0.92; raf = requestAnimationFrame(glide); };
-      if (moved) glide();
+      if (moved) { track._suppressClickUntil = performance.now() + 300;glide(); }
     };
     track.addEventListener('pointerup', end);
     track.addEventListener('pointercancel', end);
@@ -257,6 +256,16 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     card.className = 'card card--auto';
     card.dataset.name = name; card.dataset.category = category;
     card.setAttribute('aria-label', name);
+    card.dataset.file = file;
+    card.tabIndex = 0;card.setAttribute('role', 'button');
+    card.setAttribute('aria-haspopup', 'dialog');card.setAttribute('aria-label', 'Preview '+name);
+    card.addEventListener('click', () => {
+      if (dragging || performance.now() < (card.parentElement._suppressClickUntil || 0)) return;
+      window.openCardPreview?.(card);
+    });
+    card.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault();window.openCardPreview?.(card); }
+    });
     card.style.setProperty('--img', `url("${CONFIG.folder + file}")`);   // 給亮光層當遮罩
 
     const img = new Image();
