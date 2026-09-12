@@ -16,7 +16,7 @@
   const CONFIG = {
     list: 'card/cards.json',
     folder: 'card/',
-    PIN_LAST: ['Fulgora'],          // 這些名稱永遠排在該列最後（不分大小寫）；之後新增的卡片會排在它們前面
+    PIN_LAST: ['Statue of God', 'Fulgora'],   // 這些名稱永遠排在該列最後、照這裡的順序（不分大小寫）；新增的卡片會排在它們前面
     PIN_FIRST: [],                  // 這些名稱永遠排在該列最前
     START_AT: ['Fulgora'],          // 網頁載入時，該列左邊第一張完整的卡（不分大小寫；沒有就從第一張開始）
     START_PEEK: 0.7,                // 它前一張（例如 Statue of God）在左邊露出多少（0 = 不露出、1 = 整張）；右邊被切的比例由視窗寬度決定
@@ -255,6 +255,7 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
   function attachDragScroll(track) {
     let startX = 0, startLeft = 0, active = false, moved = false, vx = 0, lastX = 0, lastT = 0, raf = 0;
     track._stopGlide=()=>cancelAnimationFrame(raf);
+    track._onWrap=(delta)=>{ startLeft += delta; };   // 無限迴圈悄悄位移時，拖曳的基準點也要跟著移
     track.addEventListener('pointerdown', (e) => {
       if (e.pointerType === 'touch' || e.button !== 0) return;
       cancelAnimationFrame(raf);
@@ -265,7 +266,7 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
       const dx = e.clientX - startX;
       if (!moved && Math.abs(dx) > 4) { moved = true; dragging = true; track.setPointerCapture(e.pointerId); track.classList.add('is-dragging'); track.querySelectorAll('.card--auto').forEach((c) => (c.style.transform = '')); }
       if (!moved) return;
-      track.scrollLeft = startLeft - dx;
+      track.scrollLeft = startLeft - dx;   // 迴圈跳位時 setupLoop 會透過 _onWrap 修正 startLeft
       const now = performance.now();
       vx = (e.clientX - lastX) / Math.max(now - lastT, 1);   // px/ms
       lastX = e.clientX; lastT = now;
@@ -367,7 +368,7 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     // 需要幾份：至少 3 份，而且每份加起來要比視窗寬 2 倍以上，這樣任何時候左右都有卡片
     const cardW = parseFloat(getComputedStyle(track.querySelector('.card--auto') || document.body).getPropertyValue('--card-w')) || 340;
     const setW = list.length * (cardW + 12);
-    const reps = Math.max(3, Math.ceil((window.innerWidth * 2) / setW) + 2);
+    const reps = Math.max(4, Math.ceil((window.innerWidth * 2) / setW) + 2);   // 至少 4 份，跳位才有一份可移
     for (let r = 0; r < reps; r++) {
       for (const f of list) {
         const card = makeCard(f);
@@ -399,8 +400,10 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     // 捲到第一份或最後一份時，位移一份的寬度（畫面完全不變，因為每份長得一樣）
     track.addEventListener('scroll', () => {
       const p = period(); if (!p) return;
-      if (track.scrollLeft < p * 1) track.scrollLeft += p * (mid - 1);
-      else if (track.scrollLeft > p * (reps - 2)) track.scrollLeft -= p * (mid - 1);
+      let delta = 0;
+      if (track.scrollLeft < p * 1) delta = p * (mid - 1);
+      else if (track.scrollLeft > p * (reps - 2)) delta = -p * (mid - 1);
+      if (delta) { track.scrollLeft += delta; track._onWrap?.(delta); }
     }, { passive: true });
     requestAnimationFrame(goMiddle);
     window.addEventListener('resize', goMiddle);
@@ -429,7 +432,8 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     const norm = (v) => v.trim().toLowerCase();
     const first = CONFIG.PIN_FIRST.map(norm), last = CONFIG.PIN_LAST.map(norm);
     for (const [track, list] of byTrack) {
-      const rank = (f) => { const n = norm(parseFile(f).name); if (first.includes(n)) return -1; if (last.includes(n)) return 1; return 0; };
+      // PIN_FIRST 依清單順序排最前、PIN_LAST 依清單順序排最後、其餘維持 cards.json 的順序
+      const rank = (f) => { const n = norm(parseFile(f).name); const fi = first.indexOf(n), li = last.indexOf(n); if (fi >= 0) return fi - first.length; if (li >= 0) return li + 1; return 0; };
       list.sort((a, b) => rank(a) - rank(b));   // 穩定排序：同一組內維持原本順序
       byTrack.set(track, list);
     }

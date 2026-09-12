@@ -498,13 +498,14 @@ html.model-dialog-open { overflow: hidden; }
 .shelf__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 14px; }
 .shelf__head .shelf__title { margin: 0; }
 .shelf__all {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-family: var(--font-pixel); font-size: 9px; letter-spacing: 1px;
+  display: inline-flex; align-items: center; gap: 14px;
+  font-family: var(--font-pixel); font-size: 18px; letter-spacing: 2px;
   color: var(--ghost); text-decoration: none; padding: 6px 2px;
-  border-bottom: 2px solid transparent; transition: border-color .15s steps(2), transform .15s steps(3);
+  border-bottom: 3px solid transparent; transition: border-color .15s steps(2), transform .15s steps(3);
 }
-.shelf__all svg { width: 9px; height: 13px; fill: currentColor; transform: scaleX(-1); filter: drop-shadow(2px 2px 0 #100d15); }
-.shelf__all:hover, .shelf__all:focus-visible { border-bottom-color: var(--ghost); transform: translateX(2px); outline: none; }
+.shelf__all svg { width: 18px; height: 26px; fill: currentColor; transform: scaleX(-1); filter: drop-shadow(3px 3px 0 #100d15); }
+@media (max-width: 720px) { .shelf__all { font-size: 12px; gap: 10px; } .shelf__all svg { width: 12px; height: 17px; } }
+.shelf__all:hover, .shelf__all:focus-visible { border-bottom-color: var(--ghost); transform: translateX(4px); outline: none; }
 
 /* ===== 圖鑑頁（gallery.html）===== */
 .gallery__section { padding-top: 120px; }
