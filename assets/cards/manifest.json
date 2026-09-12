@@ -179,5 +179,32 @@
       "animationIndex": 0,
       "playing": false
     }
+  },
+  {
+    "id": "93d257a2-2600-49da-9bdb-3256484cd1be",
+    "name": "Statue of God",
+    "model": "assets/models/93d257a2-2600-49da-9bdb-3256484cd1be-69ff7276cddf4d4c84be5105beb77e20.glb",
+    "image": "assets/cards/93d257a2-2600-49da-9bdb-3256484cd1be-69ff7276cddf4d4c84be5105beb77e20.png",
+    "config": {
+      "category": "entity",
+      "x": -1.3,
+      "y": -10,
+      "z": -2.9,
+      "scale": 2.41,
+      "yaw": -174,
+      "pitch": 0,
+      "roll": 0,
+      "time": 2.46,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "previewYaw": -154,
+      "previewElevation": -38,
+      "previewDistance": 39,
+      "previewPanX": 3,
+      "previewPanY": -12,
+      "previewAnimationIndex": 1,
+      "animationIndex": 0,
+      "playing": false
+    }
   }
 ]

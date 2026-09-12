@@ -242,6 +242,7 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
   // ---------- 拖曳捲動（桌機用滑鼠拖；手機用原生觸控滑動）----------
   function attachDragScroll(track) {
     let startX = 0, startLeft = 0, active = false, moved = false, vx = 0, lastX = 0, lastT = 0, raf = 0;
+    track._stopGlide=()=>cancelAnimationFrame(raf);
     track.addEventListener('pointerdown', (e) => {
       if (e.pointerType === 'touch' || e.button !== 0) return;
       cancelAnimationFrame(raf);
@@ -271,6 +272,35 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     // 滾輪不做左右捲動：列上滾滾輪就是正常捲頁面，卡片只靠拖曳 / 觸控滑動移動
   }
   shelves.forEach((sh) => attachDragScroll(sh.querySelector('.shelf__track')));
+  shelves.forEach((shelf,index)=>{
+    const track=shelf.querySelector('.shelf__track');
+    const viewport=document.createElement('div');viewport.className='shelf__viewport';
+    track.before(viewport);viewport.append(track);track.id=track.id||`card-track-${index}`;
+    let animation=0;
+    const stop=()=>{cancelAnimationFrame(animation);track._stopGlide?.();};
+    track.addEventListener('pointerdown',stop);
+    const buttons=[-1,1].map(direction=>{
+      const button=document.createElement('button');button.type='button';
+      button.className='shelf__arrow '+(direction<0?'shelf__arrow--left':'shelf__arrow--right');
+      button.setAttribute('aria-label',`${shelf.dataset.category}：${direction<0?'向左':'向右'}快速瀏覽卡片`);
+      button.setAttribute('aria-controls',track.id);
+      button.title=direction<0?'向左瀏覽 · 也可拖曳':'向右瀏覽 · 也可拖曳';
+      button.innerHTML='<svg viewBox="0 0 9 13" aria-hidden="true" shape-rendering="crispEdges"><path d="M6 0H9V3H6V5H4V8H6V10H9V13H6V11H4V9H2V8H0V5H2V4H4V2H6Z"/></svg>';
+      button.addEventListener('click',()=>{
+        stop();const distance=direction*Math.max(240,track.clientWidth*.85);
+        if(matchMedia('(prefers-reduced-motion: reduce)').matches){track.scrollLeft+=distance;return;}
+        const start=performance.now();let previous=0;
+        function move(now){const t=Math.min(1,(now-start)/360),progress=1-Math.pow(1-t,3);track.scrollLeft+=distance*(progress-previous);previous=progress;if(t<1)animation=requestAnimationFrame(move);}
+        animation=requestAnimationFrame(move);
+      });
+      viewport.append(button);return button;
+    });
+    function update(){const overflow=track.scrollWidth>track.clientWidth+2;buttons.forEach((button,i)=>{button.hidden=!overflow;button.disabled=!overflow||(!track._loop&&(i===0?track.scrollLeft<=1:track.scrollLeft>=track.scrollWidth-track.clientWidth-1));});}
+    track.addEventListener('scroll',update,{passive:true});
+    new ResizeObserver(update).observe(track);
+    new MutationObserver(update).observe(track,{childList:true});
+    update();
+  });
 
   // ---------- 建卡片 ----------
   function makeCard(file) {
