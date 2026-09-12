@@ -252,8 +252,8 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     card.addEventListener('pointerenter', (e) => {
       if (dragging || e.pointerType === 'touch') return;
       const from=currentScale();
-      bounce?.cancel();card.classList.add('is-hovered');card.style.scale=reduced()?'1':'1.6';
-      if(!reduced())bounce=animate(card,[{scale:from,easing:'cubic-bezier(.22,.61,.36,1)'},{scale:'1.72',offset:.5,easing:'ease-in-out'},{scale:'1.56',offset:.78,easing:'ease-in-out'},{scale:'1.6'}]);
+      bounce?.cancel();card.classList.add('is-hovered');card.style.scale=reduced()?'1':'1.5';
+      if(!reduced())bounce=animate(card,[{scale:from,easing:'cubic-bezier(.22,.61,.36,1)'},{scale:'1.61',offset:.5,easing:'ease-in-out'},{scale:'1.46',offset:.78,easing:'ease-in-out'},{scale:'1.5'}]);
       card.style.transition = 'transform .18s ease';          // 進入時放大是滑順的，之後跟隨滑鼠不加延遲
       setTimeout(() => (card.style.transition = ''), 180);
     });
