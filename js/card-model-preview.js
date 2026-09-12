@@ -1,4 +1,4 @@
-/* Fixed-camera, idle-only model preview. The 3D runtime loads on first open. */
+/* Fixed-camera model preview using independently saved settings. */
 (() => {
   const dialog = document.createElement('dialog');
   dialog.className = 'model-dialog';
@@ -32,7 +32,7 @@
   document.addEventListener('visibilitychange', () => {
     if (!active) return;
     if (document.hidden) active.pause();
-    else if (dialog.open && active.dataset.idle) active.play();
+    else if (dialog.open && active.dataset.playingAnimation) active.play();
   });
   window.openCardPreview = async card => {
     const token = ++generation;stop();opener = card;
@@ -50,14 +50,14 @@
       }) : [];
       if (matches.length !== 1) { status.textContent = 'Model preview is not available for this card yet.';return; }
       const record = matches[0];
+      const {previewOrbit,setPreviewPlayback} = await import('./model-preview-settings.js');
       if (!runtime) runtime = import('../assets/vendor/model-viewer-4.3.1.min.js').catch(e => { runtime = null;throw e; });
       await runtime;await customElements.whenDefined('model-viewer');
       if (token !== generation || !dialog.open) return;
       const viewer = document.createElement('model-viewer');active = viewer;
       viewer.setAttribute('alt', `${record.name} — fixed-angle model preview`);
       // No camera-controls, auto-rotate, AR, or autoplay: never start a default clip.
-      const yaw = Number.isFinite(record.config?.yaw) ? -record.config.yaw : 25;
-      viewer.setAttribute('camera-orbit', `${yaw}deg 75deg 115%`);
+      viewer.setAttribute('camera-orbit', previewOrbit(record.config || {}));
       viewer.setAttribute('field-of-view', '30deg');
       viewer.setAttribute('interaction-prompt', 'none');
       viewer.setAttribute('disable-zoom', '');viewer.setAttribute('disable-pan', '');viewer.setAttribute('disable-tap', '');
@@ -65,15 +65,8 @@
       viewer.setAttribute('animation-crossfade-duration', '0');
       viewer.addEventListener('load', () => {
         if (token !== generation || viewer !== active || !dialog.open) return;
-        const names = viewer.availableAnimations || [];
-        const idle = names.find(name => name.trim().toLowerCase() === 'idle')
-          || names.find(name => /(^|[._\s-])idle$/i.test(name.trim()));
-        viewer.pause();
-        if (idle) {
-          viewer.animationName = idle;viewer.currentTime = 0;viewer.dataset.idle = idle;
-          if (!document.hidden) viewer.play();
-          status.textContent = 'Idle animation · Fixed camera';
-        } else status.textContent = 'Static preview · No idle animation';
+        const animation = setPreviewPlayback(viewer, record.config || {});
+        status.textContent = animation ? `${animation} · Fixed camera` : 'Static preview · Fixed camera';
         viewer.jumpCameraToGoal();
       });
       viewer.addEventListener('error', () => { if (token === generation) status.textContent = 'Unable to load this model. Please close and try again.'; });
