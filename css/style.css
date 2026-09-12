@@ -338,7 +338,12 @@ img { max-width: 100%; display: block; }
 }
 
 /* ---------- Models：橫向卡片列（js/card-gallery.js） ---------- */
-.shelf { margin: 0 0 40px; }
+/* 卡片 PNG 上下各有約 16% 透明邊（340px 寬時約 88px），所以用負的 margin 把列往上下收，
+   讓標題和卡片、列和列之間看起來不會空太多。想再緊一點就把 --shelf-pull 調更負 */
+.shelf { margin: 0 0 8px; --shelf-pull: -56px; }
+.shelf__viewport, .shelf > .shelf__track { margin-top: var(--shelf-pull); margin-bottom: var(--shelf-pull); }
+.shelf__head, .shelf > .shelf__title { position: relative; z-index: 2; }
+@media (max-width: 720px) { .shelf { --shelf-pull: -36px; } }
 .shelf__title {
   font-family: var(--font-pixel); font-size: 10px; letter-spacing: 1px;
   display: inline-block; margin: 0 0 14px;
@@ -512,7 +517,7 @@ html.model-dialog-open { overflow: hidden; }
 .gallery__count { margin-bottom: 20px; }
 /* 一行 4 張：卡片縮到 260px（4×260 + 3×12 = 1052 ≤ 內容欄 1100）。
    卡片 PNG 上下各有約 16% 透明邊，所以行距用負的 margin 收回來 */
-.shelf--grid { --grid-cols: 4; --grid-card: 260px; --grid-row-pull: -34px; }
+.shelf--grid { --grid-cols: 4; --grid-card: 260px; --grid-row-pull: -34px; --shelf-pull: 0px; }
 .shelf--grid .shelf__track {
   display: grid; grid-template-columns: repeat(var(--grid-cols), var(--grid-card));
   justify-content: center; justify-items: center; gap: 0 12px;
@@ -525,7 +530,8 @@ html.model-dialog-open { overflow: hidden; }
 @media (max-width: 540px)  { .shelf--grid { --grid-card: min(240px, calc(50vw - 24px)); --grid-row-pull: -24px; } }
 /* Springy hover presentation; individual scale leaves the pointer tilt independent. */
 @media(hover:hover) and (pointer:fine){
-  .shelf:not(.shelf--grid) .shelf__track{padding-top:200px;padding-bottom:200px}
+  /* 上下 200px 內距是給 hover 放大的卡片不被軌道裁切用的；用等量的負 margin 抵掉，才不會把列撐得很開 */
+  .shelf:not(.shelf--grid) .shelf__track{padding-top:200px;padding-bottom:200px;margin-top:-186px;margin-bottom:-178px}
   .shelf .card--auto.is-hovered{z-index:3;box-shadow:none}
   .shelf .card--auto.is-hovered>img{filter:drop-shadow(0 8px 8px rgba(5,3,12,.65)) drop-shadow(0 0 18px rgba(9,5,20,.5))}
 }
