@@ -203,10 +203,10 @@ img { max-width: 100%; display: block; }
   display: inline-flex; align-items: center; gap: 8px;
 }
 .tags li img { width: 36px; height: 36px; image-rendering: pixelated; display: block; }   /* 工具圖示（18×18 放大 2 倍） */
-.tags li:nth-child(5n+1) { background: var(--maroon); }
-.tags li:nth-child(5n+2) { background: var(--teal-2); }
-.tags li:nth-child(5n+3) { background: var(--lime-2); }
-.tags li:nth-child(5n+4) { background: var(--purple-2); }
+.tags li:nth-child(5n+1) { background: #503a40; }
+.tags li:nth-child(5n+2) { background: #30484a; }
+.tags li:nth-child(5n+3) { background: #414632; }
+.tags li:nth-child(5n+4) { background: #45364e; }
 .tags li:nth-child(5n+5) { background: var(--orange-2); }
 
 /* ---------- 模型卡片：參考圖的技能卡 ---------- */
@@ -433,7 +433,6 @@ button, input, select { font: inherit; }
 .btn { padding: 12px 22px; }
 .tags { gap: 10px; }
 .tags li { padding: 6px 10px; border-color: var(--cream-2); }
-.tags li:nth-child(5n+3) { background: #405b22; }
 .tags li:nth-child(5n+5) { background: #843b23; }
 .hero__title { font-size: 48px; line-height: 64px; }
 .hero__kicker { font-family: var(--font-body); font-size: 22px; line-height: 28px; letter-spacing: 0; }
