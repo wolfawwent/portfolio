@@ -12,8 +12,17 @@
   const safeName = name => name.trim().replace(/[<>:"/\\|?*]/g, '_').replace(/[ .]+$/g, '');
   // 卡片工具偵測到半透明貼圖時會把 config.blend 設成 true → 這裡把所有材質切成 BLEND
   function applyBlendMode(viewer,config){
-    if(!config||!config.blend||!viewer.model)return;
-    try{for(const m of viewer.model.materials){if(m.getAlphaMode?.()!=='BLEND')m.setAlphaMode('BLEND');}}catch(e){console.warn('[preview] blend',e);}
+      if(!config||!config.blend||!viewer.model)return;
+      try{
+        const list=Array.isArray(config.blendMaterials)&&config.blendMaterials.length?config.blendMaterials:null;
+        viewer.model.materials.forEach((m,i)=>{
+          if(list&&!list.includes(i))return;
+          if(m.getAlphaMode?.()!=='BLEND')m.setAlphaMode('BLEND');
+          // model-viewer 的 BLEND 會把 depthWrite 關掉，整個模型會前後互穿；這裡把它打開（透明像素靠 alpha 混合，實心部分照常遮擋）
+          const sym=Object.getOwnPropertySymbols(m).find(s=>String(s).includes('correlatedObjects'));
+          const set=sym?m[sym]:null;if(set)for(const three of set){three.depthWrite=true;three.alphaTest=Math.max(three.alphaTest||0,.02);three.needsUpdate=true;}
+        });
+      }catch(e){console.warn('[preview] blend',e);}
   }
   async function records() {
     return fetch('/assets/cards/manifest.json', {cache:'no-store'}).then(r => {
@@ -56,7 +65,7 @@
       }) : [];
       if (matches.length !== 1) { status.textContent = 'Model preview is not available for this card yet.';return; }
       const record = matches[0];
-      const {applyPreviewCamera,setPreviewPlayback,previewStatusText} = await import('./model-preview-settings.js?v=watermark-1');
+      const {applyPreviewCamera,setPreviewPlayback,previewStatusText} = await import('./model-preview-settings.js?v=pose-1');
       if (!runtime) runtime = import('../assets/vendor/model-viewer-4.3.1.min.js').catch(e => { runtime = null;throw e; });
       await runtime;await customElements.whenDefined('model-viewer');
       if (token !== generation || !dialog.open) return;

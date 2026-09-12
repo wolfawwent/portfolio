@@ -1,7 +1,16 @@
-import {applyPreviewCamera,previewOrbit,setPreviewPlayback} from './model-preview-settings.js?v=watermark-1';
+import {applyPreviewCamera,previewOrbit,setPreviewPlayback} from './model-preview-settings.js?v=pose-1';
 export function applyBlendMode(viewer,config){
-  if(!config||!config.blend||!viewer.model)return;
-  try{for(const m of viewer.model.materials){if(m.getAlphaMode?.()!=='BLEND')m.setAlphaMode('BLEND');}}catch(e){console.warn('[preview] blend',e);}
+    if(!config||!config.blend||!viewer.model)return;
+    try{
+      const list=Array.isArray(config.blendMaterials)&&config.blendMaterials.length?config.blendMaterials:null;
+      viewer.model.materials.forEach((m,i)=>{
+        if(list&&!list.includes(i))return;
+        if(m.getAlphaMode?.()!=='BLEND')m.setAlphaMode('BLEND');
+        // model-viewer 的 BLEND 會把 depthWrite 關掉，整個模型會前後互穿；這裡把它打開（透明像素靠 alpha 混合，實心部分照常遮擋）
+        const sym=Object.getOwnPropertySymbols(m).find(s=>String(s).includes('correlatedObjects'));
+        const set=sym?m[sym]:null;if(set)for(const three of set){three.depthWrite=true;three.alphaTest=Math.max(three.alphaTest||0,.02);three.needsUpdate=true;}
+      });
+    }catch(e){console.warn('[preview] blend',e);}
 }
 export function createEditorPreview(host,status,getConfig){
   let popup=null;
