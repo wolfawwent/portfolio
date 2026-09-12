@@ -232,10 +232,12 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
   function attachTilt(card) {
     let bounce;
     const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const animate=(el,frames)=>el.animate(frames,{duration:120,easing:'linear'});
+    const animate=(el,frames)=>el.animate(frames,{duration:200,easing:'linear'});
+    const currentScale=()=>getComputedStyle(card).scale==='none'?'1':getComputedStyle(card).scale;
     function release(){
+      const from=currentScale();
       bounce?.cancel();card.classList.remove('is-hovered');card.style.scale='';
-      if(!reduced())bounce=animate(card,[{scale:'1.3'},{scale:'.98',offset:.65},{scale:'1'}]);
+      if(!reduced())bounce=animate(card,[{scale:from,easing:'cubic-bezier(.22,.61,.36,1)'},{scale:'.97',offset:.7,easing:'ease-in-out'},{scale:'1'}]);
     }
     card._releaseHover=release;
     card.addEventListener('pointermove', (e) => {
@@ -249,8 +251,9 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     });
     card.addEventListener('pointerenter', (e) => {
       if (dragging || e.pointerType === 'touch') return;
+      const from=currentScale();
       bounce?.cancel();card.classList.add('is-hovered');card.style.scale=reduced()?'1':'1.3';
-      if(!reduced())bounce=animate(card,[{scale:'1'},{scale:'1.4',offset:.42},{scale:'1.26',offset:.72},{scale:'1.3'}]);
+      if(!reduced())bounce=animate(card,[{scale:from,easing:'cubic-bezier(.22,.61,.36,1)'},{scale:'1.4',offset:.5,easing:'ease-in-out'},{scale:'1.25',offset:.78,easing:'ease-in-out'},{scale:'1.3'}]);
       card.style.transition = 'transform .18s ease';          // 進入時放大是滑順的，之後跟隨滑鼠不加延遲
       setTimeout(() => (card.style.transition = ''), 180);
     });
