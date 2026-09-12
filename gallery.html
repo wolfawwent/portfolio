@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Models — wolfawwent's Model Dungeon</title>
+  <meta name="description" content="wolfawwent's portfolio of pixel / voxel 3D models." />
+
+  <!-- 像素字體（Google Fonts）：Press Start 2P 用在標題；內文使用本地 Departure Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+
+  <link rel="preload" href="assets/fonts/departure-mono.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Three.js 只用在 3D 模型預覽 -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body data-gallery="grid">
+
+  <!-- ===== Shader 背景 ===== -->
+  <canvas id="bg" aria-hidden="true"></canvas>
+
+  <!-- ===== 導覽列 ===== -->
+  <header class="nav">
+    <a class="nav__logo" href="index.html">WOLF<span class="blink">_</span></a>
+    <nav class="nav__links">
+      <a href="index.html#about">About</a>
+      <a href="index.html#models">Models</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+    <button class="nav__lang" id="langBtn" type="button" title="Language (coming soon)">EN</button>
+  </header>
+
+  <!--
+    圖鑑頁：gallery.html?type=entity 或 ?type=weapon
+    會把該類型的所有卡片排滿整頁（不是迴圈軌道）。card-gallery.js 看到 body 的 data-gallery="grid" 就走這個模式。
+  -->
+  <main id="top" class="gallery">
+    <section class="section gallery__section">
+      <a class="gallery__back" href="index.html#models">&larr; BACK</a>
+      <h2 class="section__title gallery__title" id="galleryTitle">All Models</h2>
+      <p class="section__hint gallery__count" id="galleryCount"></p>
+      <div class="shelf shelf--grid" id="galleryShelf" data-category="entity">
+        <div class="shelf__track" aria-label="All cards"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>© <span id="year"></span> wolfawwent</span>
+    <span class="footer__dot">·</span>
+    <span>built with html / css / js</span>
+  </footer>
+
+  <script>
+    // 從網址讀分類，設定標題（要在 card-gallery.js 之前執行）
+    (function () {
+      const type = (new URLSearchParams(location.search).get('type') || 'entity').toLowerCase().replace(/[^a-z0-9_-]/g, '');
+      const shelf = document.getElementById('galleryShelf');
+      shelf.dataset.category = type;
+      const label = type.charAt(0).toUpperCase() + type.slice(1);
+      document.getElementById('galleryTitle').textContent = label;
+      document.title = label + " — wolfawwent's Model Dungeon";
+    })();
+  </script>
+  <script src="js/bg.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/card-model-preview.js?v=watermark-1"></script>
+  <script src="js/card-gallery.js"></script>
+  <script src="js/dev-tools-link.js"></script>
+</body>
+</html>

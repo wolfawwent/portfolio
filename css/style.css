@@ -492,3 +492,35 @@ html.model-dialog-open { overflow: hidden; }
 .shelf__arrow[hidden]{display:none}
 @media(max-width:720px){.shelf__arrow{width:40px;height:60px;padding:8px}.shelf__arrow--left{left:4px}.shelf__arrow--right{right:4px}}
 @media(prefers-reduced-motion:reduce){.shelf__arrow{transition:none}}
+
+
+/* ===== 分類標題列 + SEE ALL ===== */
+.shelf__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 14px; }
+.shelf__head .shelf__title { margin: 0; }
+.shelf__all {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-pixel); font-size: 9px; letter-spacing: 1px;
+  color: var(--ghost); text-decoration: none; padding: 6px 2px;
+  border-bottom: 2px solid transparent; transition: border-color .15s steps(2), transform .15s steps(3);
+}
+.shelf__all svg { width: 9px; height: 13px; fill: currentColor; transform: scaleX(-1); filter: drop-shadow(2px 2px 0 #100d15); }
+.shelf__all:hover, .shelf__all:focus-visible { border-bottom-color: var(--ghost); transform: translateX(2px); outline: none; }
+
+/* ===== 圖鑑頁（gallery.html）===== */
+.gallery__section { padding-top: 120px; }
+.gallery__back {
+  display: inline-block; font-family: var(--font-pixel); font-size: 9px; letter-spacing: 1px;
+  color: var(--ghost); text-decoration: none; margin: 0 0 22px;
+}
+.gallery__back:hover { text-decoration: underline; }
+.gallery__count { margin-bottom: 20px; }
+.shelf--grid .shelf__track {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--card-w, 340px), 1fr));
+  justify-items: center; gap: 28px 12px;
+  overflow: visible; width: auto; margin-left: 0; padding: 14px 0 22px;
+  cursor: default; user-select: auto; -webkit-user-select: auto; touch-action: auto;
+}
+.shelf--grid .card--auto { flex: none; }
+@media (max-width: 720px) {
+  .shelf--grid .shelf__track { grid-template-columns: repeat(auto-fill, minmax(var(--card-w, 240px), 1fr)); }
+}

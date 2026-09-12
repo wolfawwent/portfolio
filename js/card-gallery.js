@@ -18,6 +18,9 @@
     folder: 'card/',
     PIN_LAST: ['Fulgora'],          // 這些名稱永遠排在該列最後（不分大小寫）；之後新增的卡片會排在它們前面
     PIN_FIRST: [],                  // 這些名稱永遠排在該列最前
+    START_AT: ['Fulgora'],          // 網頁載入時，該列左邊第一張完整的卡（不分大小寫；沒有就從第一張開始）
+    START_PEEK: 0.7,                // 它前一張（例如 Statue of God）在左邊露出多少（0 = 不露出、1 = 整張）；右邊被切的比例由視窗寬度決定
+    CATEGORIES: ['entity', 'weapon', 'item'],   // 卡片分類；新增分類時在這裡加，並在 index.html 加一個 .shelf
     FONT: 'Cubic11',                // 俐方體11號（assets/fonts/cubic11.ttf），中英文都有
     FONT_FILE: 'assets/fonts/cubic11.ttf',
     FONT_BASE: 12,                  // 俐方體 11 號在 12px 時每個像素剛好落在整數格上（實測零抗鋸齒）
@@ -31,7 +34,13 @@
 
   const shelves = [...document.querySelectorAll('.shelf[data-category]')];
   if (!shelves.length) return;
-  const trackOf = (cat) => (shelves.find((sh) => sh.dataset.category === cat) || shelves[0]).querySelector('.shelf__track');
+  // 圖鑑模式（gallery.html）：<body data-gallery="grid">。卡片排成網格、不做迴圈 / 拖曳 / 左右箭頭，
+  // 而且只放對應分類的卡片（其他分類直接略過）。
+  const GRID = document.body.dataset.gallery === 'grid';
+  const trackOf = (cat) => {
+    const sh = shelves.find((s) => s.dataset.category === cat) || (GRID ? null : shelves[0]);
+    return sh ? sh.querySelector('.shelf__track') : null;
+  };
   const TILT_MAX = 10;      // 傾斜最大角度（度），跟原本模板的卡片一樣
   const HOVER_SCALE = 1;    // 滑鼠移上去時放大倍率（1 = 不放大）
 
@@ -46,7 +55,8 @@
   })();
 
   // ---------- 名稱 ----------
-  const KNOWN = shelves.map((sh) => sh.dataset.category.toLowerCase());
+  // 所有分類（檔名 card_分類_名稱.png 的「分類」）。頁面上沒有對應 shelf 的分類，在圖鑑頁會被略過、在首頁歸到第一列
+  const KNOWN = [...new Set([...CONFIG.CATEGORIES, ...shelves.map((sh) => sh.dataset.category.toLowerCase())])];
   function parseFile(file) {
     const stem = file.replace(/\.[a-z0-9]+$/i, '').replace(/^card[_-]?/i, '');
     const parts = stem.split('_');
@@ -273,8 +283,8 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     track.addEventListener('lostpointercapture', end);
     // 滾輪不做左右捲動：列上滾滾輪就是正常捲頁面，卡片只靠拖曳 / 觸控滑動移動
   }
-  shelves.forEach((sh) => attachDragScroll(sh.querySelector('.shelf__track')));
-  shelves.forEach((shelf,index)=>{
+  if (!GRID) shelves.forEach((sh) => attachDragScroll(sh.querySelector('.shelf__track')));
+  if (!GRID) shelves.forEach((shelf,index)=>{
     const track=shelf.querySelector('.shelf__track');
     const viewport=document.createElement('div');viewport.className='shelf__viewport';
     track.before(viewport);viewport.append(track);track.id=track.id||`card-track-${index}`;
@@ -352,7 +362,7 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
   // 最後一張（例如 Fulgora）會出現在第一張（Kazek）前面。
   function setupLoop(track, list) {
     track.replaceChildren();
-    if (list.length < 2) { list.forEach((f) => track.append(makeCard(f))); return; }
+    if (GRID || list.length < 2) { list.forEach((f) => track.append(makeCard(f))); return; }
 
     // 需要幾份：至少 3 份，而且每份加起來要比視窗寬 2 倍以上，這樣任何時候左右都有卡片
     const cardW = parseFloat(getComputedStyle(track.querySelector('.card--auto') || document.body).getPropertyValue('--card-w')) || 340;
@@ -373,7 +383,19 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
       return a && b ? b.offsetLeft - a.offsetLeft : 0;
     };
     const mid = Math.floor(reps / 2);
-    const goMiddle = () => { const p = period(); if (p) track.scrollLeft = p * mid; };
+    // 初始位置：中間那份的 START_AT 那張卡對齊內容欄左邊（找不到就用該份第一張）
+    const startName = CONFIG.START_AT.map((n) => n.trim().toLowerCase());
+    const goMiddle = () => {
+      const p = period(); if (!p) return;
+      const first = track.querySelector('[data-rep="0"]');
+      const cards = [...track.querySelectorAll(`[data-rep="${mid}"]`)];
+      const target = cards.find((c) => startName.includes((c.dataset.name || '').trim().toLowerCase())) || cards[0];
+      if (!target || !first) { track.scrollLeft = p * mid; return; }
+      // 對齊內容欄左邊，再往左推一點讓前一張露出 START_PEEK
+      const pad = parseFloat(getComputedStyle(track).paddingLeft) || 0;
+      const peek = Math.min(1, Math.max(0, CONFIG.START_PEEK)) * target.offsetWidth + 12;
+      track.scrollLeft = target.offsetLeft - first.offsetLeft + Math.max(0, pad - peek);
+    };
     // 捲到第一份或最後一份時，位移一份的寬度（畫面完全不變，因為每份長得一樣）
     track.addEventListener('scroll', () => {
       const p = period(); if (!p) return;
@@ -399,6 +421,7 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     for (const file of files) {
       const { category } = parseFile(file);
       const track = trackOf(category);
+      if (!track) continue;
       if (!byTrack.has(track)) byTrack.set(track, []);
       byTrack.get(track).push(file);
     }
@@ -412,6 +435,9 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     }
     shelves.forEach((sh) => sh.querySelector('.shelf__track').replaceChildren());
     for (const [track, list] of byTrack) setupLoop(track, list);
+    // 圖鑑頁：顯示張數
+    const count = document.getElementById('galleryCount');
+    if (count) { const n = [...byTrack.values()].reduce((a, l) => a + l.length, 0); count.textContent = n ? `${n} model${n === 1 ? '' : 's'} · click a card to preview` : 'no cards yet'; }
 
     // 視窗縮放 / 版面變動時重新排版名字
     let raf = 0;
