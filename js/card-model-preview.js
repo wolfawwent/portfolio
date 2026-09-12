@@ -8,14 +8,13 @@
   const title = dialog.querySelector('h2');
   const stage = dialog.querySelector('.model-dialog__stage');
   const status = dialog.querySelector('[role="status"]');
-  let runtime, manifest, active, generation = 0, opener;
+  let runtime, active, generation = 0, opener;
   const safeName = name => name.trim().replace(/[<>:"/\\|?*]/g, '_').replace(/[ .]+$/g, '');
   async function records() {
-    if (!manifest) manifest = fetch('assets/cards/manifest.json', {cache:'no-cache'}).then(r => {
+    return fetch('/assets/cards/manifest.json', {cache:'no-store'}).then(r => {
       if (!r.ok) throw Error('Model catalogue unavailable.');
       return r.json();
-    }).catch(e => { manifest = null; throw e; });
-    return manifest;
+    });
   }
   function stop() { if (active) { active.pause(); active.removeAttribute('src'); active.remove(); active = null; } }
   function closePreview() {
@@ -52,7 +51,7 @@
       }) : [];
       if (matches.length !== 1) { status.textContent = 'Model preview is not available for this card yet.';return; }
       const record = matches[0];
-      const {applyPreviewCamera,previewOrbit,setPreviewPlayback} = await import('./model-preview-settings.js');
+      const {applyPreviewCamera,setPreviewPlayback} = await import('./model-preview-settings.js?v=pan-2');
       if (!runtime) runtime = import('../assets/vendor/model-viewer-4.3.1.min.js').catch(e => { runtime = null;throw e; });
       await runtime;await customElements.whenDefined('model-viewer');
       if (token !== generation || !dialog.open) return;
@@ -75,7 +74,7 @@
       viewer.addEventListener('error', () => { if (token === generation) status.textContent = 'Unable to load this model. Please close and try again.'; });
       stage.replaceChildren(viewer);viewer.src = record.model;
     } catch (e) {
-      if (token === generation && dialog.open) status.textContent = 'Unable to load the preview. Please close and try again.';
+      if (token === generation && dialog.open) {stop();status.textContent = 'Unable to load the preview. Please close and try again.';}
       console.warn('[model preview]', e);
     }
   };
