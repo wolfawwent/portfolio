@@ -22,7 +22,7 @@
 
     // --- 火把 ---
     LIGHT_RADIUS: 240,         // 亮起的半徑（CSS 像素）
-    LIGHT_STRENGTH: 0.10,      // 亮度上限（0.10 = 最亮處加 10%，很含蓄）
+    LIGHT_STRENGTH: 0.05,      // 柔和的游標火光
     LIGHT_COLOR: [1.0, 0.72, 0.42],   // 火光暖色
     LIGHT_FLICKER: 0.25,       // 閃爍幅度 0~1（0 = 不閃）
     LIGHT_FOLLOW: 0.12,        // 游標跟隨的平滑程度（越小越慢越柔）
@@ -32,8 +32,8 @@
     FLY_SIZE: [3, 8],          // 方塊（內核）邊長範圍（CSS 像素）；外圈會再大一倍
     FLY_SPEED: [12, 30],       // 飛行速度範圍（CSS 像素 / 秒）
     FLY_COLOR: [0.45, 0.85, 1.0],     // 方塊顏色（鬼火藍）
-    FLY_GLOW_RADIUS: 70,       // 照亮磚塊的半徑（CSS 像素）
-    FLY_GLOW_STRENGTH: 0.16,   // 照亮強度
+    FLY_GLOW_RADIUS: 130,      // 照亮磚塊的半徑（CSS 像素）
+    FLY_GLOW_STRENGTH: 0.11,   // 較寬、較柔和的光暈
   };
   const FLY_MAX = 16;
 
@@ -87,6 +87,8 @@
       tt.y = -tt.y;
       vec4 t = texture2D(u_tile, sharpUV(tt));   // 已預乘 alpha
       col = col * (1.0 - t.a) + t.rgb * u_tint;
+      // Lift deep shadows and soften brick contrast, without changing the cards.
+      col = vec3(0.075, 0.078, 0.102) + col * 0.28;
 
       // 火把：只照亮磚塊（t.a），由中心往外平滑衰減
       float d = distance(gl_FragCoord.xy, u_light) / u_lightRadius;

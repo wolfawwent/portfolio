@@ -232,7 +232,7 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
   function attachTilt(card) {
     let bounce;
     const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const animate=(el,frames)=>el.animate(frames,{duration:240,easing:'linear'});
+    const animate=(el,frames)=>el.animate(frames,{duration:120,easing:'linear'});
     function release(){
       bounce?.cancel();card.classList.remove('is-hovered');card.style.scale='';
       if(!reduced())bounce=animate(card,[{scale:'1.3'},{scale:'.98',offset:.65},{scale:'1'}]);
