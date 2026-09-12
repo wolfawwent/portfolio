@@ -16,6 +16,8 @@
   const CONFIG = {
     list: 'card/cards.json',
     folder: 'card/',
+    PIN_LAST: ['Fulgora'],          // 這些名稱永遠排在該列最後（不分大小寫）；之後新增的卡片會排在它們前面
+    PIN_FIRST: [],                  // 這些名稱永遠排在該列最前
     FONT: 'Cubic11',                // 俐方體11號（assets/fonts/cubic11.ttf），中英文都有
     FONT_FILE: 'assets/fonts/cubic11.ttf',
     FONT_BASE: 12,                  // 俐方體 11 號在 12px 時每個像素剛好落在整數格上（實測零抗鋸齒）
@@ -399,6 +401,14 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
       const track = trackOf(category);
       if (!byTrack.has(track)) byTrack.set(track, []);
       byTrack.get(track).push(file);
+    }
+    // 固定排在最前 / 最後的卡片
+    const norm = (v) => v.trim().toLowerCase();
+    const first = CONFIG.PIN_FIRST.map(norm), last = CONFIG.PIN_LAST.map(norm);
+    for (const [track, list] of byTrack) {
+      const rank = (f) => { const n = norm(parseFile(f).name); if (first.includes(n)) return -1; if (last.includes(n)) return 1; return 0; };
+      list.sort((a, b) => rank(a) - rank(b));   // 穩定排序：同一組內維持原本順序
+      byTrack.set(track, list);
     }
     shelves.forEach((sh) => sh.querySelector('.shelf__track').replaceChildren());
     for (const [track, list] of byTrack) setupLoop(track, list);
