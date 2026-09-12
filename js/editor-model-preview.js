@@ -1,4 +1,4 @@
-import {applyPreviewCamera,previewOrbit,setPreviewPlayback} from './model-preview-settings.js?v=pan-2';
+import {applyPreviewCamera,previewOrbit,setPreviewPlayback} from './model-preview-settings.js?v=watermark-1';
 export function createEditorPreview(host,status,getConfig){
   let popup=null;
   function sync(model=false){if(popup&&!popup.closed)popup.postMessage({type:'card-preview',config:getConfig(),...(model?{buffer}: {})},location.origin);}

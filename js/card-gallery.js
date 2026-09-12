@@ -158,14 +158,35 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     const dpr = window.devicePixelRatio || 1;
     const s = rect.width / plate.imgW;                // 1 卡片像素 = s CSS 像素
     const plateWdev = plate.w * s * dpr, plateHdev = plate.h * s * dpr;
+    // Keep lettering inside the orange face, below the gold highlight.
+    const textTop = plate.y + plate.h * .22;
+    const textHeight = plate.h * .68;
 
-    const base = renderName(card._name, 1);           // 1:1 點陣
     // Compact cards use a smaller common size, rather than enlarging short names.
     const targetScale = img.clientWidth < 300 ? CONFIG.COMPACT_SCALE : CONFIG.TEXT_SCALE;
     let k = Math.max(1, Math.round(targetScale * dpr));
-    while (k > 1 && (base.width * k > plateWdev * 0.9 || base.height * k > plateHdev * 0.85)) k--;
-
-    const tile = renderName(card._name, k);
+    function wrapName(scale){
+      const lines=[];let line='';
+      for(const word of card._name.trim().split(/\s+/)){
+        const next=line?line+' '+word:word;
+        if(line&&renderName(next,scale).width>plateWdev*.9){lines.push(line);line=word;}else line=next;
+      }
+      if(line)lines.push(line);
+      return lines.map(text=>renderName(text,scale));
+    }
+    let tiles;
+    for(;;){
+      tiles=wrapName(k);
+      const height=tiles.reduce((sum,t)=>sum+t.height,0)+Math.max(0,tiles.length-1)*k*2;
+      if(k===1||(height<=textHeight*s*dpr&&tiles.every(t=>t.width<=plateWdev*.9)))break;
+      k--;
+    }
+    const tile=document.createElement('canvas');
+    tile.width=Math.max(1,...tiles.map(t=>t.width));
+    tile.height=tiles.reduce((sum,t)=>sum+t.height,0)+Math.max(0,tiles.length-1)*k*2;
+    const composed=tile.getContext('2d');composed.imageSmoothingEnabled=false;
+    let lineY=0;for(const line of tiles){composed.drawImage(line,Math.round((tile.width-line.width)/2),lineY);lineY+=line.height+k*2;}
+    label.dataset.lines=String(tiles.length);
     label.dataset.pixelScale = String(k);
     label.width = tile.width; label.height = tile.height;
     const lctx = label.getContext('2d');
@@ -175,7 +196,7 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
 
     // CSS 尺寸 = 裝置像素 / dpr，位置對齊到裝置像素
     const wCss = tile.width / dpr, hCss = tile.height / dpr;
-    const cx = (plate.x + plate.w / 2) * s, cy = (plate.y + plate.h / 2) * s;   // CSS px（相對 img 左上）
+    const cx = (plate.x + plate.w / 2) * s, cy = (textTop + textHeight / 2) * s;   // CSS px（相對 img 左上）
     const snap = (v) => Math.round(v * dpr) / dpr;
     Object.assign(label.style, {
       left: snap(cx - wCss / 2) + 'px', top: snap(cy - hCss / 2) + 'px',

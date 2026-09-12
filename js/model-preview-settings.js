@@ -13,6 +13,7 @@ export function applyPreviewCamera(viewer,config){
   viewer.jumpCameraToGoal();
 }
 export function previewOrbit(config){return `${config.previewYaw??25}deg ${90-(config.previewElevation??15)}deg ${config.previewDistance??115}%`;}
+export function previewStatusText(animation,config){return `${animation||'Static preview'} · Fixed camera${config.watermark?.trim()?' · '+config.watermark.trim():''}`;}
 export function previewAnimation(names,index=-2){
   if(index===-1)return null;
   if(index>=0)return names[index]??null;

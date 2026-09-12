@@ -98,5 +98,32 @@
       "animationIndex": 0,
       "playing": true
     }
+  },
+  {
+    "id": "4d73ae13-93c6-4c27-886a-e67086981f2b",
+    "name": "Prisoner of Duality",
+    "model": "assets/models/4d73ae13-93c6-4c27-886a-e67086981f2b-f14de92b2ccd47c8bc3ef49d5bb9db99.glb",
+    "image": "assets/cards/4d73ae13-93c6-4c27-886a-e67086981f2b-f14de92b2ccd47c8bc3ef49d5bb9db99.png",
+    "config": {
+      "category": "entity",
+      "x": -13.7,
+      "y": 1.7,
+      "z": -1.7,
+      "scale": 1.14,
+      "yaw": -135,
+      "pitch": -4,
+      "roll": 0,
+      "time": 0.69,
+      "watermarkColor": "#fbf5e4",
+      "watermark": "© COVER",
+      "previewYaw": 130,
+      "previewElevation": 20,
+      "previewDistance": 63,
+      "previewPanX": 14,
+      "previewPanY": -6,
+      "previewAnimationIndex": 1,
+      "animationIndex": 2,
+      "playing": false
+    }
   }
 ]

@@ -51,7 +51,7 @@
       }) : [];
       if (matches.length !== 1) { status.textContent = 'Model preview is not available for this card yet.';return; }
       const record = matches[0];
-      const {applyPreviewCamera,setPreviewPlayback} = await import('./model-preview-settings.js?v=pan-2');
+      const {applyPreviewCamera,setPreviewPlayback,previewStatusText} = await import('./model-preview-settings.js?v=watermark-1');
       if (!runtime) runtime = import('../assets/vendor/model-viewer-4.3.1.min.js').catch(e => { runtime = null;throw e; });
       await runtime;await customElements.whenDefined('model-viewer');
       if (token !== generation || !dialog.open) return;
@@ -59,7 +59,7 @@
       viewer.setAttribute('alt', `${record.name} — fixed-angle model preview`);
       // No camera-controls, auto-rotate, AR, or autoplay: never start a default clip.
       applyPreviewCamera(viewer,record.config || {});
-      if(localPreview)window.updateEditorCardPreview=config=>{record.config=config;title.textContent=config.name||'模型預覽';applyPreviewCamera(viewer,config);if(viewer.loaded&&viewer.dataset.previewIndex!==String(config.previewAnimationIndex)){setPreviewPlayback(viewer,config);viewer.dataset.previewIndex=String(config.previewAnimationIndex);}};
+      if(localPreview)window.updateEditorCardPreview=config=>{record.config=config;title.textContent=config.name||'模型預覽';applyPreviewCamera(viewer,config);if(viewer.loaded&&viewer.dataset.previewIndex!==String(config.previewAnimationIndex)){setPreviewPlayback(viewer,config);viewer.dataset.previewIndex=String(config.previewAnimationIndex);}if(viewer.loaded)status.textContent=previewStatusText(viewer.dataset.playingAnimation,config);};
       viewer.setAttribute('field-of-view', '30deg');
       viewer.setAttribute('interaction-prompt', 'none');
       viewer.setAttribute('disable-zoom', '');viewer.setAttribute('disable-pan', '');viewer.setAttribute('disable-tap', '');
@@ -68,7 +68,7 @@
       viewer.addEventListener('load', () => {
         if (token !== generation || viewer !== active || !dialog.open) return;
         const animation = setPreviewPlayback(viewer, record.config || {});
-        status.textContent = animation ? `${animation} · Fixed camera` : 'Static preview · Fixed camera';
+        status.textContent = previewStatusText(animation,record.config || {});
         applyPreviewCamera(viewer,record.config || {});
       });
       viewer.addEventListener('error', () => { if (token === generation) status.textContent = 'Unable to load this model. Please close and try again.'; });
