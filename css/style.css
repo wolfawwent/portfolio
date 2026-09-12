@@ -539,3 +539,21 @@ html.model-dialog-open { overflow: hidden; }
 
 /* 預覽視窗狀態列沒有內容時整條隱藏 */
 .model-dialog__status:empty { display: none; }
+
+/* Dungeon category plaques */
+
+.shelf__head{min-height:66px;padding:12px 18px;gap:24px;background:linear-gradient(90deg,rgba(39,31,43,.97),rgba(27,26,36,.94));border-top:2px solid #776147;border-bottom:2px solid #3d3540;box-shadow:0 4px 0 rgba(10,10,17,.4);isolation:isolate}
+.shelf__head .shelf__title{display:flex;align-items:center;gap:16px;background:none;box-shadow:none;color:#e4cf9f;padding:0;text-transform:uppercase;letter-spacing:2px;font-size:18px;order:1}
+.shelf__head .shelf__title::before{content:'';width:10px;height:10px;background:#bfa16a;box-shadow:0 -4px #65513e,0 4px #65513e,-4px 0 #65513e,4px 0 #65513e;margin:0 4px}
+.shelf__head::after{content:'';flex:1;height:2px;background:linear-gradient(90deg,#695540,rgba(105,85,64,.15));order:2}
+.shelf__head .shelf__all{order:3;font-size:14px;color:#b0c8cc;letter-spacing:1px;padding:8px 12px;border:1px solid #4c5058;background:#24232e;gap:10px;white-space:nowrap}
+.shelf__head .shelf__all svg{width:9px;height:13px;filter:none}
+
+.shelf__head .shelf__all:hover,.shelf__head .shelf__all:focus-visible{color:#e7f2ef;background:#30313c;border-color:#91b6be;transform:none}
+.shelf__head .shelf__all:focus-visible{outline:2px solid #b0c8cc;outline-offset:3px}
+@media(max-width:720px){
+ .shelf__head{min-height:58px;padding:10px 12px;gap:12px}
+ .shelf__head .shelf__title{font-size:12px;letter-spacing:1px;gap:10px}
+ .shelf__head .shelf__all{font-size:10px;letter-spacing:0;padding:8px;gap:6px}
+ .shelf__head .shelf__all svg{width:8px;height:12px}
+}
