@@ -125,5 +125,32 @@
       "animationIndex": 2,
       "playing": false
     }
+  },
+  {
+    "id": "687161a1-980b-45c5-9790-c29ee67cb5b4",
+    "name": "Yveltal",
+    "model": "assets/models/687161a1-980b-45c5-9790-c29ee67cb5b4-1dc6c42c6b78476ebdab0be5310e6766.glb",
+    "image": "assets/cards/687161a1-980b-45c5-9790-c29ee67cb5b4-1dc6c42c6b78476ebdab0be5310e6766.png",
+    "config": {
+      "category": "entity",
+      "x": 1.2,
+      "y": 0.9,
+      "z": 9.8,
+      "scale": 0.95,
+      "yaw": 133,
+      "pitch": 0,
+      "roll": 0,
+      "time": 0,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "previewYaw": -139,
+      "previewElevation": 4,
+      "previewDistance": 65,
+      "previewPanX": -17,
+      "previewPanY": 17,
+      "previewAnimationIndex": 2,
+      "animationIndex": 0,
+      "playing": true
+    }
   }
 ]
