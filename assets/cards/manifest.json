@@ -206,5 +206,32 @@
       "animationIndex": 0,
       "playing": false
     }
+  },
+  {
+    "id": "f29b554d-9420-451a-b33f-3ba2954cbc29",
+    "name": "Arcane staff",
+    "model": "assets/models/f29b554d-9420-451a-b33f-3ba2954cbc29-19729bead02b402d8c74b24926c07b60.glb",
+    "image": "assets/cards/f29b554d-9420-451a-b33f-3ba2954cbc29-19729bead02b402d8c74b24926c07b60.png",
+    "config": {
+      "category": "entity",
+      "x": 0,
+      "y": 0,
+      "z": 20.2,
+      "scale": 0.83,
+      "yaw": 4,
+      "pitch": -10,
+      "roll": 0,
+      "time": 2.46,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "previewYaw": -154,
+      "previewElevation": -38,
+      "previewDistance": 39,
+      "previewPanX": 3,
+      "previewPanY": -12,
+      "previewAnimationIndex": -2,
+      "animationIndex": 0,
+      "playing": false
+    }
   }
 ]
