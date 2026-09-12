@@ -84,10 +84,21 @@
       else if (bottom >= 0) break;
     }
     if (bottom < 0) return null;
-    // 3. 在這段列裡找左右邊
-    let minX = 1e9, maxX = -1;
-    for (let y = top; y <= bottom; y++) for (let x = 0; x < c.width; x++) if (gold(x, y)) { if (x < minX) minX = x; if (x > maxX) maxX = x; }
-    return { x: minX * step, y: top * step, w: (maxX - minX + 1) * step, h: (bottom - top + 1) * step, imgW: w, imgH: h };
+    // Use the main continuous bar on each row, not isolated gold on the model.
+    // Median edges discard occasional rows where nearby artwork joins the bar.
+    const lefts=[],rights=[];
+    for(let y=top;y<=bottom;y++){
+      let start=-1,bestStart=0,bestEnd=0;
+      for(let x=0;x<=c.width;x++){
+        if(x<c.width&&gold(x,y)){if(start<0)start=x;}
+        else if(start>=0){if(x-start>bestEnd-bestStart){bestStart=start;bestEnd=x;}start=-1;}
+      }
+      if(bestEnd-bestStart>=c.width*.15){lefts.push(bestStart);rights.push(bestEnd);}
+    }
+    if(!lefts.length)return null;
+    const median=values=>values.sort((a,b)=>a-b)[Math.floor(values.length/2)];
+    const left=median(lefts),right=median(rights);
+    return { x: left * step, y: top * step, w: (right-left) * step, h: (bottom - top + 1) * step, imgW: w, imgH: h };
   }
 
   // ---------- 畫名稱（整數倍率的像素字）----------
