@@ -569,5 +569,65 @@
       "animationIndex": 0,
       "playing": false
     }
+  },
+  {
+    "id": "45c5e8b5-1355-426d-b542-d336673ff68d",
+    "name": "Mooncake",
+    "model": "assets/models/45c5e8b5-1355-426d-b542-d336673ff68d-4e59b536375a469da2334f007cab74d4.glb",
+    "image": "assets/cards/45c5e8b5-1355-426d-b542-d336673ff68d-4e59b536375a469da2334f007cab74d4.png",
+    "config": {
+      "category": "item",
+      "x": -0.8,
+      "y": -4.1,
+      "z": 13.5,
+      "scale": 0.27,
+      "yaw": 131,
+      "pitch": -28,
+      "roll": 17,
+      "time": 0,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "glow": 1,
+      "glowRadius": 18,
+      "blend": false,
+      "previewYaw": -151,
+      "previewElevation": 36,
+      "previewDistance": 168,
+      "previewPanX": -18,
+      "previewPanY": 13,
+      "previewAnimationIndex": 0,
+      "animationIndex": 0,
+      "playing": false
+    }
+  },
+  {
+    "id": "c1d6a89c-b66e-4cc9-ad2c-14ec1437e2f9",
+    "name": "kebab",
+    "model": "assets/models/c1d6a89c-b66e-4cc9-ad2c-14ec1437e2f9-a2e057358dd94415bda6d6972c06a4c0.glb",
+    "image": "assets/cards/c1d6a89c-b66e-4cc9-ad2c-14ec1437e2f9-a2e057358dd94415bda6d6972c06a4c0.png",
+    "config": {
+      "category": "item",
+      "x": 1.2,
+      "y": -1.8,
+      "z": 13.5,
+      "scale": 0.81,
+      "yaw": 150,
+      "pitch": 7,
+      "roll": 17,
+      "time": 0,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "glow": 1,
+      "glowRadius": 18,
+      "blend": false,
+      "previewYaw": -151,
+      "previewElevation": 15,
+      "previewDistance": 100,
+      "previewPanX": 1,
+      "previewPanY": 1,
+      "previewAnimationIndex": 0,
+      "animationIndex": 0,
+      "playing": false
+    }
   }
 ]
