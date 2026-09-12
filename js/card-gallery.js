@@ -19,9 +19,9 @@
     FONT: 'Cubic11',                // 俐方體11號（assets/fonts/cubic11.ttf），中英文都有
     FONT_FILE: 'assets/fonts/cubic11.ttf',
     FONT_BASE: 12,                  // 俐方體 11 號在 12px 時每個像素剛好落在整數格上（實測零抗鋸齒）
-    TEXT_COLOR: '#352133',          // 名牌上的字色（深紫棕）
-    TEXT_SCALE: 3,                  // 文字 1 像素 ≈ 卡片圖的幾個像素（卡片圖 1000px 寬；3 ≈ 卡片工具烙字的比例）
-    MIN_TEXT_PX: 3,                 // 文字 1 像素最少佔幾個螢幕像素（太小會不明顯；名牌塞不下會自動降）
+    TEXT_COLOR: '#2b1a13',          // 深棕色，搭配金色名牌
+    TEXT_SCALE: 2,                  // 桌面：原生字形的 2 倍；不因短名稱額外放大
+    COMPACT_SCALE: 1,               // 小卡片統一使用原生字形，避免長短名稱大小不同
     // 金色判定範圍（RGB）：名牌是亮金 + 較深的橘邊
     isGold: (r, g, b) => r > 170 && g > 110 && g < 215 && b < 120 && r - b > 90,
   };
@@ -33,11 +33,13 @@
   const HOVER_SCALE = 1;    // 滑鼠移上去時放大倍率（1 = 不放大）
 
   // ---------- 字體 ----------
+  let fontLoaded = false;
   const fontReady = (async () => {
     try {
       const face = new FontFace(CONFIG.FONT, `url(${CONFIG.FONT_FILE})`);
       await face.load(); document.fonts.add(face);
     } catch (e) { console.warn('[cards] 字體載入失敗，改用備用字體', e); }
+    finally { fontLoaded = true; }
   })();
 
   // ---------- 名稱 ----------
@@ -110,7 +112,7 @@
     let minX = width, minY = height, maxX = -1, maxY = -1;
     for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
       const i = (y * width + x) * 4 + 3;
-      if (d[i] >= 128) { d[i] = 255; if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y; }
+      if (d[i] >= 128) { d[i] = 255; d[i-3]=0x2b; d[i-2]=0x1a; d[i-1]=0x13; if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y; }
       else d[i] = 0;
     }
     pen.putImageData(bmp, 0, 0);
@@ -128,11 +130,10 @@
 
   // 把名字放到名牌正中央。
   // 目標：文字的每個像素都是「整數個螢幕像素」的正方形（這樣才不會糊、比例才不會跑掉）。
-  // 先算出「TEXT_SCALE 個卡片像素」在螢幕上等於幾個裝置像素，四捨五入成整數 k，
-  // 再以 k 倍把點陣畫進 canvas，canvas 的 CSS 尺寸 = 裝置像素 / dpr，位置也對齊到裝置像素。
+  // 同一尺寸卡片使用相同目標倍率，再依裝置像素比取整數；不拉伸字形。
   function layoutName(card) {
     const plate = card._plate, label = card._label, img = card._img;
-    if (!plate || !label || !img) return;
+    if (!fontLoaded || !plate || !label || !img) return;
     const rect = img.getBoundingClientRect();
     if (rect.width === 0) return;
     const dpr = window.devicePixelRatio || 1;
@@ -140,12 +141,13 @@
     const plateWdev = plate.w * s * dpr, plateHdev = plate.h * s * dpr;
 
     const base = renderName(card._name, 1);           // 1:1 點陣
-    // 理想倍率（裝置像素）→ 整數；至少 MIN_TEXT_PX，塞不下名牌再往下降
-    let k = Math.round(CONFIG.TEXT_SCALE * s * dpr);
-    k = Math.max(k, CONFIG.MIN_TEXT_PX);
+    // Compact cards use a smaller common size, rather than enlarging short names.
+    const targetScale = img.clientWidth < 300 ? CONFIG.COMPACT_SCALE : CONFIG.TEXT_SCALE;
+    let k = Math.max(1, Math.round(targetScale * dpr));
     while (k > 1 && (base.width * k > plateWdev * 0.9 || base.height * k > plateHdev * 0.85)) k--;
 
     const tile = renderName(card._name, k);
+    label.dataset.pixelScale = String(k);
     label.width = tile.width; label.height = tile.height;
     const lctx = label.getContext('2d');
     lctx.imageSmoothingEnabled = false;
