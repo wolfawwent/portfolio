@@ -158,10 +158,10 @@ img { max-width: 100%; display: block; }
   margin: 0 0 24px; line-height: 1.25; color: var(--cream);
   text-shadow: 4px 4px 0 var(--maroon), 8px 8px 0 var(--ink);
 }
-/* 標題上方的小字「wolfawwent's」 */
-.hero__owner {
-  display: block; margin-bottom: 0.55em;
-  font-size: 0.38em; letter-spacing: 1px; color: var(--cream-2);
+/* 標題下方的副標「Model Dungeon」 */
+.hero__sub-title {
+  display: block; margin-top: 0.6em;
+  font-size: 0.42em; letter-spacing: 1px; color: var(--cream-2);
   text-shadow: 3px 3px 0 var(--ink);
 }
 .hero__sub { min-height: 1.5em; color: var(--cream-2); font-size: 28px; margin: 0 0 40px; }
