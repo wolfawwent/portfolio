@@ -34,15 +34,17 @@
     if (document.hidden) active.pause();
     else if (dialog.open && active.dataset.playingAnimation) active.play();
   });
-  window.openCardPreview = async card => {
+  window.openCardPreview = async (card, editorRecord=null) => {
     const token = ++generation;stop();opener = card;
     title.textContent = card.dataset.name;status.textContent = 'Loading model…';
     if (!dialog.open) dialog.showModal();
     document.documentElement.classList.add('model-dialog-open');
     try {
-      const items = await records();
+      const localPreview=location.pathname==='/__editor/preview.html'&&['127.0.0.1','localhost'].includes(location.hostname);
+      const items = localPreview&&editorRecord ? [editorRecord] : await records();
       if (token !== generation || !dialog.open) return;
       const matches = Array.isArray(items) ? items.filter(item => {
+        if (localPreview&&item===editorRecord) return true;
         if (typeof item?.name !== 'string' || !/^assets\/models\/[a-z0-9-]+\.glb$/i.test(item.model || '')) return false;
         const category = item.config?.category || 'entity';
         const file = `card_${category}_${safeName(item.name)}.png`;
@@ -50,14 +52,15 @@
       }) : [];
       if (matches.length !== 1) { status.textContent = 'Model preview is not available for this card yet.';return; }
       const record = matches[0];
-      const {previewOrbit,setPreviewPlayback} = await import('./model-preview-settings.js');
+      const {applyPreviewCamera,previewOrbit,setPreviewPlayback} = await import('./model-preview-settings.js');
       if (!runtime) runtime = import('../assets/vendor/model-viewer-4.3.1.min.js').catch(e => { runtime = null;throw e; });
       await runtime;await customElements.whenDefined('model-viewer');
       if (token !== generation || !dialog.open) return;
       const viewer = document.createElement('model-viewer');active = viewer;
       viewer.setAttribute('alt', `${record.name} — fixed-angle model preview`);
       // No camera-controls, auto-rotate, AR, or autoplay: never start a default clip.
-      viewer.setAttribute('camera-orbit', previewOrbit(record.config || {}));
+      applyPreviewCamera(viewer,record.config || {});
+      if(localPreview)window.updateEditorCardPreview=config=>{record.config=config;title.textContent=config.name||'模型預覽';applyPreviewCamera(viewer,config);if(viewer.loaded&&viewer.dataset.previewIndex!==String(config.previewAnimationIndex)){setPreviewPlayback(viewer,config);viewer.dataset.previewIndex=String(config.previewAnimationIndex);}};
       viewer.setAttribute('field-of-view', '30deg');
       viewer.setAttribute('interaction-prompt', 'none');
       viewer.setAttribute('disable-zoom', '');viewer.setAttribute('disable-pan', '');viewer.setAttribute('disable-tap', '');
@@ -67,7 +70,7 @@
         if (token !== generation || viewer !== active || !dialog.open) return;
         const animation = setPreviewPlayback(viewer, record.config || {});
         status.textContent = animation ? `${animation} · Fixed camera` : 'Static preview · Fixed camera';
-        viewer.jumpCameraToGoal();
+        applyPreviewCamera(viewer,record.config || {});
       });
       viewer.addEventListener('error', () => { if (token === generation) status.textContent = 'Unable to load this model. Please close and try again.'; });
       stage.replaceChildren(viewer);viewer.src = record.model;

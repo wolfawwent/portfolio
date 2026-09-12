@@ -2,8 +2,8 @@
   {
     "id": "9308706d-9622-4e53-989e-1424914d04f4",
     "name": "Kazek",
-    "model": "assets/models/9308706d-9622-4e53-989e-1424914d04f4-72e2c268a5f44e9bacb32178c635bf66.glb",
-    "image": "assets/cards/9308706d-9622-4e53-989e-1424914d04f4-72e2c268a5f44e9bacb32178c635bf66.png",
+    "model": "assets/models/9308706d-9622-4e53-989e-1424914d04f4-375862773cba44b79e3a3293899916d5.glb",
+    "image": "assets/cards/9308706d-9622-4e53-989e-1424914d04f4-375862773cba44b79e3a3293899916d5.png",
     "config": {
       "category": "entity",
       "x": 1.4,
@@ -14,9 +14,11 @@
       "pitch": 0,
       "roll": 0,
       "time": 1.6662999999999992,
-      "previewYaw": 146,
-      "previewElevation": 8,
-      "previewDistance": 63,
+      "previewYaw": 156,
+      "previewElevation": -1,
+      "previewDistance": 100,
+      "previewPanX": -10,
+      "previewPanY": -10,
       "previewAnimationIndex": -2,
       "animationIndex": 0,
       "playing": false
@@ -25,8 +27,8 @@
   {
     "id": "af7ebecb-8f10-4aa5-bd9b-42dc113e9af6",
     "name": "Shotgun",
-    "model": "assets/models/af7ebecb-8f10-4aa5-bd9b-42dc113e9af6-8b9e651774f54143bf5ed4efbd102a34.glb",
-    "image": "assets/cards/af7ebecb-8f10-4aa5-bd9b-42dc113e9af6-8b9e651774f54143bf5ed4efbd102a34.png",
+    "model": "assets/models/af7ebecb-8f10-4aa5-bd9b-42dc113e9af6-73662e3fc762431dae7682ad128e14d1.glb",
+    "image": "assets/cards/af7ebecb-8f10-4aa5-bd9b-42dc113e9af6-73662e3fc762431dae7682ad128e14d1.png",
     "config": {
       "category": "weapon",
       "x": -0.345822102425876,
@@ -40,6 +42,8 @@
       "previewYaw": -126,
       "previewElevation": 22,
       "previewDistance": 96,
+      "previewPanX": -7,
+      "previewPanY": 8,
       "previewAnimationIndex": -2,
       "animationIndex": -1,
       "playing": true
@@ -48,8 +52,8 @@
   {
     "id": "97fb1394-9e57-47f2-94b7-bfb053f4e818",
     "name": "Emberclaw",
-    "model": "assets/models/97fb1394-9e57-47f2-94b7-bfb053f4e818-bd3fe6d1e8ca43e48c7f68657391f006.glb",
-    "image": "assets/cards/97fb1394-9e57-47f2-94b7-bfb053f4e818-bd3fe6d1e8ca43e48c7f68657391f006.png",
+    "model": "assets/models/97fb1394-9e57-47f2-94b7-bfb053f4e818-13c183c4c80945589645831b7745be0f.glb",
+    "image": "assets/cards/97fb1394-9e57-47f2-94b7-bfb053f4e818-13c183c4c80945589645831b7745be0f.png",
     "config": {
       "category": "entity",
       "x": -10.5,
@@ -60,9 +64,11 @@
       "pitch": 0,
       "roll": 0,
       "time": 0,
-      "previewYaw": 136,
-      "previewElevation": 3,
-      "previewDistance": 50,
+      "previewYaw": 121,
+      "previewElevation": -1,
+      "previewDistance": 26,
+      "previewPanX": 31,
+      "previewPanY": -3,
       "previewAnimationIndex": -2,
       "animationIndex": 0,
       "playing": false
