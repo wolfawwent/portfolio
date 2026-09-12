@@ -476,5 +476,32 @@
       "animationIndex": 0,
       "playing": false
     }
+  },
+  {
+    "id": "b864b609-f579-447f-b17d-c43fd4c1064a",
+    "name": "Deceptor",
+    "model": "assets/models/b864b609-f579-447f-b17d-c43fd4c1064a-bbdb99b78f9a4bd49b5943f8e62bbf6e.glb",
+    "image": "assets/cards/b864b609-f579-447f-b17d-c43fd4c1064a-bbdb99b78f9a4bd49b5943f8e62bbf6e.png",
+    "config": {
+      "category": "entity",
+      "x": -1.7,
+      "y": -3.7,
+      "z": 9.8,
+      "scale": 1,
+      "yaw": -141,
+      "pitch": 0,
+      "roll": 0,
+      "time": 0,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "previewYaw": 158,
+      "previewElevation": -1,
+      "previewDistance": 75,
+      "previewPanX": 0,
+      "previewPanY": 0,
+      "previewAnimationIndex": 2,
+      "animationIndex": 0,
+      "playing": true
+    }
   }
 ]
