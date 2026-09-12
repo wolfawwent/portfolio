@@ -19,13 +19,14 @@
     PIN_LAST: ['Statue of God', 'Fulgora'],   // 這些名稱永遠排在該列最後、照這裡的順序（不分大小寫）；新增的卡片會排在它們前面
     PIN_FIRST: [],                  // 這些名稱永遠排在該列最前
     START_AT: ['Fulgora'],          // 網頁載入時，該列左邊第一張完整的卡（不分大小寫；沒有就從第一張開始）
+    AUTO_SPEED: 24,                 // 卡片列自動往左緩慢移動的速度（px/秒）；0 = 不自動移動。滑鼠移到該列上會暫停
     START_PEEK: 0.7,                // 它前一張（例如 Statue of God）在左邊露出多少（0 = 不露出、1 = 整張）；右邊被切的比例由視窗寬度決定
     CATEGORIES: ['entity', 'weapon', 'item'],   // 卡片分類；新增分類時在這裡加，並在 index.html 加一個 .shelf
     FONT: 'Cubic11',                // 俐方體11號（assets/fonts/cubic11.ttf），中英文都有
     FONT_FILE: 'assets/fonts/cubic11.ttf',
     FONT_BASE: 12,                  // 俐方體 11 號在 12px 時每個像素剛好落在整數格上（實測零抗鋸齒）
     TEXT_COLOR: '#713449',          // A2 深酒紅雕刻字
-    TEXT_SHADOW: '#f4c772',         // 一格淡金硬陰影
+    TEXT_SHADOW: null,              // 文字旁一格的淡金高光；null = 不畫（想要的話填色碼，例如 '#f4c772'）
     TEXT_SCALE: 2,                  // 桌面：原生字形的 2 倍；不因短名稱額外放大
     COMPACT_SCALE: 1,               // 小卡片統一使用原生字形，避免長短名稱大小不同
     // 金色判定範圍（RGB）：名牌是亮金 + 較深的橘邊
@@ -159,12 +160,15 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     const cw = maxX - minX + 1, ch = maxY - minY + 1;
 
     const out = document.createElement('canvas');
-    out.width = (cw+1) * scale; out.height = (ch+1) * scale;
+    const shadow = !!CONFIG.TEXT_SHADOW;
+    out.width = (cw+(shadow?1:0)) * scale; out.height = (ch+(shadow?1:0)) * scale;
     const ctx = out.getContext('2d');
     ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(pen.canvas,minX,minY,cw,ch,scale,scale,cw*scale,ch*scale);
-    ctx.globalCompositeOperation='source-in';ctx.fillStyle=CONFIG.TEXT_SHADOW;ctx.fillRect(0,0,out.width,out.height);
-    ctx.globalCompositeOperation='source-over';
+    if (shadow) {
+      ctx.drawImage(pen.canvas,minX,minY,cw,ch,scale,scale,cw*scale,ch*scale);
+      ctx.globalCompositeOperation='source-in';ctx.fillStyle=CONFIG.TEXT_SHADOW;ctx.fillRect(0,0,out.width,out.height);
+      ctx.globalCompositeOperation='source-over';
+    }
     ctx.drawImage(pen.canvas,minX,minY,cw,ch,0,0,cw*scale,ch*scale);
     glyphCache.set(key, out);
     return out;
@@ -421,6 +425,24 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     }, { passive: true });
     requestAnimationFrame(goMiddle);
     window.addEventListener('resize', goMiddle);
+
+    // ---------- 自動緩慢往左移動 ----------
+    // 滑鼠在該列上（或正在拖曳）就暫停，離開後繼續；手機觸控時同樣暫停。尊重系統的「減少動態效果」設定。
+    if (CONFIG.AUTO_SPEED > 0 && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      let hover = false, last = 0, acc = 0;
+      track.addEventListener('pointerenter', () => { hover = true; });
+      track.addEventListener('pointerleave', () => { hover = false; });
+      const tick = (now) => {
+        const dt = Math.min(now - last, 100); last = now;
+        if (!hover && !track.classList.contains('is-dragging') && !document.hidden) {
+          acc += CONFIG.AUTO_SPEED * dt / 1000;
+          const step = Math.floor(acc);
+          if (step >= 1) { track.scrollLeft += step; acc -= step; }
+        }
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame((now) => { last = now; tick(now); });
+    }
   }
 
   // ---------- 啟動 ----------

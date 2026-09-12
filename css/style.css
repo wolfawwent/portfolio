@@ -530,3 +530,6 @@ html.model-dialog-open { overflow: hidden; }
   .shelf .card--auto.is-hovered>img{filter:drop-shadow(0 8px 8px rgba(5,3,12,.65)) drop-shadow(0 0 18px rgba(9,5,20,.5))}
 }
 @media(prefers-reduced-motion:reduce){.shelf .card--auto{scale:1!important;translate:none!important}}
+
+/* 預覽視窗狀態列沒有內容時整條隱藏 */
+.model-dialog__status:empty { display: none; }

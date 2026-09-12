@@ -65,7 +65,7 @@
       }) : [];
       if (matches.length !== 1) { status.textContent = 'Model preview is not available for this card yet.';return; }
       const record = matches[0];
-      const {applyPreviewCamera,setPreviewPlayback,previewStatusText} = await import('./model-preview-settings.js?v=pose-1');
+      const {applyPreviewCamera,setPreviewPlayback,previewStatusText} = await import('./model-preview-settings.js?v=pose-2');
       if (!runtime) runtime = import('../assets/vendor/model-viewer-4.3.1.min.js').catch(e => { runtime = null;throw e; });
       await runtime;await customElements.whenDefined('model-viewer');
       if (token !== generation || !dialog.open) return;

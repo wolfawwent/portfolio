@@ -1,4 +1,4 @@
-import {applyPreviewCamera,previewOrbit,setPreviewPlayback} from './model-preview-settings.js?v=pose-1';
+import {applyPreviewCamera,previewOrbit,setPreviewPlayback} from './model-preview-settings.js?v=pose-2';
 export function applyBlendMode(viewer,config){
     if(!config||!config.blend||!viewer.model)return;
     try{

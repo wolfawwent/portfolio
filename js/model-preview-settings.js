@@ -13,7 +13,8 @@ export function applyPreviewCamera(viewer,config){
   viewer.jumpCameraToGoal();
 }
 export function previewOrbit(config){return `${config.previewYaw??25}deg ${90-(config.previewElevation??15)}deg ${config.previewDistance??115}%`;}
-export function previewStatusText(animation,config){return `${animation||'Static preview'} · Fixed camera${config.watermark?.trim()?' · '+config.watermark.trim():''}`;}
+// 網站預覽視窗下方的狀態列：不顯示動畫名稱 / Fixed camera，只有浮水印（有的話）
+export function previewStatusText(animation,config){return config.watermark?.trim()||'';}
 // previewAnimationIndex：-2 自動 idle、-1 靜止、-3 同卡片姿勢（播卡片選的動畫並停在卡片那一格）、>=0 指定動畫
 export function previewAnimation(names,index=-2,config={}){
   if(index===-1)return null;
