@@ -546,7 +546,7 @@ html.model-dialog-open { overflow: hidden; }
 .shelf__head .shelf__title{display:flex;align-items:center;gap:16px;background:none;box-shadow:none;color:#e4cf9f;padding:0 12px 0 4px;text-transform:uppercase;letter-spacing:3px;font-size:20px;order:1}
 .shelf__head .shelf__title::before{content:'';width:8px;height:8px;background:#c7ae7a;box-shadow:0 -4px #63513e,0 4px #63513e,-4px 0 #63513e,4px 0 #63513e;margin:0 4px}
 .shelf__head::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,#746046,rgba(116,96,70,.12));order:2}
-.shelf__head .shelf__all{order:3;font-size:12px;color:#9cb9c1;letter-spacing:1px;padding:8px 0;border:0;border-bottom:1px solid #46515a;background:none;gap:10px;white-space:nowrap}
+.shelf__head .shelf__all{order:3;font-size:12px;color:#9cb9c1;letter-spacing:1px;padding:8px 0;border:0;background:none;gap:10px;white-space:nowrap}
 .shelf__head .shelf__all svg{width:9px;height:13px;filter:none}
 
 .shelf__head .shelf__all:hover,.shelf__head .shelf__all:focus-visible{color:#e7f2ef;background:#30313c;border-color:#91b6be;transform:none}
