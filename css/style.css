@@ -378,12 +378,7 @@ img { max-width: 100%; display: block; }
 /* 滑鼠移上去：沿著卡片輪廓（含透明部分的邊）畫一圈淡金色 outline
    用四個方向的 drop-shadow 疊出來，會跟著卡片的實際形狀走，透明區域不會被框到 */
 .shelf .card--auto:hover > img {
-  filter:
-    drop-shadow( var(--ol) 0 0 var(--outline))
-    drop-shadow(calc(var(--ol) * -1) 0 0 var(--outline))
-    drop-shadow(0  var(--ol) 0 var(--outline))
-    drop-shadow(0 calc(var(--ol) * -1) 0 var(--outline))
-    drop-shadow(6px 8px 0 rgba(0,0,0,.45));
+  filter: drop-shadow(0 8px 8px rgba(5,3,12,.65)) drop-shadow(0 0 18px rgba(9,5,20,.5));
 }
 .shelf .card--auto { --outline: #ffffff; --ol: 3px; }   /* outline 顏色與粗細 */
 .shelf .card--auto > .card__name {
@@ -528,3 +523,10 @@ html.model-dialog-open { overflow: hidden; }
 @media (max-width: 1140px) { .shelf--grid { --grid-cols: 3; } }
 @media (max-width: 860px)  { .shelf--grid { --grid-cols: 2; --grid-card: 240px; } }
 @media (max-width: 540px)  { .shelf--grid { --grid-card: min(240px, calc(50vw - 24px)); --grid-row-pull: -24px; } }
+/* Springy hover presentation; individual scale leaves the pointer tilt independent. */
+@media(hover:hover) and (pointer:fine){
+  .shelf:not(.shelf--grid) .shelf__track{padding-top:110px;padding-bottom:110px}
+  .shelf .card--auto.is-hovered{z-index:3;box-shadow:none}
+  .shelf .card--auto.is-hovered>img{filter:drop-shadow(0 8px 8px rgba(5,3,12,.65)) drop-shadow(0 0 18px rgba(9,5,20,.5))}
+}
+@media(prefers-reduced-motion:reduce){.shelf .card--auto{scale:1!important;translate:none!important}}

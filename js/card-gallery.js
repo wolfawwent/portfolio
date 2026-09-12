@@ -230,6 +230,16 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
   // ---------- 滑鼠傾斜（原本模板 main.js 的 tilt 效果）----------
   let dragging = false;
   function attachTilt(card) {
+    let bounce,neighbors=[];
+    const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const animate=(el,frames)=>el.animate(frames,{duration:520,easing:'linear'});
+    function release(){
+      bounce?.cancel();card.classList.remove('is-hovered');card.style.scale='';
+      if(!reduced())bounce=animate(card,[{scale:'1.3'},{scale:'.98',offset:.65},{scale:'1'}]);
+      for(const neighbor of neighbors){neighbor._pushAnimation?.cancel();const x=neighbor._pushX||0;neighbor.style.translate='';if(!reduced())neighbor._pushAnimation=animate(neighbor,[{translate:`${x}px`},{translate:`${-x*.12}px`,offset:.65},{translate:'0px'}]);}
+      neighbors=[];
+    }
+    card._releaseHover=release;
     card.addEventListener('pointermove', (e) => {
       if (dragging || e.pointerType === 'touch') return;
       const r = card.getBoundingClientRect();
@@ -241,10 +251,18 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     });
     card.addEventListener('pointerenter', (e) => {
       if (dragging || e.pointerType === 'touch') return;
+      bounce?.cancel();card.classList.add('is-hovered');card.style.scale=reduced()?'1':'1.3';
+      if(!reduced())bounce=animate(card,[{scale:'1'},{scale:'1.4',offset:.42},{scale:'1.26',offset:.72},{scale:'1.3'}]);
+      if(!reduced())for(const [neighbor,direction] of [[card.previousElementSibling,-1],[card.nextElementSibling,1]]){
+        if(!neighbor?.classList.contains('card--auto')||Math.abs(neighbor.offsetTop-card.offsetTop)>10)continue;
+        const x=direction*card.offsetWidth*.18;neighbor._pushAnimation?.cancel();neighbor._pushX=x;neighbor.style.translate=`${x}px`;
+        neighbor._pushAnimation=animate(neighbor,[{translate:'0px',rotate:'0deg'},{translate:`${x*1.2}px`,rotate:`${direction*2}deg`,offset:.42},{translate:`${x*.92}px`,rotate:`${-direction*.7}deg`,offset:.72},{translate:`${x}px`,rotate:'0deg'}]);neighbors.push(neighbor);
+      }
       card.style.transition = 'transform .18s ease';          // 進入時放大是滑順的，之後跟隨滑鼠不加延遲
       setTimeout(() => (card.style.transition = ''), 180);
     });
     card.addEventListener('pointerleave', () => {
+      if(card.classList.contains('is-hovered'))release();
       card.style.transition = 'transform .4s ease';
       card.style.transform = '';
       setTimeout(() => (card.style.transition = ''), 400);
@@ -264,7 +282,7 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     track.addEventListener('pointermove', (e) => {
       if (!active) return;
       const dx = e.clientX - startX;
-      if (!moved && Math.abs(dx) > 4) { moved = true; dragging = true; track.setPointerCapture(e.pointerId); track.classList.add('is-dragging'); track.querySelectorAll('.card--auto').forEach((c) => (c.style.transform = '')); }
+      if (!moved && Math.abs(dx) > 4) { moved = true; dragging = true; track.setPointerCapture(e.pointerId); track.classList.add('is-dragging'); track.querySelectorAll('.card--auto').forEach((c) => {c.style.transform = '';if(c.classList.contains('is-hovered'))c._releaseHover?.();}); }
       if (!moved) return;
       track.scrollLeft = startLeft - dx;   // 迴圈跳位時 setupLoop 會透過 _onWrap 修正 startLeft
       const now = performance.now();
