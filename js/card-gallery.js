@@ -29,6 +29,10 @@
     TEXT_SHADOW: null,              // 文字旁一格的淡金高光；null = 不畫（想要的話填色碼，例如 '#f4c772'）
     TEXT_SCALE: 2,                  // 桌面：原生字形的 2 倍；不因短名稱額外放大
     COMPACT_SCALE: 1,               // 小卡片統一使用原生字形，避免長短名稱大小不同
+    // 滑鼠感應區：只有「卡面的長方形」會吃到 hover / 傾斜 / 點擊，凸出卡面的模型和透明區域都不算。
+    // 數值是卡片圖（1000×1600）裡卡框的位置，跟 tools/card-editor/card-renderer.js 的 FX/FY/FW/FH 一樣；
+    // 設成 null 就恢復整張圖都能感應。
+    HIT_RECT: { x: 140, y: 260, w: 720, h: 1080, imgW: 1000, imgH: 1600 },
     // 金色判定範圍（RGB）：名牌是亮金 + 較深的橘邊
     isGold: (r, g, b) => r > 170 && g > 110 && g < 215 && b < 120 && r - b > 90,
   };
@@ -365,6 +369,21 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     card.append(label);
 
     card._name = name; card._img = img; card._label = label;
+
+    // 感應區：卡片本體 pointer-events:none（見 style.css），只有這塊接收滑鼠事件；
+    // 事件會往上冒泡到 card，所以上面的 tilt / click 監聽照常運作，CSS 的 :hover 也照常成立
+    const hr = CONFIG.HIT_RECT;
+    if (hr) {
+      const hit = document.createElement('div');
+      hit.className = 'card__hit';
+      hit.setAttribute('aria-hidden', 'true');
+      Object.assign(hit.style, {
+        left: (hr.x / hr.imgW * 100) + '%', top: (hr.y / hr.imgH * 100) + '%',
+        width: (hr.w / hr.imgW * 100) + '%', height: (hr.h / hr.imgH * 100) + '%',
+      });
+      card.append(hit);
+      card.classList.add('card--hit-rect');
+    }
 
     img.addEventListener('load', async () => {
       card._plate = findNameplate(img);

@@ -390,6 +390,12 @@ img { max-width: 100%; display: block; }
   position: absolute; pointer-events: none;
   image-rendering: pixelated; image-rendering: crisp-edges;
 }
+/* 滑鼠感應區（js/card-gallery.js 的 CONFIG.HIT_RECT）：
+   卡片本體不吃滑鼠，只有 .card__hit 這塊「卡面長方形」會觸發 hover / 傾斜 / 點擊；
+   凸出卡面的模型、上下的透明邊都會直接穿透到底下的軌道（所以在那裡按住還是可以拖曳整列）。
+   放大時感應區跟著卡片一起放大，所以不會在邊緣閃爍。 */
+.shelf .card--auto.card--hit-rect { pointer-events: none; }
+.shelf .card--auto > .card__hit { position: absolute; pointer-events: auto; cursor: pointer; }
 /* 傾斜時的亮光：用卡片圖本身當遮罩，透明的地方不會發亮 */
 .shelf .card--auto::after {
   content: ''; position: absolute; inset: 0; pointer-events: none;
