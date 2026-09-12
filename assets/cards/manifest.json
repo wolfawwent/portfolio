@@ -73,5 +73,30 @@
       "animationIndex": 0,
       "playing": false
     }
+  },
+  {
+    "id": "0a9e019e-16b0-4f0c-931a-469e1b3886ea",
+    "name": "Owlbear",
+    "model": "assets/models/0a9e019e-16b0-4f0c-931a-469e1b3886ea-c3df1a6284c643b6a636dd4d50a0b048.glb",
+    "image": "assets/cards/0a9e019e-16b0-4f0c-931a-469e1b3886ea-c3df1a6284c643b6a636dd4d50a0b048.png",
+    "config": {
+      "category": "entity",
+      "x": -2.7,
+      "y": -4.3,
+      "z": 0.2,
+      "scale": 0.77,
+      "yaw": -176,
+      "pitch": 8,
+      "roll": 0,
+      "time": 0,
+      "previewYaw": 169,
+      "previewElevation": 0,
+      "previewDistance": 115,
+      "previewPanX": 6,
+      "previewPanY": 0,
+      "previewAnimationIndex": 3,
+      "animationIndex": 0,
+      "playing": true
+    }
   }
 ]
