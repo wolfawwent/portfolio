@@ -268,16 +268,7 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     track.addEventListener('pointerup', end);
     track.addEventListener('pointercancel', end);
     track.addEventListener('lostpointercapture', end);
-    // 滑鼠滾輪：在列上垂直滾動 → 改成左右捲動（列已到底時就讓頁面正常捲）
-    track.addEventListener('wheel', (e) => {
-      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
-      const max = track.scrollWidth - track.clientWidth;
-      if (max <= 0) return;
-      const next = track.scrollLeft + e.deltaY;
-      if (!track._loop && ((e.deltaY > 0 && track.scrollLeft >= max - 1) || (e.deltaY < 0 && track.scrollLeft <= 0))) return;
-      e.preventDefault();
-      track.scrollLeft = track._loop ? next : Math.max(0, Math.min(max, next));
-    }, { passive: false });
+    // 滾輪不做左右捲動：列上滾滾輪就是正常捲頁面，卡片只靠拖曳 / 觸控滑動移動
   }
   shelves.forEach((sh) => attachDragScroll(sh.querySelector('.shelf__track')));
 
