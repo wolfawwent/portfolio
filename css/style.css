@@ -342,22 +342,22 @@ img { max-width: 100%; display: block; }
 .shelf__track {
   display: flex; gap: 12px; align-items: flex-start;
   overflow-x: auto; overflow-y: hidden;
-  padding: 14px 8px 22px;               /* 留空間給傾斜時凸出的角 */
-  margin: 0 -8px;
-  scroll-snap-type: x proximity;
+  /* 軌道跳出 1100px 的內容欄、橫跨整個視窗寬度；左右內距讓第一張卡對齊內容欄的左邊 */
+  width: 100vw; margin-left: calc(50% - 50vw);
+  padding: 14px max(24px, calc(50vw - var(--max) / 2 + 24px)) 22px;   /* 上下留空間給傾斜時凸出的角 */
+  /* 不做吸附：卡片可以停在任何位置，被邊緣切一半也沒關係 */
   scrollbar-width: none;                /* Firefox 隱藏捲軸 */
   cursor: grab; user-select: none; -webkit-user-select: none;
   touch-action: pan-x pan-y;            /* 手機保留原生左右滑動 */
 }
 .shelf__track::-webkit-scrollbar { display: none; }
-.shelf__track.is-dragging { cursor: grabbing; scroll-snap-type: none; }
+.shelf__track.is-dragging { cursor: grabbing; }
 .shelf__track:empty::after {
   content: 'no cards yet'; font-family: var(--font-pixel); font-size: 9px; color: var(--muted);
   padding: 24px 8px;
 }
 .shelf .card--auto {
   flex: 0 0 var(--card-w, 340px); width: var(--card-w, 340px);
-  scroll-snap-align: start;
   position: relative;
   background: transparent; border: 0; box-shadow: none; overflow: visible;
   transform-style: preserve-3d; will-change: transform;
