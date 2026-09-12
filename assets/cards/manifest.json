@@ -152,5 +152,32 @@
       "animationIndex": 0,
       "playing": true
     }
+  },
+  {
+    "id": "b2b03b2b-81b1-4182-985c-da4cd7a06fa2",
+    "name": "Fulgora",
+    "model": "assets/models/b2b03b2b-81b1-4182-985c-da4cd7a06fa2-b19d793fd9c0479984bff203f1e5937a.glb",
+    "image": "assets/cards/b2b03b2b-81b1-4182-985c-da4cd7a06fa2-b19d793fd9c0479984bff203f1e5937a.png",
+    "config": {
+      "category": "entity",
+      "x": 0.4,
+      "y": -1.9,
+      "z": 19.4,
+      "scale": 0.87,
+      "yaw": -180,
+      "pitch": -4,
+      "roll": 0,
+      "time": 0,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "previewYaw": -165,
+      "previewElevation": 3,
+      "previewDistance": 105,
+      "previewPanX": -22,
+      "previewPanY": 0,
+      "previewAnimationIndex": 0,
+      "animationIndex": 0,
+      "playing": false
+    }
   }
 ]
