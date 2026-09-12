@@ -722,5 +722,36 @@
       "animationIndex": -1,
       "playing": false
     }
+  },
+  {
+    "id": "5e50bc9d-dae4-47bb-9c01-d53e85eb2bae",
+    "name": "Gold Armor",
+    "model": "assets/models/5e50bc9d-dae4-47bb-9c01-d53e85eb2bae-1e99ba8013944e32bf616e6e61149415.glb",
+    "image": "assets/cards/5e50bc9d-dae4-47bb-9c01-d53e85eb2bae-1e99ba8013944e32bf616e6e61149415.png",
+    "config": {
+      "category": "item",
+      "x": 2.1,
+      "y": 0.1,
+      "z": 0,
+      "scale": 1,
+      "yaw": 159,
+      "pitch": 0,
+      "roll": 0,
+      "time": 0,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "glow": 1,
+      "glowRadius": 18,
+      "blend": false,
+      "blendMaterials": [],
+      "previewYaw": -151,
+      "previewElevation": -7,
+      "previewDistance": 115,
+      "previewPanX": -6,
+      "previewPanY": 15,
+      "previewAnimationIndex": 0,
+      "animationIndex": -1,
+      "playing": false
+    }
   }
 ]
