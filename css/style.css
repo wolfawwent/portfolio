@@ -199,8 +199,10 @@ img { max-width: 100%; display: block; }
 .tags { list-style: none; padding: 0; margin: 20px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .tags li {
   font-family: var(--font-pixel); font-size: 8px; color: var(--cream);
-  padding: 8px 10px; border: 2px solid var(--cream); box-shadow: 2px 2px 0 var(--ink);
+  padding: 6px 10px 6px 8px; border: 2px solid var(--cream); box-shadow: 2px 2px 0 var(--ink);
+  display: inline-flex; align-items: center; gap: 8px;
 }
+.tags li img { width: 18px; height: 18px; image-rendering: pixelated; display: block; }   /* 工具圖示（18×18 原尺寸） */
 .tags li:nth-child(5n+1) { background: var(--maroon); }
 .tags li:nth-child(5n+2) { background: var(--teal-2); }
 .tags li:nth-child(5n+3) { background: var(--lime-2); }
@@ -457,3 +459,17 @@ a:focus-visible, button:focus-visible { outline: 3px solid #ffbd7b; outline-offs
   .hero__kicker { max-width: 100%; }
   .about__text { padding: 18px; }
 }
+
+/* Fixed-angle model preview dialog. */
+.model-dialog { width: min(880px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 0; color: var(--cream); background: #211923; border: 3px solid var(--cream-2); box-shadow: 8px 8px 0 #100b13; }
+.model-dialog::backdrop { background: rgba(9,6,13,.82); }
+.model-dialog__header { display: flex; align-items: center; gap: 16px; padding: 14px 18px; border-bottom: 2px solid #6d5648; }
+.model-dialog__header h2 { margin: 0; flex: 1; min-width: 0; overflow-wrap: anywhere; font: 22px/32px var(--font-body); }
+.model-dialog__close { width: 44px; height: 44px; flex: 0 0 44px; border: 2px solid var(--cream-2); background: #432d38; color: var(--cream); cursor: pointer; font: 28px/32px var(--font-body); }
+.model-dialog__stage { height: min(62vh, 570px); min-height: 220px; background: radial-gradient(ellipse at center, #45343c, #19141d 75%); }
+.model-dialog model-viewer { display: block; width: 100%; height: 100%; --progress-bar-color: #e4bd76; }
+.model-dialog__status { margin: 0; padding: 12px 18px; font: 22px/30px var(--font-body); color: var(--cream-2); }
+html.model-dialog-open { overflow: hidden; }
+.shelf .card--auto[role=button] { cursor: pointer; }
+.shelf .card--auto[role=button]:focus-visible { outline: 3px solid var(--cream); outline-offset: -8px; }
+@media (max-width: 600px) { .model-dialog { width: calc(100vw - 20px); max-height: calc(100dvh - 20px); }.model-dialog__stage { height: 52dvh; }.model-dialog__status { font-size: 16px; line-height: 24px; } }
