@@ -395,5 +395,86 @@
       "animationIndex": 0,
       "playing": false
     }
+  },
+  {
+    "id": "3e348ebf-e3af-43e2-b0cc-b0fe1ca72ef6",
+    "name": "Coral Great Sword",
+    "model": "assets/models/3e348ebf-e3af-43e2-b0cc-b0fe1ca72ef6-2e075ffc09df4372a8b63879e677dde0.glb",
+    "image": "assets/cards/3e348ebf-e3af-43e2-b0cc-b0fe1ca72ef6-2e075ffc09df4372a8b63879e677dde0.png",
+    "config": {
+      "category": "weapon",
+      "x": 0,
+      "y": -3.1,
+      "z": 22.3,
+      "scale": 0.84,
+      "yaw": 100,
+      "pitch": 36,
+      "roll": 23,
+      "time": 0,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "previewYaw": -161,
+      "previewElevation": 7,
+      "previewDistance": 108,
+      "previewPanX": -24,
+      "previewPanY": -7,
+      "previewAnimationIndex": -2,
+      "animationIndex": 0,
+      "playing": false
+    }
+  },
+  {
+    "id": "618d9a28-ddd6-4705-a3c2-404ff774e564",
+    "name": "Water Staff",
+    "model": "assets/models/618d9a28-ddd6-4705-a3c2-404ff774e564-3af162dbee474fbd8f97a8b1787fc6e3.glb",
+    "image": "assets/cards/618d9a28-ddd6-4705-a3c2-404ff774e564-3af162dbee474fbd8f97a8b1787fc6e3.png",
+    "config": {
+      "category": "weapon",
+      "x": 0.8,
+      "y": -0.9,
+      "z": 22.3,
+      "scale": 0.95,
+      "yaw": -21,
+      "pitch": -54,
+      "roll": 16,
+      "time": 0,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "previewYaw": -156,
+      "previewElevation": 7,
+      "previewDistance": 108,
+      "previewPanX": 6,
+      "previewPanY": -8,
+      "previewAnimationIndex": -2,
+      "animationIndex": 0,
+      "playing": false
+    }
+  },
+  {
+    "id": "b17c79c8-1f15-4e9d-8d11-6d2c098303e3",
+    "name": "Moon Bow",
+    "model": "assets/models/b17c79c8-1f15-4e9d-8d11-6d2c098303e3-3bd52892044744ea94d392e5547f1632.glb",
+    "image": "assets/cards/b17c79c8-1f15-4e9d-8d11-6d2c098303e3-3bd52892044744ea94d392e5547f1632.png",
+    "config": {
+      "category": "weapon",
+      "x": 0.8,
+      "y": -0.9,
+      "z": 22.3,
+      "scale": 1.15,
+      "yaw": -15,
+      "pitch": -18,
+      "roll": 3,
+      "time": 0,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "previewYaw": 176,
+      "previewElevation": 7,
+      "previewDistance": 108,
+      "previewPanX": 6,
+      "previewPanY": -4,
+      "previewAnimationIndex": -2,
+      "animationIndex": 0,
+      "playing": false
+    }
   }
 ]
