@@ -13,7 +13,5 @@ start-card-editor.cmd
 __pycache__/
 *.pyc
 
-# 3D 模型原始檔不上傳，網站只需要編輯器產出的 PNG
-assets/models/*
-!assets/models/README.txt
+# 3D 原始檔（.bbmodel 等）不上傳；assets/models/ 裡的 glb 是網站 3D 預覽要用的，會上傳
 model/
