@@ -9,7 +9,7 @@
      沒寫類型的舊檔名（card_Kazek.png）會歸到第一個 shelf
    ・每一列可以左右拖曳 / 滑動；卡片有滑鼠傾斜 + 亮光效果
    ・金色名牌位置：程式直接掃描圖片裡的金色像素自動找，不用手動填座標
-   ・字體：俐方體11號 Cubic 11（assets/fonts/cubic11.ttf），在 12px 畫成點陣後
+   ・字體：A2 自製雕刻像素大寫字形；其他文字以俐方體 Cubic 11 補字
      以整數倍率放大，不管卡片縮放到多大都保持像素銳利
    ===================================================================== */
 (function () {
@@ -19,7 +19,8 @@
     FONT: 'Cubic11',                // 俐方體11號（assets/fonts/cubic11.ttf），中英文都有
     FONT_FILE: 'assets/fonts/cubic11.ttf',
     FONT_BASE: 12,                  // 俐方體 11 號在 12px 時每個像素剛好落在整數格上（實測零抗鋸齒）
-    TEXT_COLOR: '#2b1a13',          // 深棕色，搭配金色名牌
+    TEXT_COLOR: '#713449',          // A2 深酒紅雕刻字
+    TEXT_SHADOW: '#f4c772',         // 一格淡金硬陰影
     TEXT_SCALE: 2,                  // 桌面：原生字形的 2 倍；不因短名稱額外放大
     COMPACT_SCALE: 1,               // 小卡片統一使用原生字形，避免長短名稱大小不同
     // 金色判定範圍（RGB）：名牌是亮金 + 較深的橘邊
@@ -91,28 +92,43 @@
 
   // ---------- 畫名稱（整數倍率的像素字）----------
   // 1) 用 FONT_BASE 大小畫一次  2) alpha 二值化成純點陣  3) 裁掉四周空白  4) 整數倍放大
+  const ENGRAVED={
+A:['00100','01010','10001','10001','11111','10001','10001','10001','11011'],
+B:['11110','01001','01001','01110','01001','01001','01001','01001','11110'],
+C:['01111','11001','10000','10000','10000','10000','10000','11001','01110'],
+E:['11111','01001','01000','01000','01110','01000','01000','01001','11111'],
+K:['11011','01010','01100','01100','01010','01010','01001','01001','11011'],
+L:['11100','01000','01000','01000','01000','01000','01000','01001','11111'],
+M:['10001','11011','10101','10101','10001','10001','10001','10001','11011'],
+R:['11110','01001','01001','01110','01100','01010','01001','01001','11011'],
+W:['11011','10001','10001','10001','10101','10101','10101','01010','01010'],
+Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
+  Object.assign(ENGRAVED,{"D": ["11110", "01001", "01001", "01001", "01001", "01001", "01001", "01001", "11110"], "F": ["11111", "01001", "01000", "01000", "01110", "01000", "01000", "01000", "11100"], "G": ["01110", "11001", "10000", "10000", "10111", "10001", "10001", "11001", "01110"], "H": ["11011", "01010", "01010", "01010", "01110", "01010", "01010", "01010", "11011"], "I": ["11111", "00100", "00100", "00100", "00100", "00100", "00100", "00100", "11111"], "J": ["00111", "00010", "00010", "00010", "00010", "00010", "10010", "10010", "01100"], "N": ["10001", "11001", "11001", "10101", "10101", "10011", "10011", "10001", "11011"], "O": ["01110", "11011", "10001", "10001", "10001", "10001", "10001", "11011", "01110"], "P": ["11110", "01001", "01001", "01001", "01110", "01000", "01000", "01000", "11100"], "Q": ["01110", "11011", "10001", "10001", "10001", "10101", "10011", "01110", "00001"], "S": ["01111", "11001", "10000", "11000", "01110", "00011", "00001", "10011", "11110"], "T": ["11111", "10101", "00100", "00100", "00100", "00100", "00100", "00100", "01110"], "U": ["11011", "10001", "10001", "10001", "10001", "10001", "10001", "11011", "01110"], "V": ["11011", "10001", "10001", "10001", "10001", "01010", "01010", "00100", "00100"], "X": ["11011", "10001", "01010", "01010", "00100", "01010", "01010", "10001", "11011"], "Y": ["11011", "10001", "01010", "01010", "00100", "00100", "00100", "00100", "01110"], " ": ["000", "000", "000", "000", "000", "000", "000", "000", "000"], "-": ["00000", "00000", "00000", "00000", "11111", "00000", "00000", "00000", "00000"]});
   const glyphCache = new Map();
   function renderName(text, scale) {
     const key = text + '|' + scale;
     if (glyphCache.has(key)) return glyphCache.get(key);
 
+    const letters=Array.from(text.toUpperCase());
+    const engraved=letters.every(ch=>ENGRAVED[ch]);
     const base = CONFIG.FONT_BASE;
     const font = `${base}px ${CONFIG.FONT}, monospace`;
     const pen = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
     pen.font = font;
-    const width = Math.max(1, Math.ceil(pen.measureText(text).width) + 2);
-    const height = Math.ceil(base * 1.4);
-    pen.canvas.width = width; pen.canvas.height = height;
-    pen.font = font;                                  // 設定尺寸後要再設一次
-    pen.textBaseline = 'top';
-    pen.fillStyle = CONFIG.TEXT_COLOR;
-    pen.fillText(text, 1, Math.floor(base * 0.1));
+    const width = engraved?Math.max(1,letters.reduce((n,ch)=>n+ENGRAVED[ch][0].length+1,0)):Math.max(1,Math.ceil(pen.measureText(text).width)+2);
+    const height = engraved?9:Math.ceil(base*1.4);
+    pen.canvas.width=width;pen.canvas.height=height;pen.font=font;
+    pen.fillStyle=CONFIG.TEXT_COLOR;
+    if(engraved){
+      let left=0;
+      for(const ch of letters){const glyph=ENGRAVED[ch];glyph.forEach((row,y)=>Array.from(row).forEach((bit,x)=>{if(bit==='1')pen.fillRect(left+x,y,1,1);}));left+=glyph[0].length+1;}
+    }else{pen.textBaseline='top';pen.fillText(text,1,Math.floor(base*.1));}
     const bmp = pen.getImageData(0, 0, width, height);
     const d = bmp.data;
     let minX = width, minY = height, maxX = -1, maxY = -1;
     for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
       const i = (y * width + x) * 4 + 3;
-      if (d[i] >= 128) { d[i] = 255; d[i-3]=0x2b; d[i-2]=0x1a; d[i-1]=0x13; if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y; }
+      if (d[i] >= 128) { d[i] = 255; d[i-3]=0x71; d[i-2]=0x34; d[i-1]=0x49; if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y; }
       else d[i] = 0;
     }
     pen.putImageData(bmp, 0, 0);
@@ -120,10 +136,13 @@
     const cw = maxX - minX + 1, ch = maxY - minY + 1;
 
     const out = document.createElement('canvas');
-    out.width = cw * scale; out.height = ch * scale;
+    out.width = (cw+1) * scale; out.height = (ch+1) * scale;
     const ctx = out.getContext('2d');
     ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(pen.canvas, minX, minY, cw, ch, 0, 0, out.width, out.height);
+    ctx.drawImage(pen.canvas,minX,minY,cw,ch,scale,scale,cw*scale,ch*scale);
+    ctx.globalCompositeOperation='source-in';ctx.fillStyle=CONFIG.TEXT_SHADOW;ctx.fillRect(0,0,out.width,out.height);
+    ctx.globalCompositeOperation='source-over';
+    ctx.drawImage(pen.canvas,minX,minY,cw,ch,0,0,cw*scale,ch*scale);
     glyphCache.set(key, out);
     return out;
   }
