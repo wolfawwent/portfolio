@@ -1,4 +1,8 @@
 import {applyPreviewCamera,previewOrbit,setPreviewPlayback} from './model-preview-settings.js?v=watermark-1';
+export function applyBlendMode(viewer,config){
+  if(!config||!config.blend||!viewer.model)return;
+  try{for(const m of viewer.model.materials){if(m.getAlphaMode?.()!=='BLEND')m.setAlphaMode('BLEND');}}catch(e){console.warn('[preview] blend',e);}
+}
 export function createEditorPreview(host,status,getConfig){
   let popup=null;
   function sync(model=false){if(popup&&!popup.closed)popup.postMessage({type:'card-preview',config:getConfig(),...(model?{buffer}: {})},location.origin);}
@@ -17,7 +21,7 @@ export function createEditorPreview(host,status,getConfig){
       applyPreviewCamera(viewer,getConfig());viewer.setAttribute('field-of-view','30deg');
       viewer.setAttribute('shadow-intensity','.5');viewer.setAttribute('animation-crossfade-duration','0');
       viewer.setAttribute('alt','網站模型預覽');
-      viewer.addEventListener('load',()=>{if(token!==sequence||viewer!==current)return;const name=setPreviewPlayback(viewer,getConfig());applyPreviewCamera(viewer,getConfig());if(!visible)viewer.pause();status.textContent=name?'播放：'+name:'靜止預覽';});
+      viewer.addEventListener('load',()=>{if(token!==sequence||viewer!==current)return;applyBlendMode(viewer,getConfig());const name=setPreviewPlayback(viewer,getConfig());applyPreviewCamera(viewer,getConfig());if(!visible)viewer.pause();status.textContent=name?'播放：'+name:'靜止預覽';});
       viewer.addEventListener('error',()=>{if(token===sequence)status.textContent='模型預覽載入失敗，請收合後重開。';});
       url=URL.createObjectURL(new Blob([buffer],{type:'model/gltf-binary'}));host.replaceChildren(viewer);viewer.src=url;
     }catch(e){if(token===sequence)status.textContent='無法載入預覽：'+e.message;}

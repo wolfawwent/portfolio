@@ -514,13 +514,16 @@ html.model-dialog-open { overflow: hidden; }
 }
 .gallery__back:hover { text-decoration: underline; }
 .gallery__count { margin-bottom: 20px; }
+/* 一行 4 張：卡片縮到 260px（4×260 + 3×12 = 1052 ≤ 內容欄 1100）。
+   卡片 PNG 上下各有約 16% 透明邊，所以行距用負的 margin 收回來 */
+.shelf--grid { --grid-cols: 4; --grid-card: 260px; --grid-row-pull: -34px; }
 .shelf--grid .shelf__track {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--card-w, 340px), 1fr));
-  justify-items: center; gap: 28px 12px;
+  display: grid; grid-template-columns: repeat(var(--grid-cols), var(--grid-card));
+  justify-content: center; justify-items: center; gap: 0 12px;
   overflow: visible; width: auto; margin-left: 0; padding: 14px 0 22px;
   cursor: default; user-select: auto; -webkit-user-select: auto; touch-action: auto;
 }
-.shelf--grid .card--auto { flex: none; }
-@media (max-width: 720px) {
-  .shelf--grid .shelf__track { grid-template-columns: repeat(auto-fill, minmax(var(--card-w, 240px), 1fr)); }
-}
+.shelf--grid .card--auto { flex: none; --card-w: var(--grid-card); width: var(--grid-card); margin: var(--grid-row-pull) 0; }
+@media (max-width: 1140px) { .shelf--grid { --grid-cols: 3; } }
+@media (max-width: 860px)  { .shelf--grid { --grid-cols: 2; --grid-card: 240px; } }
+@media (max-width: 540px)  { .shelf--grid { --grid-card: min(240px, calc(50vw - 24px)); --grid-row-pull: -24px; } }

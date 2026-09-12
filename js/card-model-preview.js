@@ -10,6 +10,11 @@
   const status = dialog.querySelector('[role="status"]');
   let runtime, active, generation = 0, opener;
   const safeName = name => name.trim().replace(/[<>:"/\\|?*]/g, '_').replace(/[ .]+$/g, '');
+  // 卡片工具偵測到半透明貼圖時會把 config.blend 設成 true → 這裡把所有材質切成 BLEND
+  function applyBlendMode(viewer,config){
+    if(!config||!config.blend||!viewer.model)return;
+    try{for(const m of viewer.model.materials){if(m.getAlphaMode?.()!=='BLEND')m.setAlphaMode('BLEND');}}catch(e){console.warn('[preview] blend',e);}
+  }
   async function records() {
     return fetch('/assets/cards/manifest.json', {cache:'no-store'}).then(r => {
       if (!r.ok) throw Error('Model catalogue unavailable.');
@@ -67,6 +72,7 @@
       viewer.setAttribute('animation-crossfade-duration', '0');
       viewer.addEventListener('load', () => {
         if (token !== generation || viewer !== active || !dialog.open) return;
+        applyBlendMode(viewer, record.config || {});
         const animation = setPreviewPlayback(viewer, record.config || {});
         status.textContent = previewStatusText(animation,record.config || {});
         applyPreviewCamera(viewer,record.config || {});
