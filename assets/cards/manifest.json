@@ -1629,5 +1629,52 @@
       "front": "assets/cards/parallax/e88323c4-4736-4473-8d50-65115670e7db-c6bb208a538a4203a4114f3e8be3fe29-front.png",
       "frame": "assets/cards/parallax/e88323c4-4736-4473-8d50-65115670e7db-c6bb208a538a4203a4114f3e8be3fe29-frame.png"
     }
+  },
+  {
+    "id": "be10bcda-5be1-4e16-8f3e-9df8f12c923d",
+    "name": "Safe",
+    "model": "assets/models/be10bcda-5be1-4e16-8f3e-9df8f12c923d-76f9f94685974885a16f8672ffffe67d.glb",
+    "image": "assets/cards/be10bcda-5be1-4e16-8f3e-9df8f12c923d-76f9f94685974885a16f8672ffffe67d.png",
+    "config": {
+      "category": "other",
+      "x": -1.3,
+      "y": -2.2,
+      "z": 11.7,
+      "scale": 0.44,
+      "yaw": -145,
+      "pitch": -19,
+      "roll": -11,
+      "time": 0,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "glow": 1,
+      "glowRadius": 18,
+      "blend": false,
+      "blendMaterials": [],
+      "previewYaw": 139,
+      "previewElevation": 15,
+      "previewDistance": 115,
+      "previewPanX": 7,
+      "previewPanY": -8,
+      "previewAnimationIndex": 2,
+      "normalization": {
+        "scale": 18.90909090909091,
+        "position": [
+          -0.5909090909090909,
+          -13,
+          -0.2717262643222426
+        ]
+      },
+      "animationIndex": 0,
+      "playing": true
+    },
+    "parallax": {
+      "version": 2,
+      "background": "assets/cards/parallax/be10bcda-5be1-4e16-8f3e-9df8f12c923d-76f9f94685974885a16f8672ffffe67d-background.png",
+      "model": "assets/cards/parallax/be10bcda-5be1-4e16-8f3e-9df8f12c923d-76f9f94685974885a16f8672ffffe67d-model.png",
+      "foreground": "assets/cards/parallax/be10bcda-5be1-4e16-8f3e-9df8f12c923d-76f9f94685974885a16f8672ffffe67d-foreground.png",
+      "front": "assets/cards/parallax/be10bcda-5be1-4e16-8f3e-9df8f12c923d-76f9f94685974885a16f8672ffffe67d-front.png",
+      "frame": "assets/cards/parallax/be10bcda-5be1-4e16-8f3e-9df8f12c923d-76f9f94685974885a16f8672ffffe67d-frame.png"
+    }
   }
 ]
