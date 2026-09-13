@@ -1107,5 +1107,287 @@
       "model": "assets/cards/parallax/5f11959f-c081-4226-a014-04de3a5c65b6-0fa5177e90214c5c8dfa8e4e52cad122-model.png",
       "foreground": "assets/cards/parallax/5f11959f-c081-4226-a014-04de3a5c65b6-0fa5177e90214c5c8dfa8e4e52cad122-foreground.png"
     }
+  },
+  {
+    "id": "4c7a9f59-c731-478d-b09c-33978ac664ef",
+    "name": "Jolteon Hat",
+    "model": "assets/models/4c7a9f59-c731-478d-b09c-33978ac664ef-2a5abce797c8424ea009354896ac2705.glb",
+    "image": "assets/cards/4c7a9f59-c731-478d-b09c-33978ac664ef-2a5abce797c8424ea009354896ac2705.png",
+    "config": {
+      "category": "item",
+      "x": 0,
+      "y": -2,
+      "z": 0,
+      "scale": 0.53,
+      "yaw": 145,
+      "pitch": -18,
+      "roll": 5,
+      "time": 0,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "glow": 1,
+      "glowRadius": 18,
+      "blend": false,
+      "blendMaterials": [],
+      "previewYaw": -134,
+      "previewElevation": 12,
+      "previewDistance": 115,
+      "previewPanX": 0,
+      "previewPanY": -33,
+      "previewAnimationIndex": -2,
+      "normalization": {
+        "scale": 13.866666666666667,
+        "position": [
+          0.9316519352804197,
+          -36.4,
+          0.7345473044145305
+        ]
+      },
+      "animationIndex": -1,
+      "playing": true
+    },
+    "parallax": {
+      "version": 2,
+      "background": "assets/cards/parallax/4c7a9f59-c731-478d-b09c-33978ac664ef-2a5abce797c8424ea009354896ac2705-background.png",
+      "model": "assets/cards/parallax/4c7a9f59-c731-478d-b09c-33978ac664ef-2a5abce797c8424ea009354896ac2705-model.png",
+      "foreground": "assets/cards/parallax/4c7a9f59-c731-478d-b09c-33978ac664ef-2a5abce797c8424ea009354896ac2705-foreground.png",
+      "front": "assets/cards/parallax/4c7a9f59-c731-478d-b09c-33978ac664ef-2a5abce797c8424ea009354896ac2705-front.png",
+      "frame": "assets/cards/parallax/4c7a9f59-c731-478d-b09c-33978ac664ef-2a5abce797c8424ea009354896ac2705-frame.png"
+    }
+  },
+  {
+    "id": "29b15207-e06e-46c6-a583-f259a23c6b79",
+    "name": "Flareon Hat",
+    "model": "assets/models/29b15207-e06e-46c6-a583-f259a23c6b79-21fa2c1f86d94256ae6449f5c4093752.glb",
+    "image": "assets/cards/29b15207-e06e-46c6-a583-f259a23c6b79-21fa2c1f86d94256ae6449f5c4093752.png",
+    "config": {
+      "category": "item",
+      "x": -0.4,
+      "y": -2.2,
+      "z": 0,
+      "scale": 0.32,
+      "yaw": 145,
+      "pitch": -13,
+      "roll": 3,
+      "time": 0,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "glow": 1,
+      "glowRadius": 18,
+      "blend": false,
+      "blendMaterials": [],
+      "previewYaw": -134,
+      "previewElevation": 12,
+      "previewDistance": 115,
+      "previewPanX": 0,
+      "previewPanY": -33,
+      "previewAnimationIndex": -2,
+      "normalization": {
+        "scale": 21.333333333333332,
+        "position": [
+          0,
+          -42.33333333333333,
+          -4.710198984034746
+        ]
+      },
+      "animationIndex": -1,
+      "playing": true
+    },
+    "parallax": {
+      "version": 2,
+      "background": "assets/cards/parallax/29b15207-e06e-46c6-a583-f259a23c6b79-21fa2c1f86d94256ae6449f5c4093752-background.png",
+      "model": "assets/cards/parallax/29b15207-e06e-46c6-a583-f259a23c6b79-21fa2c1f86d94256ae6449f5c4093752-model.png",
+      "foreground": "assets/cards/parallax/29b15207-e06e-46c6-a583-f259a23c6b79-21fa2c1f86d94256ae6449f5c4093752-foreground.png",
+      "front": "assets/cards/parallax/29b15207-e06e-46c6-a583-f259a23c6b79-21fa2c1f86d94256ae6449f5c4093752-front.png",
+      "frame": "assets/cards/parallax/29b15207-e06e-46c6-a583-f259a23c6b79-21fa2c1f86d94256ae6449f5c4093752-frame.png"
+    }
+  },
+  {
+    "id": "d5bbc2bb-d722-4a5b-a3b3-9eab84d11f8b",
+    "name": "Sea Trident",
+    "model": "assets/models/d5bbc2bb-d722-4a5b-a3b3-9eab84d11f8b-5e09bb301cb041bb83f37affd77fcfc2.glb",
+    "image": "assets/cards/d5bbc2bb-d722-4a5b-a3b3-9eab84d11f8b-5e09bb301cb041bb83f37affd77fcfc2.png",
+    "config": {
+      "category": "weapon",
+      "x": -0.8,
+      "y": -2.2,
+      "z": 23.5,
+      "scale": 1.23,
+      "yaw": -2,
+      "pitch": -13,
+      "roll": -41,
+      "time": 0,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "glow": 1,
+      "glowRadius": 18,
+      "blend": false,
+      "blendMaterials": [],
+      "previewYaw": -166,
+      "previewElevation": 15,
+      "previewDistance": 89,
+      "previewPanX": -8,
+      "previewPanY": -8,
+      "previewAnimationIndex": -2,
+      "normalization": {
+        "scale": 8.666666666666666,
+        "position": [
+          0,
+          -14.08333343813578,
+          0
+        ]
+      },
+      "animationIndex": -1,
+      "playing": true
+    },
+    "parallax": {
+      "version": 2,
+      "background": "assets/cards/parallax/d5bbc2bb-d722-4a5b-a3b3-9eab84d11f8b-5e09bb301cb041bb83f37affd77fcfc2-background.png",
+      "model": "assets/cards/parallax/d5bbc2bb-d722-4a5b-a3b3-9eab84d11f8b-5e09bb301cb041bb83f37affd77fcfc2-model.png",
+      "foreground": "assets/cards/parallax/d5bbc2bb-d722-4a5b-a3b3-9eab84d11f8b-5e09bb301cb041bb83f37affd77fcfc2-foreground.png",
+      "front": "assets/cards/parallax/d5bbc2bb-d722-4a5b-a3b3-9eab84d11f8b-5e09bb301cb041bb83f37affd77fcfc2-front.png",
+      "frame": "assets/cards/parallax/d5bbc2bb-d722-4a5b-a3b3-9eab84d11f8b-5e09bb301cb041bb83f37affd77fcfc2-frame.png"
+    }
+  },
+  {
+    "id": "e1b6afb1-2124-4adf-8d5d-dcb481fb9d63",
+    "name": "Warden Pickaxe",
+    "model": "assets/models/e1b6afb1-2124-4adf-8d5d-dcb481fb9d63-b5830f2aea44404d982e9368204ad08e.glb",
+    "image": "assets/cards/e1b6afb1-2124-4adf-8d5d-dcb481fb9d63-b5830f2aea44404d982e9368204ad08e.png",
+    "config": {
+      "category": "weapon",
+      "x": 0,
+      "y": -2.2,
+      "z": 23.5,
+      "scale": 0.77,
+      "yaw": -2,
+      "pitch": -13,
+      "roll": -41,
+      "time": 0,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "glow": 1,
+      "glowRadius": 18,
+      "blend": false,
+      "blendMaterials": [],
+      "previewYaw": -166,
+      "previewElevation": 15,
+      "previewDistance": 89,
+      "previewPanX": -8,
+      "previewPanY": -8,
+      "previewAnimationIndex": -2,
+      "normalization": {
+        "scale": 23.11111111111111,
+        "position": [
+          0.7966634233587407,
+          -23.11111111111111,
+          -0.5000172691243688
+        ]
+      },
+      "animationIndex": -1,
+      "playing": true
+    },
+    "parallax": {
+      "version": 2,
+      "background": "assets/cards/parallax/e1b6afb1-2124-4adf-8d5d-dcb481fb9d63-b5830f2aea44404d982e9368204ad08e-background.png",
+      "model": "assets/cards/parallax/e1b6afb1-2124-4adf-8d5d-dcb481fb9d63-b5830f2aea44404d982e9368204ad08e-model.png",
+      "foreground": "assets/cards/parallax/e1b6afb1-2124-4adf-8d5d-dcb481fb9d63-b5830f2aea44404d982e9368204ad08e-foreground.png",
+      "front": "assets/cards/parallax/e1b6afb1-2124-4adf-8d5d-dcb481fb9d63-b5830f2aea44404d982e9368204ad08e-front.png",
+      "frame": "assets/cards/parallax/e1b6afb1-2124-4adf-8d5d-dcb481fb9d63-b5830f2aea44404d982e9368204ad08e-frame.png"
+    }
+  },
+  {
+    "id": "334c9d87-ce9a-4ad4-a78d-11f0f8abe7ee",
+    "name": "Wooden Bow",
+    "model": "assets/models/334c9d87-ce9a-4ad4-a78d-11f0f8abe7ee-058cbe5d183a48e5a14c0803a081278d.glb",
+    "image": "assets/cards/334c9d87-ce9a-4ad4-a78d-11f0f8abe7ee-058cbe5d183a48e5a14c0803a081278d.png",
+    "config": {
+      "category": "weapon",
+      "x": 2.5,
+      "y": -1.7,
+      "z": 6.9,
+      "scale": 0.91,
+      "yaw": -112,
+      "pitch": -30,
+      "roll": 14,
+      "time": 0,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "glow": 1,
+      "glowRadius": 18,
+      "blend": false,
+      "blendMaterials": [],
+      "previewYaw": -169,
+      "previewElevation": 15,
+      "previewDistance": 115,
+      "previewPanX": -1,
+      "previewPanY": -18,
+      "previewAnimationIndex": -2,
+      "normalization": {
+        "scale": 12.26248075881174,
+        "position": [
+          -0.044215675813022944,
+          -21.459341327920548,
+          0
+        ]
+      },
+      "animationIndex": -1,
+      "playing": true
+    },
+    "parallax": {
+      "version": 2,
+      "background": "assets/cards/parallax/334c9d87-ce9a-4ad4-a78d-11f0f8abe7ee-058cbe5d183a48e5a14c0803a081278d-background.png",
+      "model": "assets/cards/parallax/334c9d87-ce9a-4ad4-a78d-11f0f8abe7ee-058cbe5d183a48e5a14c0803a081278d-model.png",
+      "foreground": "assets/cards/parallax/334c9d87-ce9a-4ad4-a78d-11f0f8abe7ee-058cbe5d183a48e5a14c0803a081278d-foreground.png",
+      "front": "assets/cards/parallax/334c9d87-ce9a-4ad4-a78d-11f0f8abe7ee-058cbe5d183a48e5a14c0803a081278d-front.png",
+      "frame": "assets/cards/parallax/334c9d87-ce9a-4ad4-a78d-11f0f8abe7ee-058cbe5d183a48e5a14c0803a081278d-frame.png"
+    }
+  },
+  {
+    "id": "b3b5b1b3-8421-4e66-bc0e-702081e3b9d4",
+    "name": "Soul Bow",
+    "model": "assets/models/b3b5b1b3-8421-4e66-bc0e-702081e3b9d4-3ee4a8d7387443b6aec6af8b6139ea9f.glb",
+    "image": "assets/cards/b3b5b1b3-8421-4e66-bc0e-702081e3b9d4-3ee4a8d7387443b6aec6af8b6139ea9f.png",
+    "config": {
+      "category": "weapon",
+      "x": 2.5,
+      "y": -1.7,
+      "z": 6.9,
+      "scale": 0.91,
+      "yaw": -112,
+      "pitch": -30,
+      "roll": 14,
+      "time": 0,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "glow": 1,
+      "glowRadius": 18,
+      "blend": false,
+      "blendMaterials": [],
+      "previewYaw": -169,
+      "previewElevation": 15,
+      "previewDistance": 115,
+      "previewPanX": -1,
+      "previewPanY": -18,
+      "previewAnimationIndex": -2,
+      "normalization": {
+        "scale": 11.243243243243244,
+        "position": [
+          -0.00024844293492002316,
+          -19.675675675675677,
+          0
+        ]
+      },
+      "animationIndex": -1,
+      "playing": true
+    },
+    "parallax": {
+      "version": 2,
+      "background": "assets/cards/parallax/b3b5b1b3-8421-4e66-bc0e-702081e3b9d4-3ee4a8d7387443b6aec6af8b6139ea9f-background.png",
+      "model": "assets/cards/parallax/b3b5b1b3-8421-4e66-bc0e-702081e3b9d4-3ee4a8d7387443b6aec6af8b6139ea9f-model.png",
+      "foreground": "assets/cards/parallax/b3b5b1b3-8421-4e66-bc0e-702081e3b9d4-3ee4a8d7387443b6aec6af8b6139ea9f-foreground.png",
+      "front": "assets/cards/parallax/b3b5b1b3-8421-4e66-bc0e-702081e3b9d4-3ee4a8d7387443b6aec6af8b6139ea9f-front.png",
+      "frame": "assets/cards/parallax/b3b5b1b3-8421-4e66-bc0e-702081e3b9d4-3ee4a8d7387443b6aec6af8b6139ea9f-frame.png"
+    }
   }
 ]

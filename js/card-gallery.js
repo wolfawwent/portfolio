@@ -22,7 +22,7 @@
     START_AT: ['Fulgora'],          // 網頁載入時，該列左邊第一張完整的卡（不分大小寫；沒有就從第一張開始）
     AUTO_SPEED: 24,                 // 卡片列自動往左緩慢移動的速度（px/秒）；0 = 不自動移動。滑鼠移到該列上會暫停
     START_PEEK: 0.7,                // 它前一張（例如 Statue of God）在左邊露出多少（0 = 不露出、1 = 整張）；右邊被切的比例由視窗寬度決定
-    CATEGORIES: ['entity', 'weapon', 'item'],   // 卡片分類；新增分類時在這裡加，並在 index.html 加一個 .shelf
+    CATEGORIES: ['entity', 'weapon', 'item', 'other'],   // 卡片分類；新增分類時在這裡加，並在 index.html 加一個 .shelf
     FONT: 'Cubic11',                // 俐方體11號（assets/fonts/cubic11.ttf），中英文都有
     FONT_FILE: 'assets/fonts/cubic11.ttf',
     FONT_BASE: 12,                  // 俐方體 11 號在 12px 時每個像素剛好落在整數格上（實測零抗鋸齒）

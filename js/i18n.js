@@ -23,11 +23,13 @@
   "Entity": "生物",
   "Weapon": "武器",
   "Item": "道具",
+  "Other": "其他",
   "SEE ALL": "查看全部",
   "Entity cards": "生物卡片",
   "Weapon cards": "武器卡片",
   "Item cards": "道具卡片",
-  "Commissions, collabs, or just say hi.": "委託製作、合作邀約，或只是來打聲招呼，都歡迎聯繫我的Discord wolfawwent。",
+  "Other cards": "其他卡片",
+  "Commissions, collabs, or just say hi.": "委託製作、合作邀約，或只是來打聲招呼，都歡迎聯繫我的 Discord wolfawwent。",
   "← BACK": "← 返回作品",
   "All Models": "全部模型",
   "All cards": "全部卡片",
@@ -51,7 +53,7 @@
   document.documentElement.lang = lang;
   document.documentElement.dataset.lang = lang;
   const t = text => lang === 'en' ? text : (messages[text] ?? text);
-  const category = type => t(({entity:'Entity',weapon:'Weapon',item:'Item'})[type] || type);
+  const category = type => t(({entity:'Entity',weapon:'Weapon',item:'Item',other:'Other'})[type] || type);
   window.PortfolioI18n = {lang, t, category,
     count: n => lang === 'en' ? (n ? n + ' model' + (n === 1 ? '' : 's') + ' · click a card to preview' : 'no cards yet') : (n ? '共 ' + n + ' 件模型 · 點擊卡片查看預覽' : '尚無作品')
   };
