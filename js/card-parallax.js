@@ -7,8 +7,8 @@
     if(!catalogue)catalogue=fetch('/assets/cards/manifest.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('catalogue');return r.json();}).catch(e=>{catalogue=null;throw e;});
     const records=await catalogue,matches=records.filter(r=>typeof r.name==='string'&&filename(r)===file);
     if(matches.length!==1)return null;
-    const layer=matches[0].parallax;if(layer?.version!==1)return null;
-    const keys=['background','model','foreground'];
+    const layer=matches[0].parallax;if(![1,2].includes(layer?.version))return null;
+    const keys=layer.version===2?['background','model','foreground','front','frame']:['background','model','foreground'];
     if(!keys.every(k=>/^assets\/cards\/parallax\/[a-z0-9-]+\.png$/i.test(layer[k]||'')))return null;
     const key=layer.model;
     if(cache.has(key)){const value=cache.get(key);cache.delete(key);cache.set(key,value);return value;}
@@ -24,8 +24,14 @@
       const dt=Math.min(.05,(now-last)/1000);last=now;const a=1-Math.exp(-14*dt);
       x+=((inside?tx:0)-x)*a;y+=((inside?ty:0)-y)*a;
       ctx.clearRect(0,0,1000,1600);ctx.drawImage(images[0],0,0);
+      if(images.length===5){
+        // Rear geometry stays inside the card even when the PNG moves upward.
+        ctx.save();ctx.beginPath();ctx.rect(140,260,720,1080);ctx.clip();
+        ctx.drawImage(images[1],Math.round(-x*18),Math.round(-y*12));ctx.restore();
+        ctx.drawImage(images[4],0,0);
+      }
       ctx.save();ctx.beginPath();ctx.rect(140,0,860,1340);ctx.clip();ctx.beginPath();ctx.rect(140,0,860,1340);ctx.rect(140,0,216,260);ctx.rect(752,1142,248,198);ctx.clip('evenodd');
-      ctx.drawImage(images[1],Math.round(-x*18),Math.round(-y*12));ctx.restore();ctx.drawImage(images[2],0,0);
+      ctx.drawImage(images.length===5?images[3]:images[1],Math.round(-x*18),Math.round(-y*12));ctx.restore();ctx.drawImage(images[2],0,0);
       canvas.dataset.offsetX=String(Math.round(-x*18));canvas.dataset.offsetY=String(Math.round(-y*12));
       if(!inside&&Math.abs(x)+Math.abs(y)<.01){clear();return;}
       raf=requestAnimationFrame(draw);

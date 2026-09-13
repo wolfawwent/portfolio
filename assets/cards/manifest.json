@@ -249,10 +249,12 @@
       "playing": false
     },
     "parallax": {
-      "version": 1,
-      "background": "assets/cards/parallax/93d257a2-2600-49da-9bdb-3256484cd1be-dd5c40402f4243a2b1ff24c903ceef2e-background.png",
-      "model": "assets/cards/parallax/93d257a2-2600-49da-9bdb-3256484cd1be-dd5c40402f4243a2b1ff24c903ceef2e-model.png",
-      "foreground": "assets/cards/parallax/93d257a2-2600-49da-9bdb-3256484cd1be-dd5c40402f4243a2b1ff24c903ceef2e-foreground.png"
+      "version": 2,
+      "background": "assets/cards/parallax/93d257a2-2600-49da-9bdb-3256484cd1be-b8fa3f6539974d5289497a8e109de872-background.png",
+      "model": "assets/cards/parallax/93d257a2-2600-49da-9bdb-3256484cd1be-b8fa3f6539974d5289497a8e109de872-model.png",
+      "foreground": "assets/cards/parallax/93d257a2-2600-49da-9bdb-3256484cd1be-b8fa3f6539974d5289497a8e109de872-foreground.png",
+      "front": "assets/cards/parallax/93d257a2-2600-49da-9bdb-3256484cd1be-b8fa3f6539974d5289497a8e109de872-front.png",
+      "frame": "assets/cards/parallax/93d257a2-2600-49da-9bdb-3256484cd1be-b8fa3f6539974d5289497a8e109de872-frame.png"
     }
   },
   {
