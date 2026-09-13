@@ -446,14 +446,24 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     window.addEventListener('resize', goMiddle);
 
     // ---------- 自動緩慢往左移動 ----------
-    // 滑鼠在該列上（或正在拖曳）就暫停，離開後繼續；手機觸控時同樣暫停。尊重系統的「減少動態效果」設定。
+    // 滑鼠停在「卡面」上（或正在拖曳）才暫停；在凸出卡面的模型、透明邊、卡片之間的空隙上會繼續移動。
+    // 每一格都用 elementFromPoint 重新判斷游標下面是不是卡面，因為卡片會自己滑到靜止的游標底下，
+    // 瀏覽器在程式捲動時不一定會更新 :hover。尊重系統的「減少動態效果」設定。
     if (CONFIG.AUTO_SPEED > 0 && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      let hover = false, last = 0, acc = 0;
-      track.addEventListener('pointerenter', () => { hover = true; });
-      track.addEventListener('pointerleave', () => { hover = false; });
+      const faceSel = CONFIG.HIT_RECT ? '.card__hit' : '.card--auto';
+      let inside = false, px = 0, py = 0, last = 0, acc = 0;
+      const remember = (e) => { if (e.pointerType === 'touch') return; inside = true; px = e.clientX; py = e.clientY; };
+      track.addEventListener('pointerenter', remember);
+      track.addEventListener('pointermove', remember);
+      track.addEventListener('pointerleave', () => { inside = false; });
+      const onFace = () => {
+        if (!inside) return false;
+        const face = document.elementFromPoint(px, py)?.closest(faceSel);
+        return !!face && face.closest('.shelf__track') === track;
+      };
       const tick = (now) => {
         const dt = Math.min(now - last, 100); last = now;
-        if (!hover && !track.classList.contains('is-dragging') && !document.hidden) {
+        if (!onFace() && !track.classList.contains('is-dragging') && !document.hidden) {
           acc += CONFIG.AUTO_SPEED * dt / 1000;
           const step = Math.floor(acc);
           if (step >= 1) { track.scrollLeft += step; acc -= step; }
