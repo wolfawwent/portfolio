@@ -981,13 +981,21 @@
       "previewPanY": 7,
       "previewAnimationIndex": 1,
       "animationIndex": 2,
-      "playing": false
+      "playing": false,
+      "normalization": {
+        "scale": 5.810713933538502,
+        "position": [
+          0,
+          -6.900222796076972,
+          -0.5356308387503109
+        ]
+      }
     },
     "parallax": {
       "version": 1,
-      "background": "assets/cards/parallax/2d704a62-278b-4b66-a1ce-f717e74b3853-f7b8ce0fb8544d708afc945b1acaf86b-background.png",
-      "model": "assets/cards/parallax/2d704a62-278b-4b66-a1ce-f717e74b3853-f7b8ce0fb8544d708afc945b1acaf86b-model.png",
-      "foreground": "assets/cards/parallax/2d704a62-278b-4b66-a1ce-f717e74b3853-f7b8ce0fb8544d708afc945b1acaf86b-foreground.png"
+      "background": "assets/cards/parallax/2d704a62-278b-4b66-a1ce-f717e74b3853-96904791b7544005bfda43e080cd412c-background.png",
+      "model": "assets/cards/parallax/2d704a62-278b-4b66-a1ce-f717e74b3853-96904791b7544005bfda43e080cd412c-model.png",
+      "foreground": "assets/cards/parallax/2d704a62-278b-4b66-a1ce-f717e74b3853-96904791b7544005bfda43e080cd412c-foreground.png"
     }
   },
   {
