@@ -1483,5 +1483,104 @@
       "front": "assets/cards/parallax/ad2203f9-4c54-4e2b-8612-8158a18473be-e93fa13387ad4cd0b1cbf6006bf4d6c0-front.png",
       "frame": "assets/cards/parallax/ad2203f9-4c54-4e2b-8612-8158a18473be-e93fa13387ad4cd0b1cbf6006bf4d6c0-frame.png"
     }
+  },
+  {
+    "id": "5e807bbb-8a5e-4820-a150-2a1d9a35f635",
+    "name": "Castlewars Vault",
+    "model": "assets/models/5e807bbb-8a5e-4820-a150-2a1d9a35f635-ef462324672c404f863016c49f8d428b.glb",
+    "image": "assets/cards/5e807bbb-8a5e-4820-a150-2a1d9a35f635-ef462324672c404f863016c49f8d428b.png",
+    "config": {
+      "category": "other",
+      "x": 0.8,
+      "y": -3.3,
+      "z": 11.9,
+      "scale": 0.5,
+      "yaw": -150,
+      "pitch": -14,
+      "roll": -7,
+      "time": 0.5070060796737667,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "glow": 1,
+      "glowRadius": 18,
+      "blend": true,
+      "blendMaterials": [
+        0,
+        1
+      ],
+      "previewYaw": 149,
+      "previewElevation": 15,
+      "previewDistance": 115,
+      "previewPanX": 0,
+      "previewPanY": 0,
+      "previewAnimationIndex": 1,
+      "normalization": {
+        "scale": 6.825970400635603,
+        "position": [
+          -3.426306745018328,
+          -11.349344002379603,
+          -7.416228633539623
+        ]
+      },
+      "animationIndex": 0,
+      "playing": true
+    },
+    "parallax": {
+      "version": 2,
+      "background": "assets/cards/parallax/5e807bbb-8a5e-4820-a150-2a1d9a35f635-ef462324672c404f863016c49f8d428b-background.png",
+      "model": "assets/cards/parallax/5e807bbb-8a5e-4820-a150-2a1d9a35f635-ef462324672c404f863016c49f8d428b-model.png",
+      "foreground": "assets/cards/parallax/5e807bbb-8a5e-4820-a150-2a1d9a35f635-ef462324672c404f863016c49f8d428b-foreground.png",
+      "front": "assets/cards/parallax/5e807bbb-8a5e-4820-a150-2a1d9a35f635-ef462324672c404f863016c49f8d428b-front.png",
+      "frame": "assets/cards/parallax/5e807bbb-8a5e-4820-a150-2a1d9a35f635-ef462324672c404f863016c49f8d428b-frame.png"
+    }
+  },
+  {
+    "id": "a2f1e250-36b8-4957-bd88-3fb25edeb2d0",
+    "name": "Seasonal Vault",
+    "model": "assets/models/a2f1e250-36b8-4957-bd88-3fb25edeb2d0-df30a6c405ae4adda1c509e94508c9b1.glb",
+    "image": "assets/cards/a2f1e250-36b8-4957-bd88-3fb25edeb2d0-df30a6c405ae4adda1c509e94508c9b1.png",
+    "config": {
+      "category": "other",
+      "x": 2.1,
+      "y": -1.5,
+      "z": 22.9,
+      "scale": 0.7,
+      "yaw": -150,
+      "pitch": -14,
+      "roll": -7,
+      "time": 4.04,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "glow": 1,
+      "glowRadius": 18,
+      "blend": true,
+      "blendMaterials": [
+        0
+      ],
+      "previewYaw": 149,
+      "previewElevation": 15,
+      "previewDistance": 115,
+      "previewPanX": 0,
+      "previewPanY": 0,
+      "previewAnimationIndex": 1,
+      "normalization": {
+        "scale": 4.556489673306174,
+        "position": [
+          -2.2781034151353188,
+          -12.007459463107226,
+          -2.185233966672998
+        ]
+      },
+      "animationIndex": 0,
+      "playing": false
+    },
+    "parallax": {
+      "version": 2,
+      "background": "assets/cards/parallax/a2f1e250-36b8-4957-bd88-3fb25edeb2d0-df30a6c405ae4adda1c509e94508c9b1-background.png",
+      "model": "assets/cards/parallax/a2f1e250-36b8-4957-bd88-3fb25edeb2d0-df30a6c405ae4adda1c509e94508c9b1-model.png",
+      "foreground": "assets/cards/parallax/a2f1e250-36b8-4957-bd88-3fb25edeb2d0-df30a6c405ae4adda1c509e94508c9b1-foreground.png",
+      "front": "assets/cards/parallax/a2f1e250-36b8-4957-bd88-3fb25edeb2d0-df30a6c405ae4adda1c509e94508c9b1-front.png",
+      "frame": "assets/cards/parallax/a2f1e250-36b8-4957-bd88-3fb25edeb2d0-df30a6c405ae4adda1c509e94508c9b1-frame.png"
+    }
   }
 ]
