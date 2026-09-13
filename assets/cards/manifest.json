@@ -1389,5 +1389,99 @@
       "front": "assets/cards/parallax/b3b5b1b3-8421-4e66-bc0e-702081e3b9d4-3ee4a8d7387443b6aec6af8b6139ea9f-front.png",
       "frame": "assets/cards/parallax/b3b5b1b3-8421-4e66-bc0e-702081e3b9d4-3ee4a8d7387443b6aec6af8b6139ea9f-frame.png"
     }
+  },
+  {
+    "id": "a0d19df2-326f-4be4-8fd3-95ec9885fc0a",
+    "name": "Butterfly",
+    "model": "assets/models/a0d19df2-326f-4be4-8fd3-95ec9885fc0a-0ef5c008643a4da489327e447010d463.glb",
+    "image": "assets/cards/a0d19df2-326f-4be4-8fd3-95ec9885fc0a-0ef5c008643a4da489327e447010d463.png",
+    "config": {
+      "category": "other",
+      "x": 2.1,
+      "y": 2.2,
+      "z": 6.9,
+      "scale": 0.62,
+      "yaw": 108,
+      "pitch": 3,
+      "roll": 26,
+      "time": 0,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "glow": 1,
+      "glowRadius": 18,
+      "blend": false,
+      "blendMaterials": [],
+      "previewYaw": -169,
+      "previewElevation": 15,
+      "previewDistance": 196,
+      "previewPanX": 33,
+      "previewPanY": 13,
+      "previewAnimationIndex": 0,
+      "normalization": {
+        "scale": 18.1236045219702,
+        "position": [
+          -9.072659089078494,
+          -22.539239911329894,
+          -8.982843985893622
+        ]
+      },
+      "animationIndex": 1,
+      "playing": false
+    },
+    "parallax": {
+      "version": 2,
+      "background": "assets/cards/parallax/a0d19df2-326f-4be4-8fd3-95ec9885fc0a-0ef5c008643a4da489327e447010d463-background.png",
+      "model": "assets/cards/parallax/a0d19df2-326f-4be4-8fd3-95ec9885fc0a-0ef5c008643a4da489327e447010d463-model.png",
+      "foreground": "assets/cards/parallax/a0d19df2-326f-4be4-8fd3-95ec9885fc0a-0ef5c008643a4da489327e447010d463-foreground.png",
+      "front": "assets/cards/parallax/a0d19df2-326f-4be4-8fd3-95ec9885fc0a-0ef5c008643a4da489327e447010d463-front.png",
+      "frame": "assets/cards/parallax/a0d19df2-326f-4be4-8fd3-95ec9885fc0a-0ef5c008643a4da489327e447010d463-frame.png"
+    }
+  },
+  {
+    "id": "ad2203f9-4c54-4e2b-8612-8158a18473be",
+    "name": "Grass",
+    "model": "assets/models/ad2203f9-4c54-4e2b-8612-8158a18473be-e93fa13387ad4cd0b1cbf6006bf4d6c0.glb",
+    "image": "assets/cards/ad2203f9-4c54-4e2b-8612-8158a18473be-e93fa13387ad4cd0b1cbf6006bf4d6c0.png",
+    "config": {
+      "category": "other",
+      "x": -0.8,
+      "y": -3.3,
+      "z": 14.8,
+      "scale": 0.46,
+      "yaw": -38,
+      "pitch": 1,
+      "roll": 0,
+      "time": 0,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "glow": 1,
+      "glowRadius": 18,
+      "blend": false,
+      "blendMaterials": [],
+      "previewYaw": 25,
+      "previewElevation": 15,
+      "previewDistance": 115,
+      "previewPanX": 0,
+      "previewPanY": 0,
+      "previewAnimationIndex": -2,
+      "normalization": {
+        "scale": 23.995123207800052,
+        "position": [
+          2.4243042353964728,
+          -11.247714003656274,
+          -1.2208986569050164
+        ]
+      },
+      "animationIndex": -1,
+      "playing": false
+    },
+    "parallax": {
+      "version": 2,
+      "background": "assets/cards/parallax/ad2203f9-4c54-4e2b-8612-8158a18473be-e93fa13387ad4cd0b1cbf6006bf4d6c0-background.png",
+      "model": "assets/cards/parallax/ad2203f9-4c54-4e2b-8612-8158a18473be-e93fa13387ad4cd0b1cbf6006bf4d6c0-model.png",
+      "foreground": "assets/cards/parallax/ad2203f9-4c54-4e2b-8612-8158a18473be-e93fa13387ad4cd0b1cbf6006bf4d6c0-foreground.png",
+      "front": "assets/cards/parallax/ad2203f9-4c54-4e2b-8612-8158a18473be-e93fa13387ad4cd0b1cbf6006bf4d6c0-front.png",
+      "frame": "assets/cards/parallax/ad2203f9-4c54-4e2b-8612-8158a18473be-e93fa13387ad4cd0b1cbf6006bf4d6c0-frame.png"
+    }
   }
 ]
