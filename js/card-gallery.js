@@ -13,6 +13,7 @@
      以整數倍率放大，不管卡片縮放到多大都保持像素銳利
    ===================================================================== */
 (function () {
+  const {t, category: categoryLabel, count: modelCount} = window.PortfolioI18n;
   const CONFIG = {
     list: 'card/cards.json',
     folder: 'card/',
@@ -317,9 +318,9 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     const buttons=[-1,1].map(direction=>{
       const button=document.createElement('button');button.type='button';
       button.className='shelf__arrow '+(direction<0?'shelf__arrow--left':'shelf__arrow--right');
-      button.setAttribute('aria-label',`${shelf.dataset.category}：${direction<0?'向左':'向右'}快速瀏覽卡片`);
+      button.setAttribute('aria-label',categoryLabel(shelf.dataset.category) + '：' + t(direction<0?'Browse left · or drag':'Browse right · or drag'));
       button.setAttribute('aria-controls',track.id);
-      button.title=direction<0?'向左瀏覽 · 也可拖曳':'向右瀏覽 · 也可拖曳';
+      button.title=t(direction<0?'Browse left · or drag':'Browse right · or drag');
       button.innerHTML='<svg viewBox="0 0 9 13" aria-hidden="true" shape-rendering="crispEdges"><path d="M6 0H9V3H6V5H4V8H6V10H9V13H6V11H4V9H2V8H0V5H2V4H4V2H6Z"/></svg>';
       button.addEventListener('click',()=>{
         stop();const distance=direction*Math.max(240,track.clientWidth*.85);
@@ -346,7 +347,7 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     card.setAttribute('aria-label', name);
     card.dataset.file = file;
     card.tabIndex = 0;card.setAttribute('role', 'button');
-    card.setAttribute('aria-haspopup', 'dialog');card.setAttribute('aria-label', 'Preview '+name);
+    card.setAttribute('aria-haspopup', 'dialog');card.setAttribute('aria-label', t('Preview ')+name);
     card.addEventListener('click', () => {
       if (dragging || performance.now() < (card.parentElement._suppressClickUntil || 0)) return;
       window.openCardPreview?.(card);
@@ -483,7 +484,7 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
       if (r.ok) files = await r.json();
     } catch (e) { console.warn('[cards] 讀不到 cards.json', e); }
     files = (Array.isArray(files) ? files : []).filter((f) => typeof f === 'string' && /^[\w\-. ]+\.(png|webp|gif)$/i.test(f));
-    if (!files.length) return;
+    if (!files.length) { const count = document.getElementById('galleryCount'); if (count) count.textContent = modelCount(0); return; }
 
     // 依 cards.json 的順序（= 卡片工具最初儲存的順序）分到各列
     const byTrack = new Map();
@@ -507,7 +508,7 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     for (const [track, list] of byTrack) setupLoop(track, list);
     // 圖鑑頁：顯示張數
     const count = document.getElementById('galleryCount');
-    if (count) { const n = [...byTrack.values()].reduce((a, l) => a + l.length, 0); count.textContent = n ? `${n} model${n === 1 ? '' : 's'} · click a card to preview` : 'no cards yet'; }
+    if (count) { const n = [...byTrack.values()].reduce((a, l) => a + l.length, 0); count.textContent = modelCount(n); }
 
     // 視窗縮放 / 版面變動時重新排版名字
     let raf = 0;

@@ -1,9 +1,11 @@
 /* Fixed-camera model preview using independently saved settings. */
 (() => {
+  const t = window.PortfolioI18n?.t || (text => text);
   const dialog = document.createElement('dialog');
   dialog.className = 'model-dialog';
   dialog.setAttribute('aria-labelledby', 'modelDialogTitle');
   dialog.innerHTML = '<header class="model-dialog__header"><h2 id="modelDialogTitle"></h2><button type="button" class="model-dialog__close" aria-label="Close model preview">×</button></header><div class="model-dialog__stage"></div><p class="model-dialog__status" role="status" aria-live="polite"></p>';
+  dialog.querySelector('button').setAttribute('aria-label', t('Close model preview'));
   document.body.append(dialog);
   const title = dialog.querySelector('h2');
   const stage = dialog.querySelector('.model-dialog__stage');
@@ -49,7 +51,7 @@
   });
   window.openCardPreview = async (card, editorRecord=null) => {
     const token = ++generation;stop();opener = card;
-    title.textContent = card.dataset.name;status.textContent = 'Loading model…';
+    title.textContent = card.dataset.name;status.textContent = t('Loading model…');
     if (!dialog.open) dialog.showModal();
     document.documentElement.classList.add('model-dialog-open');
     try {
@@ -63,14 +65,14 @@
         const file = `card_${category}_${safeName(item.name)}.png`;
         return file === card.dataset.file || (category === card.dataset.category && item.name.trim() === card.dataset.name);
       }) : [];
-      if (matches.length !== 1) { status.textContent = 'Model preview is not available for this card yet.';return; }
+      if (matches.length !== 1) { status.textContent = t('Model preview is not available for this card yet.');return; }
       const record = matches[0];
       const {applyPreviewCamera,setPreviewPlayback,previewStatusText} = await import('./model-preview-settings.js?v=pose-2');
       if (!runtime) runtime = import('../assets/vendor/model-viewer-4.3.1.min.js').catch(e => { runtime = null;throw e; });
       await runtime;await customElements.whenDefined('model-viewer');
       if (token !== generation || !dialog.open) return;
       const viewer = document.createElement('model-viewer');active = viewer;
-      viewer.setAttribute('alt', `${record.name} — fixed-angle model preview`);
+      viewer.setAttribute('alt', `${record.name} — ${t('fixed-angle model preview')}`);
       // No camera-controls, auto-rotate, AR, or autoplay: never start a default clip.
       applyPreviewCamera(viewer,record.config || {});
       if(localPreview)window.updateEditorCardPreview=config=>{record.config=config;title.textContent=config.name||'模型預覽';applyPreviewCamera(viewer,config);if(viewer.loaded&&viewer.dataset.previewIndex!==String(config.previewAnimationIndex)){setPreviewPlayback(viewer,config);viewer.dataset.previewIndex=String(config.previewAnimationIndex);}if(viewer.loaded)status.textContent=previewStatusText(viewer.dataset.playingAnimation,config);};
@@ -86,10 +88,10 @@
         status.textContent = previewStatusText(animation,record.config || {});
         applyPreviewCamera(viewer,record.config || {});
       });
-      viewer.addEventListener('error', () => { if (token === generation) status.textContent = 'Unable to load this model. Please close and try again.'; });
+      viewer.addEventListener('error', () => { if (token === generation) status.textContent = t('Unable to load this model. Please close and try again.'); });
       stage.replaceChildren(viewer);viewer.src = record.model;
     } catch (e) {
-      if (token === generation && dialog.open) {stop();status.textContent = 'Unable to load the preview. Please close and try again.';}
+      if (token === generation && dialog.open) {stop();status.textContent = t('Unable to load the preview. Please close and try again.');}
       console.warn('[model preview]', e);
     }
   };

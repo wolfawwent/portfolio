@@ -571,3 +571,19 @@ html.model-dialog-open { overflow: hidden; }
 .shelf .card--auto>.card__parallax{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;image-rendering:pixelated;filter:drop-shadow(0 8px 8px rgba(5,3,12,.65)) drop-shadow(0 0 18px rgba(9,5,20,.5))}
 .shelf .card--auto.has-parallax>img{opacity:0}
 .shelf .card--auto>.card__name{z-index:1}
+
+/* Traditional Chinese uses the existing local pixel font. */
+@font-face {
+  font-family: 'Cubic11';
+  src: url('../assets/fonts/cubic11.ttf') format('truetype');
+  font-display: swap;
+}
+html:lang(zh-Hant) {
+  --font-pixel: 'Press Start 2P', 'Cubic11', monospace;
+  --font-body: 'Departure Mono', 'Cubic11', monospace;
+}
+html:lang(zh-Hant) .hero__sub-title { font-size: .65em; line-height: 1.6; }
+html:lang(zh-Hant) .shelf__all, html:lang(zh-Hant) .gallery__back { font-size: 18px; line-height: 1.5; }
+html:lang(zh-Hant) .shelf__head .shelf__title { font-size: 24px; }
+html:lang(zh-Hant) .shelf__track:empty::after { content: '尚無作品'; font-size: 18px; }
+html:lang(zh-Hant) .card__media.no-img::after { content: '暫無預覽'; font-size: 18px; }

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <script src="js/i18n.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>All Models — wolfawwent's Model Dungeon</title>
   <meta name="description" content="wolfawwent's portfolio of pixel / voxel 3D models." />
@@ -37,7 +38,7 @@
       <a href="index.html#models">Models</a>
       <a href="index.html#contact">Contact</a>
     </nav>
-    <button class="nav__lang" id="langBtn" type="button" title="Language (coming soon)">EN</button>
+    <button class="nav__lang" id="langBtn" type="button" title="切換語言">EN</button>
   </header>
 
   <!--
@@ -65,9 +66,9 @@
       const type = (new URLSearchParams(location.search).get('type') || 'entity').toLowerCase().replace(/[^a-z0-9_-]/g, '');
       const shelf = document.getElementById('galleryShelf');
       shelf.dataset.category = type;
-      const label = type.charAt(0).toUpperCase() + type.slice(1);
+      const label = window.PortfolioI18n.category(type);
       document.getElementById('galleryTitle').textContent = label;
-      document.title = label + " — wolfawwent's Model Dungeon";
+      document.title = label + " — " + window.PortfolioI18n.t("wolfawwent's Model Dungeon");
     })();
   </script>
   <script src="js/bg.js"></script>

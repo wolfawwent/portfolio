@@ -35,7 +35,7 @@
     'pixel-art 3D models',
     'items · entities · vfx · furniture',
     'Discord wolfawwent',
-  ];
+  ].map(window.PortfolioI18n.t);
   const tw = document.getElementById('typewriter');
   if (tw) {
     let li = 0, ci = 0, deleting = false;
@@ -50,15 +50,7 @@
     tick();
   }
 
-  // ---------- 4. 語言切換（之後接中文用）----------
-  // 之後可以做成：把所有文字放進 i18n 物件，依 lang 換 textContent。
-  const langBtn = document.getElementById('langBtn');
-  if (langBtn) {
-    langBtn.addEventListener('click', () => {
-      langBtn.textContent = langBtn.textContent === 'EN' ? '中' : 'EN';
-      document.documentElement.dataset.lang = langBtn.textContent === 'EN' ? 'en' : 'zh';
-    });
-  }
+  // 語言切換由 i18n.js 處理。
 
   // ---------- 5. 年份 ----------
   const y = document.getElementById('year');
