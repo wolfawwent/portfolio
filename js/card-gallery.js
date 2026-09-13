@@ -286,7 +286,7 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     track.addEventListener('pointermove', (e) => {
       if (!active) return;
       const dx = e.clientX - startX;
-      if (!moved && Math.abs(dx) > 4) { moved = true; dragging = true; track.setPointerCapture(e.pointerId); track.classList.add('is-dragging'); track.querySelectorAll('.card--auto').forEach((c) => {c.style.transform = '';if(c.classList.contains('is-hovered'))c._releaseHover?.();}); }
+      if (!moved && Math.abs(dx) > 4) { moved = true; dragging = true; track.setPointerCapture(e.pointerId); track.classList.add('is-dragging'); track.querySelectorAll('.card--auto').forEach((c) => {c.style.transform = '';c._stopParallax?.();if(c.classList.contains('is-hovered'))c._releaseHover?.();}); }
       if (!moved) return;
       track.scrollLeft = startLeft - dx;   // 迴圈跳位時 setupLoop 會透過 _onWrap 修正 startLeft
       const now = performance.now();
@@ -369,6 +369,7 @@ Z:['11111','10001','00010','00010','00100','01000','01000','10001','11111']};
     card.append(label);
 
     card._name = name; card._img = img; card._label = label;
+    window.CardParallax?.attach(card);
 
     // 感應區：卡片本體 pointer-events:none（見 style.css），只有這塊接收滑鼠事件；
     // 事件會往上冒泡到 card，所以上面的 tilt / click 監聽照常運作，CSS 的 :hover 也照常成立
