@@ -1676,5 +1676,54 @@
       "front": "assets/cards/parallax/be10bcda-5be1-4e16-8f3e-9df8f12c923d-76f9f94685974885a16f8672ffffe67d-front.png",
       "frame": "assets/cards/parallax/be10bcda-5be1-4e16-8f3e-9df8f12c923d-76f9f94685974885a16f8672ffffe67d-frame.png"
     }
+  },
+  {
+    "id": "4480cfec-d5c4-4e83-a85d-bf2bc83924cc",
+    "name": "Spell Circle",
+    "model": "assets/models/4480cfec-d5c4-4e83-a85d-bf2bc83924cc-0357d523812d4f6db5470560e11fadcf.glb",
+    "image": "assets/cards/4480cfec-d5c4-4e83-a85d-bf2bc83924cc-0357d523812d4f6db5470560e11fadcf.png",
+    "config": {
+      "category": "other",
+      "x": -0.8,
+      "y": -5.3,
+      "z": 21.9,
+      "scale": 0.28,
+      "yaw": 26,
+      "pitch": 24,
+      "roll": 9,
+      "time": 1.99,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "glow": 0.05,
+      "glowRadius": 18,
+      "blend": true,
+      "blendMaterials": [
+        0
+      ],
+      "previewYaw": -36,
+      "previewElevation": 38,
+      "previewDistance": 199,
+      "previewPanX": 0,
+      "previewPanY": 0,
+      "previewAnimationIndex": 0,
+      "normalization": {
+        "scale": 3.714262510889031,
+        "position": [
+          -0.00011599690442854499,
+          -5.107110952472417,
+          -0.0001071764411204008
+        ]
+      },
+      "animationIndex": 0,
+      "playing": false
+    },
+    "parallax": {
+      "version": 2,
+      "background": "assets/cards/parallax/4480cfec-d5c4-4e83-a85d-bf2bc83924cc-0357d523812d4f6db5470560e11fadcf-background.png",
+      "model": "assets/cards/parallax/4480cfec-d5c4-4e83-a85d-bf2bc83924cc-0357d523812d4f6db5470560e11fadcf-model.png",
+      "foreground": "assets/cards/parallax/4480cfec-d5c4-4e83-a85d-bf2bc83924cc-0357d523812d4f6db5470560e11fadcf-foreground.png",
+      "front": "assets/cards/parallax/4480cfec-d5c4-4e83-a85d-bf2bc83924cc-0357d523812d4f6db5470560e11fadcf-front.png",
+      "frame": "assets/cards/parallax/4480cfec-d5c4-4e83-a85d-bf2bc83924cc-0357d523812d4f6db5470560e11fadcf-frame.png"
+    }
   }
 ]
