@@ -1772,5 +1772,52 @@
       "front": "assets/cards/parallax/455848b6-a5c8-4b02-8a21-3af43cb92157-67b5bb386a0f4c5e8ec0415ebe33afc1-front.png",
       "frame": "assets/cards/parallax/455848b6-a5c8-4b02-8a21-3af43cb92157-67b5bb386a0f4c5e8ec0415ebe33afc1-frame.png"
     }
+  },
+  {
+    "id": "17531b03-afae-4759-b3fd-17324b3ce3c1",
+    "name": "Chainsaw",
+    "model": "assets/models/17531b03-afae-4759-b3fd-17324b3ce3c1-f7ab730872e3485d8701af3a1b9f6d09.glb",
+    "image": "assets/cards/17531b03-afae-4759-b3fd-17324b3ce3c1-f7ab730872e3485d8701af3a1b9f6d09.png",
+    "config": {
+      "category": "weapon",
+      "x": -0.2,
+      "y": -0.6,
+      "z": 20.9,
+      "scale": 0.46,
+      "yaw": -86,
+      "pitch": 40,
+      "roll": -18,
+      "time": 0,
+      "watermarkColor": "#f7e7bf",
+      "watermark": "",
+      "glow": 1,
+      "glowRadius": 18,
+      "blend": false,
+      "blendMaterials": [],
+      "previewYaw": 15,
+      "previewElevation": -1,
+      "previewDistance": 115,
+      "previewPanX": -15,
+      "previewPanY": 17,
+      "previewAnimationIndex": 0,
+      "normalization": {
+        "scale": 20.735202492211837,
+        "position": [
+          0,
+          -14.647258783076348,
+          -0.08099688473520249
+        ]
+      },
+      "animationIndex": -1,
+      "playing": true
+    },
+    "parallax": {
+      "version": 2,
+      "background": "assets/cards/parallax/17531b03-afae-4759-b3fd-17324b3ce3c1-f7ab730872e3485d8701af3a1b9f6d09-background.png",
+      "model": "assets/cards/parallax/17531b03-afae-4759-b3fd-17324b3ce3c1-f7ab730872e3485d8701af3a1b9f6d09-model.png",
+      "foreground": "assets/cards/parallax/17531b03-afae-4759-b3fd-17324b3ce3c1-f7ab730872e3485d8701af3a1b9f6d09-foreground.png",
+      "front": "assets/cards/parallax/17531b03-afae-4759-b3fd-17324b3ce3c1-f7ab730872e3485d8701af3a1b9f6d09-front.png",
+      "frame": "assets/cards/parallax/17531b03-afae-4759-b3fd-17324b3ce3c1-f7ab730872e3485d8701af3a1b9f6d09-frame.png"
+    }
   }
 ]
